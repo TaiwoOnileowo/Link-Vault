@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "version": "1.0",
+  "name": "Link Vault",
+  "description": "A Chrome Extension helps you to easily save links and tabs",
+  "action": {
+    "default_title": "Link Vault",
+    "default_popup": "index.html",
+    "default_icon": "icon.png"
+  },
+  "permissions": ["tabs", "scripting"]
+}
