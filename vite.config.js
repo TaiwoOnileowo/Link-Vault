@@ -1,11 +1,16 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { terser } from 'rollup-plugin-terser';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  compress: 'brotli',
   plugins: [react()],
-  // build: {
-  //   rollupOptions: {
-  //     input: '/src/main.jsx',
-  //   }}
-})
+  build: {
+    plugins: [terser()],
+    compress: {
+      algorithm: 'brotli',
+      force: true,
+    },
+  },
+});
