@@ -5,7 +5,8 @@ const Input = ({
   setShowCustomName,
   seturlInput,
   setButtonClicked,
-  setLinks,
+  setShowAdd,
+  
 }) => {
   const inputRef = useRef();
 
@@ -23,13 +24,8 @@ const Input = ({
     setButtonClicked("save-tab");
   };
 
-  const handleClearAll = () => {
-    setLinks([]);
-    localStorage.clear();
-  };
-
   return (
-    <div className=" flex flex-col">
+    <div className=" flex flex-col fade-in">
       <div className="flex flex-col">
         <label
           htmlFor="url"
@@ -46,19 +42,19 @@ const Input = ({
         />
         <div className="flex gap-2">
           <button
-            className={`${styles.button} button`}
+            className={`${styles.button1} button`}
             onClick={handleSaveInput}
           >
             SAVE INPUT
           </button>
-          <button className={`${styles.button} button`} onClick={handleSaveTab}>
+          <button className={`${styles.button1} button`} onClick={handleSaveTab}>
             SAVE TAB
           </button>
           <button
-            className="bg-white text-[#2a4ff6] py-[10px] px-6 border-none font-semibold cursor-pointer rounded-[4px] my-[10px] clear-btn"
-            onDoubleClick={handleClearAll}
+            className={`${styles.button2}`}
+            onClick={()=>setShowAdd(false)}
           >
-            CLEAR ALL
+            CANCEL
           </button>
         </div>
       </div>

@@ -2,11 +2,27 @@
   "manifest_version": 3,
   "version": "1.0",
   "name": "Link Vault",
-  "description": "A Chrome Extension helps you to easily save links and tabs",
+  "description": "Effortlessly Save, Organize, and Access Your Links Anywhere, Anytime!",
   "action": {
     "default_title": "Link Vault",
     "default_popup": "index.html",
     "default_icon": "icon.png"
   },
-  "permissions": ["tabs", "scripting"]
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "permissions": [
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "author": "Taiwo Onileowo",
+  "homepage_url": "https://linkvaultapp.netlify.app/",
+  "minimum_chrome_version": "88.0"
 }
