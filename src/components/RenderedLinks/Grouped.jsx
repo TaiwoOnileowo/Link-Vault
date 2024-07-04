@@ -1,5 +1,5 @@
 import React from 'react'
-import coming from "../../coming.png"
+import coming from "../../assets/coming.png"
 const Grouped = () => {
   return (
     <div className="bg-[#242425] bg-opacity-50 flex flex-col items-center justify-center py-[10px] mt-4 shadow-xl">

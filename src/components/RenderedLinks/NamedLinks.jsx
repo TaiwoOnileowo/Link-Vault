@@ -3,105 +3,49 @@ import { MdCheckCircleOutline } from "react-icons/md";
 import { FaRegCopy } from "react-icons/fa";
 import { FaBeerMugEmpty } from "react-icons/fa6";
 import ContextMenu from "./ContextMenu";
-
-const NamedLinks = ({
-  handleCopy,
-  handleDelete,
-  links,
-  editedValue,
-  handleSubmit,
-  setEditedValue,
-  inputIndex,
-  setInputIndex,
-  correctNamedIndices,
-  links2,
-}) => {
-  const [contextMenu, setContextMenu] = useState({
-    visible: false,
-    x: 0,
-    y: 0,
-    linkIndex: null,
-  });
-  const [copiedLink, setCopiedLink] = useState(null);
-  const contextMenuRef = useRef();
+import { useLinkContext } from "../../Context/LinkContext";
+import { useAppContext } from "../../Context/AppContext";
+const NamedLinks = ({ correctNamedIndices, links2 }) => {
+  const {
+    inputIndex,
+    setInputIndex,
+    handleSubmit,
+    editedValue,
+    contextMenu,
+    contextMenuRef,
+    handleContextMenu,
+    handleCopyClick,
+    copiedLink,
+    handleEditInputChange,
+  } = useLinkContext();
+  const { links } = useAppContext();
 
   const namedLinks = links.filter((link) => link.url_name);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (contextMenuRef.current && !contextMenuRef.current.contains(event.target)) {
-        setContextMenu({ visible: false, x: 0, y: 0, linkIndex: null });
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
-
-  const handleContextMenu = (e, index) => {
-    e.preventDefault();
-    setContextMenu({
-      visible: true,
-      x: e.pageX,
-      y: e.pageY,
-      linkIndex: index,
-    });
-  };
-
-  const handleHideContextMenu = () => {
-    setContextMenu({ ...contextMenu, visible: false });
-  };
-
-  const handleEditClick = (index, currentValue = "") => {
-    handleHideContextMenu();
-    setInputIndex(`${index}-edit`);
-    setEditedValue(currentValue);
-  };
-
-  const handleCopyClick = (url, index) => {
-    setCopiedLink(index);
-    handleCopy(url);
-    setTimeout(() => {
-      setCopiedLink(null);
-    }, 3000);
-  };
-
-  const getFormattedName = (name) => (name.length > 45 ? `${name.substr(0, 45)} ...` : name);
-
-  const handleEditInputChange = (e) => {
-    setEditedValue(e.target.value);
-  };
+  const getFormattedName = (name) =>
+    name.length > 45 ? `${name.substr(0, 45)} ...` : name;
 
   return (
     <>
       {contextMenu.visible && (
         <div ref={contextMenuRef}>
           <ContextMenu
-            x={contextMenu.x}
-            y={contextMenu.y}
-            visible={contextMenu.visible}
-            onEdit={handleEditClick}
-            onDelete={handleDelete}
-            onCopy={handleCopy}
-            linkIndex={contextMenu.linkIndex}
-            handleHideContextMenu={handleHideContextMenu}
             links={correctNamedIndices?.length > 0 ? links2 : links}
-            onHide={handleHideContextMenu}
           />
         </div>
       )}
       {namedLinks.length > 0 && (
         <ul className="list-disc text-white list-inside pt-4">
           {namedLinks.map((link, index) => {
-            const originalIndex = correctNamedIndices?.length > 0
-              ? correctNamedIndices[index]
-              : links.indexOf(link);
+            const originalIndex =
+              correctNamedIndices?.length > 0
+                ? correctNamedIndices[index]
+                : links.indexOf(link);
+
             return (
               <li
                 key={originalIndex}
-                className="select-none"
+                className={correctNamedIndices?.length > 0 ? "fade-up" : null}
                 onContextMenu={(e) => handleContextMenu(e, originalIndex)}
               >
                 {inputIndex === `${originalIndex}-edit` ? (
@@ -139,7 +83,14 @@ const NamedLinks = ({
   );
 };
 
-const EditInput = ({ link, editedValue, handleEditInputChange, handleSubmit, originalIndex, setInputIndex }) => (
+const EditInput = ({
+  link,
+  editedValue,
+  handleEditInputChange,
+  handleSubmit,
+  originalIndex,
+  setInputIndex,
+}) => (
   <div className="inline-flex items-center">
     <input
       type="text"
@@ -169,16 +120,32 @@ const EditInput = ({ link, editedValue, handleEditInputChange, handleSubmit, ori
   </div>
 );
 
-const NormalLink = ({ link, copiedLink, originalIndex, getFormattedName, handleCopyClick }) => (
+const NormalLink = ({
+  link,
+  copiedLink,
+  originalIndex,
+  getFormattedName,
+  handleCopyClick,
+}) => (
   <div className="text-[18px] mt-2 inline-flex items-center gap-2 w-[450px]">
-    <a href={link.url} target="_blank" rel="noopener noreferrer">
+    <a
+      href={`${
+        link.url.startsWith("https") || link.url.startsWith("http")
+          ? link.url
+          : "https://" + link.url
+      }`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {getFormattedName(link.url_name)}
     </a>
     <span className="text-gray-300">
       {copiedLink === originalIndex ? (
         <MdCheckCircleOutline
           size={21}
-          className={`check-icon ${copiedLink === originalIndex ? "visible" : ""}`}
+          className={`check-icon ${
+            copiedLink === originalIndex ? "visible" : ""
+          }`}
         />
       ) : (
         <FaRegCopy

@@ -3,44 +3,25 @@ import { MdCheckCircleOutline } from "react-icons/md";
 import { FaRegCopy } from "react-icons/fa";
 import { FaBeerMugEmpty } from "react-icons/fa6";
 import ContextMenu from "./ContextMenu";
+import { useAppContext } from "../../Context/AppContext";
+import { useLinkContext } from "../../Context/LinkContext";
+const UnnamedLinks = ({ correctUnnamedIndices, links2 }) => {
+  const {
+    inputIndex,
+    setInputIndex,
+    handleSubmit,
+    editedValue,
+    setEditedValue,
+    contextMenu,
+    contextMenuRef,
+    handleContextMenu,
+    handleCopyClick,
+    copiedLink,
+    handleEditInputChange,
+  } = useLinkContext();
+  const { links } = useAppContext();
 
-const UnnamedLinks = ({
-  handleCopy,
-  handleDelete,
-  links,
-  inputIndex,
-  setInputIndex,
-  handleSubmit,
-  editedValue,
-  setEditedValue,
-  correctUnnamedIndices,
-  links2,
-}) => {
-  const [contextMenu, setContextMenu] = useState({
-    visible: false,
-    x: 0,
-    y: 0,
-    linkIndex: null,
-  });
-  const [copiedLink, setCopiedLink] = useState(null);
-  const contextMenuRef = useRef();
   const unnamedLinks = links.filter((link) => !link.url_name);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        contextMenuRef.current &&
-        !contextMenuRef.current.contains(event.target)
-      ) {
-        setContextMenu({ visible: false, x: 0, y: 0, linkIndex: null });
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
 
   const getFormattedLink = (link) => {
     return link.length > 40 ? link.substr(0, 40) + " ..." : link;
@@ -51,54 +32,13 @@ const UnnamedLinks = ({
     setEditedValue("");
   };
 
-  const handleContextMenu = (e, index) => {
-    e.preventDefault();
-    setContextMenu({
-      visible: true,
-      x: e.pageX,
-      y: e.pageY,
-      linkIndex: index,
-    });
-  };
-
-  const handleHideContextMenu = () => {
-    setContextMenu({ ...contextMenu, visible: false });
-  };
-
-  const handleEditClick = (index, currentValue = "") => {
-    handleHideContextMenu();
-    setInputIndex(`${index}-edit`);
-    setEditedValue(currentValue);
-  };
-
-  const handleCopyClick = (url, index) => {
-    setCopiedLink(index);
-    handleCopy(url);
-    setTimeout(() => {
-      setCopiedLink(null);
-    }, 3000);
-  };
-
-  const handleEditInputChange = (e) => {
-    setEditedValue(e.target.value);
-  };
-
   return (
     <>
       {contextMenu.visible && (
         <div ref={contextMenuRef}>
           <ContextMenu
-            x={contextMenu.x}
-            y={contextMenu.y}
-            visible={contextMenu.visible}
-            onEdit={handleEditClick}
-            onDelete={handleDelete}
-            onCopy={handleCopy}
-            linkIndex={contextMenu.linkIndex}
             handleName={handleName}
-            handleHideContextMenu={handleHideContextMenu}
-            links={correctUnnamedIndices?.length ? links2 : links}
-            onHide={handleHideContextMenu}
+            links={correctUnnamedIndices?.length > 0 ? links2 : links}
           />
         </div>
       )}
@@ -106,16 +46,15 @@ const UnnamedLinks = ({
       {unnamedLinks.length > 0 && (
         <ul className="list-disc text-white list-inside pt-4">
           {unnamedLinks.map((link, index) => {
-            const originalIndex = correctUnnamedIndices?.length > 0
-              ? correctUnnamedIndices[index]
-              : links.indexOf(link);
-            {
-              console.log(originalIndex);
-            }
+            const originalIndex =
+              correctUnnamedIndices?.length > 0
+                ? correctUnnamedIndices[index]
+                : links.indexOf(link);
+
             return (
               <li
                 key={originalIndex}
-                className="select-none"
+                className={correctUnnamedIndices?.length > 0 ? "fade-up" : null}
                 onContextMenu={(e) => handleContextMenu(e, originalIndex)}
               >
                 {inputIndex === `${originalIndex}-name` ? (

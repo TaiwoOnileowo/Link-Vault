@@ -1,16 +1,12 @@
 import React, { useRef } from "react";
 import { styles } from "../../style";
 import toast from "react-hot-toast";
+import { useInputsContext } from "../../Context/InputsContext";
 
-const CustomNameInput = ({
-  buttonClicked,
-  setLinks,
-  links,
-  setShowCustomName,
-  urlInput,
-  setShowAdd,
-  setMenu,
-}) => {
+import { useAppContext } from "../../Context/AppContext";
+const CustomNameInput = () => {
+  const { setLinks, links, setMenu, setShowAdd } = useAppContext();
+  const { setShowCustomName, buttonClicked, urlInput } = useInputsContext();
   const customNameRef = useRef();
 
   const getCurrentTab = async () => {
@@ -65,8 +61,8 @@ const CustomNameInput = ({
   const saveTab = async (clickedCustomName) => {
     const urlName = customNameRef.current.value;
     const tab = await getCurrentTab();
-  
-    if (urlName && clickedCustomName === "save" ) {
+
+    if (urlName && clickedCustomName === "save") {
       try {
         if (tab) {
           const tabUrl = tab.url;
@@ -87,7 +83,7 @@ const CustomNameInput = ({
       } catch (error) {
         console.error("Error while getting current tab:", error);
       }
-    } else if (clickedCustomName === "never-mind" ) {
+    } else if (clickedCustomName === "never-mind") {
       try {
         if (tab) {
           const tabUrl = tab.url;

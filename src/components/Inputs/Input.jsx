@@ -1,13 +1,11 @@
 import React, { useRef } from "react";
 import { styles } from "../../style";
-
-const Input = ({
-  setShowCustomName,
-  seturlInput,
-  setButtonClicked,
-  setShowAdd,
-  
-}) => {
+import { useInputsContext } from "../../Context/InputsContext";
+import { useAppContext } from "../../Context/AppContext";
+const Input = () => {
+  const { setShowAdd } = useAppContext();
+  const { setShowCustomName, seturlInput, setButtonClicked } =
+    useInputsContext();
   const inputRef = useRef();
 
   const handleSaveInput = () => {
@@ -47,12 +45,15 @@ const Input = ({
           >
             SAVE INPUT
           </button>
-          <button className={`${styles.button1} button`} onClick={handleSaveTab}>
+          <button
+            className={`${styles.button1} button`}
+            onClick={handleSaveTab}
+          >
             SAVE TAB
           </button>
           <button
             className={`${styles.button2}`}
-            onClick={()=>setShowAdd(false)}
+            onClick={() => setShowAdd(false)}
           >
             CANCEL
           </button>

@@ -1,5 +1,5 @@
 import React from "react";
-import icon from "../icon.png";
+import icon from "../assets/icon.png";
 const Header = () => {
   return (
     <header className="w-full bg-[#12073d] py-8 flex items-center justify-center">

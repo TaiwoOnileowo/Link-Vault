@@ -1,6 +1,7 @@
 import React from "react";
-
-const Menu = ({ menu, setMenu }) => {
+import { useAppContext } from "../../Context/AppContext";
+const Menu = () => {
+  const { menu, setMenu } = useAppContext();
   return (
     <div className="pt-8">
       <div className="flex gap-4">
@@ -48,7 +49,6 @@ const Menu = ({ menu, setMenu }) => {
         </menu>
       </div>
       <hr className="border border-[#808080] opacity-50 -mt-[1.5px]" />
-      
     </div>
   );
 };

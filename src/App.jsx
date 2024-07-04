@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import Header from "./components/Header";
 import RenderedLinks from "./components/RenderedLinks/RenderedLinks";
 import Footer from "./components/Footer";
@@ -7,23 +7,13 @@ import Search from "./components/Search";
 import Warning from "./components/Warning";
 import { Toaster } from "react-hot-toast";
 import ContextMenu from "./components/RenderedLinks/ContextMenu";
+import { useAppContext } from "./Context/AppContext";
+
 const App = () => {
-  const [links, setLinks] = useState(() => {
-    return JSON.parse(localStorage.getItem("Links")) || [];
-  }, []);
-  const [showAdd, setShowAdd] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [menu, setMenu] = useState("unnamed");
-  const [showWarning, setShowWarning] = useState(false);
-
-  const handleSearchInputChange = (e) => {
-    setSearchInput(e.target.value);
-  };
-
+  const { showAdd, showWarning } = useAppContext();
   return (
     <div className="w-[550px] scrollbar max-h-[550px]">
       <Header />
-
       <ContextMenu />
       <Toaster
         toastOptions={{
@@ -41,33 +31,13 @@ const App = () => {
         }}
       />
       {showAdd ? (
-        <Inputs
-          links={links}
-          setLinks={setLinks}
-          setShowAdd={setShowAdd}
-          setMenu={setMenu}
-        />
+        <Inputs />
       ) : (
         <>
-          <Search
-            setShowAdd={setShowAdd}
-            handleSearchInputChange={handleSearchInputChange}
-            links={links}
-            setShowWarning={setShowWarning}
-          />
+          <Search />
         </>
       )}
-      {showWarning ? (
-        <Warning setShowWarning={setShowWarning} setLinks={setLinks} />
-      ) : (
-        <RenderedLinks
-          links={links}
-          setLinks={setLinks}
-          searchInput={searchInput}
-          menu={menu}
-          setMenu={setMenu}
-        />
-      )}
+      {showWarning ? <Warning /> : <RenderedLinks />}
 
       <Footer />
     </div>

@@ -73,7 +73,6 @@ li {
   vertical-align: middle;
 }
 
-/* Add this to your CSS file */
 @keyframes draw-check {
   0% {
     opacity: 0;
@@ -107,4 +106,18 @@ li {
 .scrollbar{
   overflow-y: scroll;
   scrollbar-width: none;
+}
+
+.fade-up{
+animation: fade-up 0.3s ease-out forwards;
+}
+@keyframes fade-up{
+  0%{
+    transform: translateY(15px);
+    opacity: 0;
+  }
+  100%{
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

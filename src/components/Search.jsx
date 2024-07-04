@@ -1,15 +1,13 @@
 import React from "react";
-import icon from "../icon.png";
+import icon from "../assets/icon.png";
 import { styles } from "../style";
 import { IoSearch } from "react-icons/io5";
 import { PiBroomBold } from "react-icons/pi";
 import { FaPlus } from "react-icons/fa6";
-const Search = ({
-  setShowAdd,
-  handleSearchInputChange,
-  setShowWarning,
-  links,
-}) => {
+import { useAppContext } from "../Context/AppContext";
+const Search = () => {
+  const { setShowAdd, handleSearchInputChange, setShowWarning, links } =
+    useAppContext();
   return (
     <div className="fade-in flex gap-[10px] px-6 mt-6 items-center">
       <img
@@ -32,7 +30,7 @@ const Search = ({
           onClick={() => setShowAdd(true)}
           title="Add A New Link"
         >
-         <FaPlus/>
+          <FaPlus />
         </button>
         <button
           className={`${styles.button2} `}
@@ -43,7 +41,7 @@ const Search = ({
           }}
           title="Double Click To Clear All Links"
         >
-          <PiBroomBold/>
+          <PiBroomBold />
         </button>
       </div>
     </div>
