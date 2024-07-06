@@ -3,8 +3,8 @@ import { styles } from "../../style";
 import { useInputsContext } from "../../Context/InputsContext";
 import { useAppContext } from "../../Context/AppContext";
 const Input = () => {
-  const { setShowAdd } = useAppContext();
-  const { setShowCustomName, seturlInput, setButtonClicked } =
+  
+  const { setShowAdd,setShowCustomName, seturlInput, setButtonClicked } =
     useInputsContext();
   const inputRef = useRef();
 
@@ -21,15 +21,15 @@ const Input = () => {
     setShowCustomName(true);
     setButtonClicked("save-tab");
   };
-
+ 
   return (
     <div className=" flex flex-col fade-in">
       <div className="flex flex-col">
         <label
           htmlFor="url"
-          className="text-white text-[24px] font-semibold pb-4"
+          className="text-white text-xl font-bold pb-4"
         >
-          Drop an Input or Save Your Current Tab
+          Input link / Save your current tab
         </label>
         <input
           type="text"

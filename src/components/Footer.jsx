@@ -2,8 +2,8 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="flex flex-col w-full bg-[#12073d] py-4 items-center justify-center text-white">
-      <div className="flex gap-4 text-lg">
+    <footer className="absolute bottom-0 flex flex-col w-full py-4 items-center justify-center bg-white dark:bg-dark dark:text-white">
+      <div className="flex gap-4 text-sm">
         <p className="underline cursor-pointer">
           <a
             href="mailto:taiwoonileowo17@gmail.com"
@@ -23,7 +23,7 @@ const Footer = () => {
           </a>
         </p>
       </div>
-      <h1 className="text-xs mt-[10px]">
+      <h1 className="text-xs mt-2">
         Powered By{" "}
         <span className="underline">
           <a

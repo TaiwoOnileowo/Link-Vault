@@ -2,13 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-html{
-    background: radial-gradient(#0A0F14,#1A1C23 );
-    font-synthesis: none;
+html {
+  background: radial-gradient(circle, #f0f4f8, #d9e2ec);
+  font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+html.dark {
+  background: radial-gradient(#0a0f14, #1a1c23);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
 }
 
 .button:hover {
@@ -16,13 +33,13 @@ html{
   transition: background-color 0.3s ease-in-out, scale 0.3s ease;
 }
 
-.link-url{
+.link-url {
   text-decoration: underline;
 }
-.copy{
+.copy {
   transition: background-color 0.6s ease-in-out, scale 0.3s ease;
 }
-.copy:hover{
+.copy:hover {
   background-color: #242425;
 }
 
@@ -59,17 +76,16 @@ li {
     opacity: 1;
   }
 }
-@keyframes bounce {
-  
+@keyframes bounce1 {
   100% {
     transform: translateY(0);
   }
 }
 .bounce {
   transform: translateY(-10%);
-  animation: bounce 0.3s ease forwards;
+  animation: bounce1 0.3s ease forwards;
 }
-.align{
+.align {
   vertical-align: middle;
 }
 
@@ -97,27 +113,42 @@ li {
   animation: draw-check 0.5s ease-out forwards;
 }
 
-.copy-icon, .check-icon {
+.copy-icon,
+.check-icon {
   cursor: pointer;
   transition: opacity 0.3s;
 }
 
-
-.scrollbar{
+.scrollbar {
   overflow-y: scroll;
   scrollbar-width: none;
 }
 
-.fade-up{
-animation: fade-up 0.3s ease-out forwards;
+.fade-up {
+  animation: fade-up 0.3s ease-out forwards;
 }
-@keyframes fade-up{
-  0%{
+@keyframes fade-up {
+  0% {
     transform: translateY(15px);
     opacity: 0;
   }
-  100%{
+  100% {
     transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.swipe-right {
+  animation: swipe-right 0.3s ease-out forwards;
+}
+
+@keyframes swipe-right {
+  0% {
+    transform: translateX(15px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
     opacity: 1;
   }
 }

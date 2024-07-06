@@ -4,6 +4,7 @@ import NamedLinks from "./NamedLinks";
 import UnnamedLinks from "./UnnamedLinks";
 import { useLinkContext } from "../../Context/LinkContext";
 import { useAppContext } from "../../Context/AppContext";
+
 const SearchResults = () => {
   useLinkContext();
   const { links, searchInput } = useAppContext();
@@ -11,31 +12,36 @@ const SearchResults = () => {
     named: [],
     unnamed: [],
   });
+  const [filteredLinks, setFilteredLinks] = useState([]);
   const lowerCaseSearchInput = searchInput.toLowerCase();
 
   useEffect(() => {
     const named = [];
     const unnamed = [];
+    const newFilteredLinks = [];
 
     links.forEach((link, index) => {
-      const match = link.url_name
-        ? link.url_name.toLowerCase().includes(lowerCaseSearchInput)
-        : link.url.toLowerCase().includes(lowerCaseSearchInput);
-      // console.log(index)
-      console.log(links);
-      if (match) {
-        // link.url_name ? named.push(index) : unnamed.push(index);
+      const linkText = link.url_name || link.url;
+      const matchPosition = linkText.toLowerCase().indexOf(lowerCaseSearchInput);
+      console.log(matchPosition)
+      if (matchPosition !== -1) {
+        newFilteredLinks.push({ link, matchPosition });
         if (link.url_name) {
           named.push(index);
-          // console.log(named);
         } else {
           unnamed.push(index);
-          // console.log(unnamed);
         }
       }
     });
 
+    // Sort by match position
+    newFilteredLinks.sort((a, b) => a.matchPosition - b.matchPosition);
+
+    // Extract sorted links
+    const sortedLinks = newFilteredLinks.map(item => item.link);
+
     setFilteredIndices({ named, unnamed });
+    setFilteredLinks(sortedLinks);
   }, [searchInput, links]);
 
   return (
@@ -43,13 +49,13 @@ const SearchResults = () => {
       {filteredIndices.named.length > 0 && (
         <NamedLinks
           correctNamedIndices={filteredIndices.named}
-          links2={links}
+          links2={filteredLinks}
         />
-      )}{" "}
+      )}
       {filteredIndices.unnamed.length > 0 && (
         <UnnamedLinks
           correctUnnamedIndices={filteredIndices.unnamed}
-          links2={links}
+          links2={filteredLinks}
         />
       )}
       {!filteredIndices.unnamed.length && !filteredIndices.named.length && (

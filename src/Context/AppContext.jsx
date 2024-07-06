@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, useEffect,  createContext, useContext } from "react";
 
 const Context = createContext();
 
@@ -7,7 +7,7 @@ export const AppContext = ({ children }) => {
   const [links, setLinks] = useState(() => {
     return JSON.parse(localStorage.getItem("Links")) || [];
   }, []);
-  const [showAdd, setShowAdd] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [menu, setMenu] = useState("unnamed");
   const [showWarning, setShowWarning] = useState(false);
@@ -16,6 +16,13 @@ export const AppContext = ({ children }) => {
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
   };
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
 
   return (
     <Context.Provider
@@ -24,12 +31,13 @@ export const AppContext = ({ children }) => {
         setLinks,
         menu,
         setMenu,
-        showAdd,
-        setShowAdd,
+
         showWarning,
         setShowWarning,
         handleSearchInputChange,
         searchInput,
+        darkMode,
+        setDarkMode,
       }}
     >
       {children}

@@ -2,8 +2,13 @@ import React, { useEffect, useRef } from "react";
 import { FaRegEdit, FaRegCopy } from "react-icons/fa";
 import { AiOutlineDelete } from "react-icons/ai";
 import { MdDriveFileRenameOutline } from "react-icons/md";
+// import { BsPinAngle } from "react-icons/bs";
+import { GrPin } from "react-icons/gr";
+
+import { RiUnpinLine } from "react-icons/ri";
 import { useLinkContext } from "../../Context/LinkContext";
 import { useAppContext } from "../../Context/AppContext";
+
 const ContextMenu = ({ handleName, links }) => {
   const menuRef = useRef(null);
   const {
@@ -12,12 +17,10 @@ const ContextMenu = ({ handleName, links }) => {
     handleDelete,
     handleCopyToClipboard,
     handleHideContextMenu,
+    handlePinClick,
   } = useLinkContext();
   const { menu } = useAppContext();
-  const x = contextMenu.x;
-  const y = contextMenu.y;
-  const visible = contextMenu.visible;
-  const linkIndex = contextMenu.linkIndex;
+  const { x, y, visible, linkIndex } = contextMenu;
 
   useEffect(() => {
     const menuRefCurrent = menuRef.current;
@@ -44,6 +47,10 @@ const ContextMenu = ({ handleName, links }) => {
 
   if (!visible) return null;
 
+  if (!links || linkIndex === null || linkIndex === undefined || !links[linkIndex]) {
+    return null;
+  }
+
   return (
     <div
       ref={menuRef}
@@ -51,9 +58,9 @@ const ContextMenu = ({ handleName, links }) => {
         position: "absolute",
         zIndex: 1000,
       }}
-      className="py-3 bg-[#333] text-white w-[120px] shadow-lg rounded-md"
+      className="py-3 bg-[#333] text-white w-[150px] shadow-lg rounded-md"
     >
-      <ul className="flex flex-col gap-1 w-full">
+      <ul className="flex flex-col w-full">
         <ContextMenuItem
           onClick={() =>
             handleEditClick(
@@ -63,24 +70,31 @@ const ContextMenu = ({ handleName, links }) => {
                 : links[linkIndex].url
             )
           }
-          icon={<FaRegEdit size={19} className="mr-2" />}
+          icon={<FaRegEdit />}
           text="Edit"
         />
-
         <ContextMenuItem
           onClick={() => {
             handleDelete(linkIndex);
             handleHideContextMenu();
           }}
-          icon={<AiOutlineDelete size={19} className="mr-2" />}
+          icon={<AiOutlineDelete />}
           text="Delete"
+        />
+        <ContextMenuItem
+          onClick={() => {
+            handlePinClick(linkIndex);
+            handleHideContextMenu();
+          }}
+          icon={links[linkIndex].pinned ? <RiUnpinLine /> : <GrPin />}
+          text={links[linkIndex].pinned ? "Unpin" : "Pin"}
         />
         <ContextMenuItem
           onClick={() => {
             handleCopyToClipboard(links[linkIndex].url);
             handleHideContextMenu();
           }}
-          icon={<FaRegCopy size={19} className="mr-2" />}
+          icon={<FaRegCopy />}
           text="Copy"
         />
         <ContextMenuItem
@@ -88,7 +102,7 @@ const ContextMenu = ({ handleName, links }) => {
             handleName(linkIndex);
             handleHideContextMenu();
           }}
-          icon={<MdDriveFileRenameOutline size={19} className="mr-2" />}
+          icon={<MdDriveFileRenameOutline />}
           text="Name"
           disabled={menu === "named"}
         />
@@ -99,13 +113,13 @@ const ContextMenu = ({ handleName, links }) => {
 
 const ContextMenuItem = ({ onClick, icon, text, disabled }) => (
   <li
-    className={`flex items-center text-[16px]  cursor-default w-full ${
+    className={`flex items-center text-[15px] cursor-pointer w-full ${
       disabled ? "text-gray-500" : "hover:bg-[#444]"
-    } px-4 py-1 rounded transition duration-150 ease-in-out`}
+    } px-4 py-2 rounded transition duration-150 ease-in-out`}
     onClick={!disabled ? onClick : undefined}
   >
-    {icon} {text}
-    {console.log(disabled)}
+    <span className="mr-2">{icon}</span>
+    {text}
   </li>
 );
 

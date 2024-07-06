@@ -1,11 +1,19 @@
-import React, { useState, useRef, useEffect, createContext, useContext, useCallback } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  createContext,
+  useContext,
+  useCallback,
+} from "react";
 import toast from "react-hot-toast";
 import { useAppContext } from "./AppContext";
+
 const Context = createContext();
 
 export const LinkContext = ({ children }) => {
   const { links, setLinks, setMenu } = useAppContext();
-  ////////////////////////////         STATE ////////////////////////////
+
   const [inputIndex, setInputIndex] = useState(null);
   const [editedValue, setEditedValue] = useState("");
   const [contextMenu, setContextMenu] = useState({
@@ -17,7 +25,6 @@ export const LinkContext = ({ children }) => {
   const [copiedLink, setCopiedLink] = useState(null);
 
   const contextMenuRef = useRef();
-  ///////////////////// FUNCTIONS ////////////////////////////////////////////
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -48,14 +55,12 @@ export const LinkContext = ({ children }) => {
     setContextMenu({ ...contextMenu, visible: false });
   };
 
-
   const handleEditClick = (index, currentValue = "") => {
     handleHideContextMenu();
     setInputIndex(`${index}-edit`);
     setEditedValue(currentValue);
   };
-
-
+  console.log(editedValue);
   const handleCopyClick = (url, index) => {
     setCopiedLink(index);
     handleCopyToClipboard(url);
@@ -107,10 +112,42 @@ export const LinkContext = ({ children }) => {
     },
     [setLinks]
   );
+  const handlePinClick = useCallback(
+    (index) => {
+      setLinks((prevLinks) => {
+        const updatedLinks = [...prevLinks];
+        const link = updatedLinks[index];
+
+        // Check if link has been pinned before
+        if (link.originalIndex === undefined) {
+          // First time pinning: store originalIndex
+          link.originalIndex = index;
+        }
+
+        link.pinned = !link.pinned;
+        if (link.pinned) {
+          // Move the pinned link to the top
+          updatedLinks.splice(index, 1);
+          updatedLinks.unshift(link);
+        } else {
+          // Unpin: move the link back to its original position
+          const originalIndex = link.originalIndex;
+          updatedLinks.splice(index, 1);
+          updatedLinks.splice(originalIndex, 0, link);
+        }
+
+        localStorage.setItem("Links", JSON.stringify(updatedLinks));
+        toast.success(link.pinned ? "Pinned" : "Unpinned");
+        return updatedLinks;
+      });
+    },
+    [setLinks]
+  );
 
   return (
     <Context.Provider
       value={{
+        handlePinClick,
         handleDelete,
         handleCopyToClipboard,
         handleSubmit,
@@ -127,7 +164,7 @@ export const LinkContext = ({ children }) => {
         handleHideContextMenu,
         handleEditInputChange,
         handleEditClick,
-        handleCopyClick
+        handleCopyClick,
       }}
     >
       {children}
