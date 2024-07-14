@@ -6,11 +6,13 @@ export default {
     extend: {
       colors: {
         primary: "#2a4ff6",
+        hoverPrimary: "#2aa4eb",
         dark: "#12073d",
         darkAlt: "#1f1f2e", 
         light: "#ffffff",
         lightBg: "#c0d9ff", 
         lightHoverBg: "#d5ebff", 
+        dimWhite: "rgba(255, 255, 255, 0.7)",
       },
     },
     // screens: {

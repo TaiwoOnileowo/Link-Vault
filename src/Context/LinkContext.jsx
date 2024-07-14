@@ -12,10 +12,8 @@ import { useAppContext } from "./AppContext";
 const Context = createContext();
 
 export const LinkContext = ({ children }) => {
-  const { links, setLinks, setMenu } = useAppContext();
+  const { links, setLinks, openModal } = useAppContext();
 
-  const [inputIndex, setInputIndex] = useState(null);
-  const [editedValue, setEditedValue] = useState("");
   const [contextMenu, setContextMenu] = useState({
     visible: false,
     x: 0,
@@ -23,9 +21,21 @@ export const LinkContext = ({ children }) => {
     linkIndex: null,
   });
   const [copiedLink, setCopiedLink] = useState(null);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showCheckboxes, setShowCheckboxes] = useState(false);
+  const [selectedMenu, setSelectedMenu] = useState("");
   const contextMenuRef = useRef();
+  const linksPerPage = 15;
+  const indexOfLastLink = currentPage * linksPerPage;
 
+  function getPaginatedLinks(data) {
+    const currentLinks = data.slice(0, indexOfLastLink);
+    return currentLinks;
+  }
+
+  const loadMore = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -55,12 +65,6 @@ export const LinkContext = ({ children }) => {
     setContextMenu({ ...contextMenu, visible: false });
   };
 
-  const handleEditClick = (index, currentValue = "") => {
-    handleHideContextMenu();
-    setInputIndex(`${index}-edit`);
-    setEditedValue(currentValue);
-  };
-  console.log(editedValue);
   const handleCopyClick = (url, index) => {
     setCopiedLink(index);
     handleCopyToClipboard(url);
@@ -69,37 +73,28 @@ export const LinkContext = ({ children }) => {
     }, 3000);
   };
 
-  const handleEditInputChange = (e) => {
-    setEditedValue(e.target.value);
-  };
-
-  const handleSubmit = useCallback(
-    (index, value, isEdit = false) => {
-      const updatedLinks = links.map((link, i) =>
-        i === index
-          ? { ...link, ...(isEdit ? { url: value } : { url_name: value }) }
-          : link
-      );
-      if (value) {
-        setLinks(updatedLinks);
-        localStorage.setItem("Links", JSON.stringify(updatedLinks));
-        setInputIndex(null);
-        if (!isEdit) setMenu("named");
-        toast.success("Edited");
+  const handleCopyToClipboard = useCallback(
+    async (url) => {
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success("Copied to clipboard");
+      } catch (err) {
+        toast.error("Failed to copy to clipboard");
       }
     },
-    [links, setLinks, setMenu]
+    [links]
   );
-
-  const handleCopyToClipboard = useCallback(async (url) => {
-    try {
-      await navigator.clipboard.writeText(url);
-      toast.success("Copied to clipboard");
-    } catch (err) {
-      toast.error("Failed to copy to clipboard");
+  const handleBulkCopy = useCallback(() => {
+    const selectedLinks = links.filter((link) => link.selected);
+    const selectedUrls = selectedLinks.map((link) => link.url).join("\n");
+    if (selectedLinks.length > 0) {
+      handleCopyToClipboard(selectedUrls);
+      setShowCheckboxes(false);
+      setLinks((prevLinks) =>
+        prevLinks.map((link) => ({ ...link, selected: false }))
+      );
     }
-  }, []);
-
+  }, [links, handleCopyToClipboard]);
   const handleDelete = useCallback(
     (index) => {
       setLinks((prevLinks) => {
@@ -143,18 +138,83 @@ export const LinkContext = ({ children }) => {
     },
     [setLinks]
   );
+  const handleSelect = (index) => {
+    setLinks((prevLinks) =>
+      prevLinks.map((link, i) =>
+        i === index ? { ...link, selected: !link.selected } : link
+      )
+    );
+  };
+
+  const handleBulkDelete = useCallback(
+    (menu) => {
+      const linksInMenu = links.filter((link) =>
+        menu === "unnamed" ? !link.url_name : link.url_name
+      );
+      const linksSelectedInMenu = linksInMenu.filter((link) => link.selected);
+
+      if (linksSelectedInMenu.length > 0) {
+        if (linksSelectedInMenu.length === linksInMenu.length) {
+          openModal(`Delete All ${menu} Links`, null);
+        } else {
+          const linksToKeep = links.filter((link) => {
+            if (menu === "unnamed" && !link.url_name) {
+              return !link.selected;
+            } else if (menu === "named" && link.url_name) {
+              return !link.selected;
+            }
+            return true;
+          });
+
+          setLinks(linksToKeep);
+          localStorage.setItem("Links", JSON.stringify(linksToKeep));
+          setShowCheckboxes(false);
+          setLinks((prevLinks) =>
+            prevLinks.map((link) => ({ ...link, selected: false }))
+          );
+          toast.success("Deleted");
+        }
+      }
+    },
+    [links, setLinks, openModal, setShowCheckboxes]
+  );
+
+  const handleSelectAll = (menu) => {
+    setLinks((prevLinks) =>
+      prevLinks.map((link) => {
+        if (menu === "unnamed" && !link.url_name) {
+          return {
+            ...link,
+            selected: !links
+              .filter((link) => !link.url_name)
+              .every((link) => link.selected),
+          };
+        } else if (menu === "named" && link.url_name) {
+          return {
+            ...link,
+            selected: !links
+              .filter((link) => link.url_name)
+              .every((link) => link.selected),
+          };
+        }
+        return link;
+      })
+    );
+  };
 
   return (
     <Context.Provider
       value={{
+        handleBulkDelete,
+        showCheckboxes,
+        setShowCheckboxes,
+        handleSelect,
         handlePinClick,
         handleDelete,
+        handleBulkCopy,
         handleCopyToClipboard,
-        handleSubmit,
-        inputIndex,
-        setInputIndex,
-        setEditedValue,
-        editedValue,
+        selectedMenu,
+        setSelectedMenu,
         contextMenu,
         setContextMenu,
         copiedLink,
@@ -162,9 +222,11 @@ export const LinkContext = ({ children }) => {
         contextMenuRef,
         handleContextMenu,
         handleHideContextMenu,
-        handleEditInputChange,
-        handleEditClick,
         handleCopyClick,
+        getPaginatedLinks,
+        loadMore,
+        indexOfLastLink,
+        handleSelectAll,
       }}
     >
       {children}

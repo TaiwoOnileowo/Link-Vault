@@ -5,7 +5,7 @@ const Menu = () => {
   const { menu, setMenu } = useAppContext();
 
   return (
-    <div className="pt-8">
+    <div className="">
       <div className="flex gap-4">
         <menu onClick={() => setMenu("unnamed")} className="cursor-pointer">
           <h2
@@ -39,19 +39,19 @@ const Menu = () => {
             }`}
           />
         </menu>
-        <menu onClick={() => setMenu("grouped")} className="cursor-pointer">
+        <menu onClick={() => setMenu("tags")} className="cursor-pointer">
           <h2
             className={`text-[18px] font-semibold ${
-              menu === "grouped"
+              menu === "tags"
                 ? "text-[#2aa4eb] dark:text-[#65a4eb]"
                 : "text-black dark:text-gray-300"
             }`}
           >
-            Grouped
+           Tags
           </h2>
           <hr
             className={`border-[2px] rounded-sm border-[#2aa4eb] mt-2 ${
-              menu === "grouped" ? "block" : "hidden"
+              menu === "tags" ? "block" : "hidden"
             }`}
           />
         </menu>

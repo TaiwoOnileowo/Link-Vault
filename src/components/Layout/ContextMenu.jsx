@@ -1,25 +1,24 @@
 import React, { useEffect, useRef } from "react";
 import { FaRegEdit, FaRegCopy } from "react-icons/fa";
-import { AiOutlineDelete } from "react-icons/ai";
-import { MdDriveFileRenameOutline } from "react-icons/md";
-// import { BsPinAngle } from "react-icons/bs";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { MdOutlineCheckBox } from "react-icons/md";
 import { GrPin } from "react-icons/gr";
-
 import { RiUnpinLine } from "react-icons/ri";
 import { useLinkContext } from "../../Context/LinkContext";
 import { useAppContext } from "../../Context/AppContext";
 
-const ContextMenu = ({ handleName, links }) => {
+const ContextMenu = ({ links }) => {
   const menuRef = useRef(null);
   const {
+    setShowCheckboxes,
     contextMenu,
-    handleEditClick,
     handleDelete,
     handleCopyToClipboard,
     handleHideContextMenu,
     handlePinClick,
+    setSelectedMenu,
   } = useLinkContext();
-  const { menu } = useAppContext();
+  const { openModal, setLinks, menu, searchInput } = useAppContext();
   const { x, y, visible, linkIndex } = contextMenu;
 
   useEffect(() => {
@@ -47,7 +46,12 @@ const ContextMenu = ({ handleName, links }) => {
 
   if (!visible) return null;
 
-  if (!links || linkIndex === null || linkIndex === undefined || !links[linkIndex]) {
+  if (
+    !links ||
+    linkIndex === null ||
+    linkIndex === undefined ||
+    !links[linkIndex]
+  ) {
     return null;
   }
 
@@ -58,18 +62,22 @@ const ContextMenu = ({ handleName, links }) => {
         position: "absolute",
         zIndex: 1000,
       }}
-      className="py-3 bg-[#333] text-white w-[150px] shadow-lg rounded-md"
+      className="py-1 bg-[#333] animate-slide-down overflow-hidden text-white w-[120px] shadow-lg rounded-md"
+      onClick={(e) => e.stopPropagation()}
     >
       <ul className="flex flex-col w-full">
         <ContextMenuItem
-          onClick={() =>
-            handleEditClick(
-              linkIndex,
-              links[linkIndex]?.url_name
-                ? links[linkIndex].url_name
-                : links[linkIndex].url
-            )
-          }
+          onClick={() => {
+            const linkDetails = {
+              url: links[linkIndex].url,
+              url_name: links[linkIndex].url_name,
+              pinned: links[linkIndex].pinned,
+              selected: links[linkIndex].selected,
+            };
+
+            openModal("Edit Link", linkDetails);
+            handleHideContextMenu();
+          }}
           icon={<FaRegEdit />}
           text="Edit"
         />
@@ -78,7 +86,7 @@ const ContextMenu = ({ handleName, links }) => {
             handleDelete(linkIndex);
             handleHideContextMenu();
           }}
-          icon={<AiOutlineDelete />}
+          icon={<RiDeleteBin6Line />}
           text="Delete"
         />
         <ContextMenuItem
@@ -97,28 +105,38 @@ const ContextMenu = ({ handleName, links }) => {
           icon={<FaRegCopy />}
           text="Copy"
         />
+
+        <hr className="w-full border-light border-opacity-10" />
         <ContextMenuItem
           onClick={() => {
-            handleName(linkIndex);
+            setLinks((prevLinks) =>
+              prevLinks.map((link) => ({ ...link, selected: false }))
+            );
+            setSelectedMenu(menu);
+            setShowCheckboxes(true);
             handleHideContextMenu();
           }}
-          icon={<MdDriveFileRenameOutline />}
-          text="Name"
-          disabled={menu === "named"}
+          icon={<MdOutlineCheckBox />}
+          disabled={searchInput && true}
+          text="Select"
         />
       </ul>
     </div>
   );
 };
 
-const ContextMenuItem = ({ onClick, icon, text, disabled }) => (
+const ContextMenuItem = ({ icon, text, onClick, disabled }) => (
   <li
-    className={`flex items-center text-[15px] cursor-pointer w-full ${
-      disabled ? "text-gray-500" : "hover:bg-[#444]"
-    } px-4 py-2 rounded transition duration-150 ease-in-out`}
-    onClick={!disabled ? onClick : undefined}
+    className={`flex items-center text-[15px] cursor-pointer w-full 
+     px-4 py-[6px] rounded transition duration-150 ease-in-out ${
+       disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#444]"
+     }`}
+    onClick={(e) => {
+      e.stopPropagation();
+      disabled ? null : onClick();
+    }}
   >
-    <span className="mr-2">{icon}</span>
+    <span className="mr-2 text-lg">{icon}</span>
     {text}
   </li>
 );
