@@ -6,19 +6,19 @@ import { GrPin } from "react-icons/gr";
 import { RiUnpinLine } from "react-icons/ri";
 import { useLinkContext } from "../../Context/LinkContext";
 import { useAppContext } from "../../Context/AppContext";
-
-const ContextMenu = ({ links }) => {
+import { useFolderContext } from "../../Context/FolderContext";
+const ContextMenu = ({ links, isFolder }) => {
   const menuRef = useRef(null);
   const {
     setShowCheckboxes,
-    contextMenu,
     handleDelete,
     handleCopyToClipboard,
-    handleHideContextMenu,
     handlePinClick,
-    setSelectedMenu,
+    handleCopyFolder,
   } = useLinkContext();
-  const { openModal, setLinks, menu, searchInput } = useAppContext();
+  const { setShowFolderCheckboxes } = useFolderContext();
+  const { openModal, searchInput, contextMenu, handleHideContextMenu } =
+    useAppContext();
   const { x, y, visible, linkIndex } = contextMenu;
 
   useEffect(() => {
@@ -62,20 +62,27 @@ const ContextMenu = ({ links }) => {
         position: "absolute",
         zIndex: 1000,
       }}
-      className="py-1 bg-[#333] animate-slide-down overflow-hidden text-white w-[120px] shadow-lg rounded-md"
+      className="py-2 bg-[#333] animate-slide-down overflow-hidden text-white max-w-[170px] shadow-lg rounded-md"
       onClick={(e) => e.stopPropagation()}
     >
       <ul className="flex flex-col w-full">
         <ContextMenuItem
           onClick={() => {
+            const folderDetails = {
+              folder_name: links[linkIndex].folder_name,
+              links: links[linkIndex].links,
+            };
+
             const linkDetails = {
               url: links[linkIndex].url,
               url_name: links[linkIndex].url_name,
-              pinned: links[linkIndex].pinned,
-              selected: links[linkIndex].selected,
             };
 
-            openModal("Edit Link", linkDetails);
+            openModal(
+              isFolder ? "Edit Folder" : "Edit Link",
+              isFolder ? folderDetails : linkDetails,
+              isFolder
+            );
             handleHideContextMenu();
           }}
           icon={<FaRegEdit />}
@@ -83,7 +90,7 @@ const ContextMenu = ({ links }) => {
         />
         <ContextMenuItem
           onClick={() => {
-            handleDelete(linkIndex);
+            handleDelete(linkIndex, isFolder);
             handleHideContextMenu();
           }}
           icon={<RiDeleteBin6Line />}
@@ -91,7 +98,7 @@ const ContextMenu = ({ links }) => {
         />
         <ContextMenuItem
           onClick={() => {
-            handlePinClick(linkIndex);
+            handlePinClick(linkIndex, isFolder);
             handleHideContextMenu();
           }}
           icon={links[linkIndex].pinned ? <RiUnpinLine /> : <GrPin />}
@@ -99,21 +106,19 @@ const ContextMenu = ({ links }) => {
         />
         <ContextMenuItem
           onClick={() => {
-            handleCopyToClipboard(links[linkIndex].url);
+            isFolder
+              ? handleCopyFolder(linkIndex)
+              : handleCopyToClipboard(links[linkIndex].url);
             handleHideContextMenu();
           }}
           icon={<FaRegCopy />}
-          text="Copy"
+          text={`Copy ${isFolder ? "Content" : ""}`}
         />
 
         <hr className="w-full border-light border-opacity-10" />
         <ContextMenuItem
           onClick={() => {
-            setLinks((prevLinks) =>
-              prevLinks.map((link) => ({ ...link, selected: false }))
-            );
-            setSelectedMenu(menu);
-            setShowCheckboxes(true);
+            isFolder ? setShowFolderCheckboxes(true) : setShowCheckboxes(true);
             handleHideContextMenu();
           }}
           icon={<MdOutlineCheckBox />}
@@ -128,7 +133,7 @@ const ContextMenu = ({ links }) => {
 const ContextMenuItem = ({ icon, text, onClick, disabled }) => (
   <li
     className={`flex items-center text-[15px] cursor-pointer w-full 
-     px-4 py-[6px] rounded transition duration-150 ease-in-out ${
+     px-5 py-[6px] rounded transition duration-150 ease-in-out ${
        disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#444]"
      }`}
     onClick={(e) => {

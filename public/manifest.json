@@ -4,20 +4,19 @@
   "name": "Link Vault",
   "description": "Effortlessly Save, Organize, and Access Your Links Anywhere, Anytime!",
   "action": {
-    "default_title": "Link Vault",
-    "default_icon": "icon.png",
-    "defautl_popup": "index.html"
+    "default_title": "Click to open panel",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
   },
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "permissions": [
-    "tabs",
-    "activeTab",
-    "sidePanel"
-  ],
+  "permissions": ["tabs", "activeTab", "sidePanel"],
   "background": {
     "service_worker": "background.js"
   },
@@ -25,9 +24,12 @@
     "default_path": "index.html"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
+    "extension_pages": "script-src 'self'; object-src 'self';"
   },
+  "host_permissions": [
+    "https://linkvaultapp.netlify.app/"
+  ],
   "author": "Taiwo Onileowo",
   "homepage_url": "https://linkvaultapp.netlify.app/",
-  "minimum_chrome_version": "88.0"
+  "minimum_chrome_version": "88"
 }

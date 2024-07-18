@@ -8,12 +8,16 @@ import React, {
 
 const Context = createContext();
 
-export const AppContext = ({ children }) => {
+export const FolderContext = ({ children }) => {
   ////////////////////////////         STATE ////////////////////////////
-  const [folders, setFolders] = useState();
+  const [showFolderCheckboxes, setShowFolderCheckboxes] = useState(false);
   /////////////////////// FUNCTIONS //////////////////////////////
 
-  return <Context.Provider value={{}}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={{ setShowFolderCheckboxes, showFolderCheckboxes }}>
+      {children}
+    </Context.Provider>
+  );
 };
 
 export const useFolderContext = () => useContext(Context);

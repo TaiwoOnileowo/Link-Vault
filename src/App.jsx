@@ -6,7 +6,7 @@ import SearchResults from "./components/SearchResults";
 import Folder from "./components/Folder/Folder";
 const App = () => {
   const { routes } = useAppContext();
-  console.log(routes);
+ 
   return (
     <>
       {routes.search && <SearchResults />}

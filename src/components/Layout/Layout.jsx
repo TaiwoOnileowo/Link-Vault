@@ -1,15 +1,15 @@
 import React from "react";
-import Header from "./Header";
+import Header from "./Header/Header";
 import Footer from "./Footer.jsx";
 
 import NewLink from "./NewLink.jsx";
-import ModalContent from "./ModalContent.jsx";
+import ModalContent from "./Modal/ModalContent.jsx";
 import ContextMenu from "./ContextMenu.jsx";
 import { Toaster } from "react-hot-toast";
 import { useAppContext } from "../../Context/AppContext";
 const Layout = ({ children }) => {
   const { darkMode } = useAppContext();
-  
+
   return (
     <div className="relative w-full min-h-screen flex flex-col scrollbar overflow-x-hidden">
       <Header />

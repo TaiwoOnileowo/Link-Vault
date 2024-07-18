@@ -1,13 +1,12 @@
 import React from "react";
 import icon from "/icon.png";
-import { useAppContext } from "../../Context/AppContext";
+import { useAppContext } from "../../../Context/AppContext";
 import { IoSearch } from "react-icons/io5";
 
-import Nav from "../Nav";
+import Nav from "./Nav";
 
 const Header = () => {
-  const {  handleSearchInputChange, searchInput } =
-    useAppContext();
+  const { handleSearchInputChange, searchInput } = useAppContext();
 
   return (
     <header

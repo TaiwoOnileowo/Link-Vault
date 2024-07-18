@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import close from "../assets/close.svg";
-import menu from "../assets/menu.svg";
+import close from "../../../assets/close.svg";
+import menu from "../../../assets/menu.svg";
 import ToggleModes from "./ToggleModes";
 import { LuHome } from "react-icons/lu";
 import { LuFolders } from "react-icons/lu";
 import { CgBrowser } from "react-icons/cg";
 import { IoSettingsOutline } from "react-icons/io5";
 import { LuCrown } from "react-icons/lu";
-import { useAppContext } from "../Context/AppContext";
+import { useAppContext } from "../../../Context/AppContext";
 const Nav = () => {
   const [active, setActive] = useState("Home");
-  const [toggle, setToggle] = useState(false);
+
   const nav = [
     { title: "Home", icon: <LuHome />, route: "home" },
     { title: "Folders", icon: <LuFolders />, route: "folders" },
@@ -18,15 +18,16 @@ const Nav = () => {
     { title: "Settings", icon: <IoSettingsOutline /> },
     { title: "Premium", icon: <LuCrown /> },
   ];
-  const { handleSetRoutes } = useAppContext();
+  const { handleSetRoutes, toggle, setToggle, navRef, setMenu } =
+    useAppContext();
   const handleClick = (item) => {
     setActive(item.title);
-
     handleSetRoutes(item.route);
+    setToggle(false);
   };
 
   return (
-    <div className="flex flex-1 justify-end items-center ">
+    <div className="flex flex-1 justify-end items-center " ref={navRef}>
       <img
         src={toggle ? close : menu}
         alt="menu"
@@ -42,10 +43,14 @@ const Nav = () => {
         <ul className="list-none flex justify-end items-start flex-1 flex-col">
           {nav.map((item, index) => (
             <li
+              key={index}
               className={`inline-flex items-center gap-2 font-medium cursor-pointer text-[16px] ${
                 active === item.title ? "text-white" : "text-dimWhite"
               } ${index === item.length - 1 ? "mb-0" : "mb-4"}`}
-              onClick={() => handleClick(item)}
+              onClick={() => {
+                item.title === "Home" && setMenu("Unnamed");
+                handleClick(item);
+              }}
             >
               <span className="text-primary text-lg">{item.icon}</span>
               {item.title}

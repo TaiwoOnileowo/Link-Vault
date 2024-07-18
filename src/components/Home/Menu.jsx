@@ -1,60 +1,51 @@
 import React from "react";
 import { useAppContext } from "../../Context/AppContext";
+import { useLinkContext } from "../../Context/LinkContext";
 
-const Menu = () => {
-  const { menu, setMenu } = useAppContext();
+const Menu = ({ text }) => {
+  const { menu, setMenu, folderInputs } = useAppContext();
+  const { setShowCheckboxes } = useLinkContext();
+
+  const menuText = text?.split(", ");
 
   return (
     <div className="">
       <div className="flex gap-4">
-        <menu onClick={() => setMenu("unnamed")} className="cursor-pointer">
-          <h2
-            className={`text-[18px] font-semibold ${
-              menu === "unnamed"
-                ? "text-[#2aa4eb] dark:text-[#65a4eb]"
-                : "text-black dark:text-gray-300"
-            }`}
+        {menuText.map((item, i) => (
+          <menu
+            key={i}
+            onClick={() => {
+              if (menuText.includes("Add Links")) {
+                folderInputs.folder_name && setMenu(item);
+              } else {
+                setMenu(item);
+                menuText.includes("Unnamed") && setShowCheckboxes(false);
+              }
+            }}
+            className="cursor-pointer"
           >
-            Unnamed
-          </h2>
-          <hr
-            className={`border-[2px] rounded-sm border-[#2aa4eb] mt-2 ${
-              menu === "unnamed" ? "block" : "hidden"
-            } `}
-          />
-        </menu>
-        <menu onClick={() => setMenu("named")} className="cursor-pointer">
-          <h2
-            className={`text-[18px] font-semibold ${
-              menu === "named"
-                ? "text-[#2aa4eb] dark:text-[#65a4eb]"
-                : "text-black dark:text-gray-300"
-            }`}
-          >
-            Named
-          </h2>
-          <hr
-            className={`border-[2px] rounded-sm border-[#2aa4eb] mt-2 ${
-              menu === "named" ? "block" : "hidden"
-            }`}
-          />
-        </menu>
-        <menu onClick={() => setMenu("tags")} className="cursor-pointer">
-          <h2
-            className={`text-[18px] font-semibold ${
-              menu === "tags"
-                ? "text-[#2aa4eb] dark:text-[#65a4eb]"
-                : "text-black dark:text-gray-300"
-            }`}
-          >
-           Tags
-          </h2>
-          <hr
-            className={`border-[2px] rounded-sm border-[#2aa4eb] mt-2 ${
-              menu === "tags" ? "block" : "hidden"
-            }`}
-          />
-        </menu>
+            <h2
+              className={`text-base font-semibold ${
+                item === menu
+                  ? "text-[#2aa4eb] dark:text-[#65a4eb]"
+                  : `text-black dark:text-white opacity-70  ${
+                      menuText.includes("Add Links")
+                        ? folderInputs.folder_name
+                          ? null
+                          : "cursor-not-allowed"
+                        : null
+                    }`
+              }`}
+            >
+              {item}
+            </h2>
+            <hr
+              className={`border-[2px] rounded-sm border-[#2aa4eb] mt-2 ${
+                item === menu ? "block" : "hidden"
+              } `}
+            />
+          </menu>
+        ))}
       </div>
       <hr className="border border-[#808080] opacity-50 -mt-[1.5px]" />
     </div>
