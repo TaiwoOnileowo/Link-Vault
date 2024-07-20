@@ -12,11 +12,19 @@ import { useFolderContext } from "./FolderContext";
 const Context = createContext();
 
 export const LinkContext = ({ children }) => {
-  const { links, setLinks, openModal, folders, setFolders } = useAppContext();
-  const { setShowFolderCheckboxes } = useFolderContext();
+  const { links, setLinks, openModal, folders, setFolders, modalText } =
+    useAppContext();
+  const {
+    setShowFolderCheckboxes,
+    index: folderIndex,
+
+    // setShowFolderLinkCheckboxes,
+  } = useFolderContext();
   const [copiedIndex, setCopiedIndex] = useState(null);
 
   const [showCheckboxes, setShowCheckboxes] = useState(false);
+  const [isFolder, setIsFolder] = useState(false);
+  const [isFolderLinks, setIsFolderLinks] = useState(false);
 
   const unnamedLinks = links
     .filter((link) => !link.url_name)
@@ -60,20 +68,44 @@ export const LinkContext = ({ children }) => {
   };
 
   const handleBulkCopy = useCallback(() => {
-    const selectedLinks = links.filter((link) => link.selected);
-    const selectedUrls = selectedLinks.map((link) => link.url).join("\n");
-    if (selectedLinks.length > 0) {
-      handleCopyToClipboard(selectedUrls);
-      setShowCheckboxes(false);
-      setLinks((prevLinks) =>
-        prevLinks.map((link) => {
-          const newLink = { ...link };
-          delete newLink.selected;
-          return newLink;
-        })
+    if (isFolderLinks) {
+      const selectedLinks = folders[folderIndex].links.filter(
+        (link) => link.selected
       );
+      const selectedUrls = selectedLinks.map((link) => link.url).join("\n");
+      if (selectedLinks.length > 0) {
+        handleCopyToClipboard(selectedUrls);
+        setShowCheckboxes(false);
+        setFolders((prevFolders) =>
+          prevFolders.map((folder, i) => {
+            if (i === folderIndex) {
+              return {
+                ...folder,
+                links: folder.links.map((link) => {
+                  return { ...link, selected: !link.selected };
+                }),
+              };
+            }
+            return folder;
+          })
+        );
+      }
+    } else {
+      const selectedLinks = links.filter((link) => link.selected);
+      const selectedUrls = selectedLinks.map((link) => link.url).join("\n");
+      if (selectedLinks.length > 0) {
+        handleCopyToClipboard(selectedUrls);
+        setShowCheckboxes(false);
+        setLinks((prevLinks) =>
+          prevLinks.map((link) => {
+            const newLink = { ...link };
+            delete newLink.selected;
+            return newLink;
+          })
+        );
+      }
     }
-  }, [links, handleCopyToClipboard]);
+  }, [links, handleCopyToClipboard, isFolderLinks]);
   const handleBulkCopyFolder = useCallback(() => {
     const selectedFolders = folders.filter((folder) => folder.selected);
     const selectedFolderUrls = selectedFolders
@@ -93,8 +125,9 @@ export const LinkContext = ({ children }) => {
   }, [folders, handleCopyToClipboard]);
 
   const handleDelete = useCallback(
-    (index, isFolder) => {
+    (index, folderIndex, isFolder, isFolderLinks) => {
       if (isFolder) {
+        console.log("hey");
         setFolders((prevFolders) => {
           const newFolders = [...prevFolders];
           newFolders.splice(index, 1);
@@ -102,8 +135,14 @@ export const LinkContext = ({ children }) => {
 
           return newFolders;
         });
+      } else if (isFolderLinks) {
+        const newFolders = [...folders];
+        newFolders[folderIndex].links.splice(index, 1);
+        setFolders(newFolders);
+        localStorage.setItem("Folders", JSON.stringify(newFolders));
       } else {
         setLinks((prevLinks) => {
+          console.log("h");
           const newLinks = [...prevLinks];
           newLinks.splice(index, 1);
           localStorage.setItem("Links", JSON.stringify(newLinks));
@@ -128,7 +167,6 @@ export const LinkContext = ({ children }) => {
 
           if (folder.pinned) {
             delete folder.pinned;
-
             const originalIndex = folder.originalIndex;
             updatedFolders.splice(index, 1);
             updatedFolders.splice(originalIndex, 0, folder);
@@ -141,7 +179,7 @@ export const LinkContext = ({ children }) => {
           }
 
           localStorage.setItem("Folders", JSON.stringify(updatedFolders));
-          toast.success(folder.pinned ? "Pinned" : "Unpinned");
+          // toast.success(folder.pinned ? "Pinned" : "Unpinned");
           return updatedFolders;
         });
       } else {
@@ -178,11 +216,11 @@ export const LinkContext = ({ children }) => {
         });
       }
     },
-    [setLinks]
+    [setLinks, setFolders]
   );
 
   const handleSelect = (index, isFolder) => {
-    if (isFolder) {
+    if (isFolder && !modalText.includes("Folder")) {
       setFolders((prevFolders) => {
         const updatedFolders = [...prevFolders];
         const folder = { ...updatedFolders[index] };
@@ -196,6 +234,16 @@ export const LinkContext = ({ children }) => {
         updatedFolders[index] = folder;
         return updatedFolders;
       });
+    } else if (isFolderLinks && !modalText.includes("Folder")) {
+      const updatedFolders = [...folders];
+      const link = { ...updatedFolders[folderIndex].links[index] };
+      if (link.selected) {
+        delete link.selected;
+      } else {
+        link.selected = true;
+      }
+      updatedFolders[folderIndex].links[index] = link;
+      setFolders(updatedFolders);
     } else {
       setLinks((prevLinks) => {
         const updatedLinks = [...prevLinks];
@@ -230,6 +278,19 @@ export const LinkContext = ({ children }) => {
       updatedLinks = [...selectedNamedLinks, ...sortedUnnamedLinks];
     }
     setLinks(updatedLinks);
+  };
+  const handleSelectAllLinksInFolder = () => {
+    const updatedFolders = [...folders];
+    const allSelected = folders[folderIndex].links.every(
+      (link) => link.selected
+    );
+    const selectedLinks = folders[folderIndex].links.map((link) => {
+      return { ...link, selected: !allSelected };
+    });
+    updatedFolders[folderIndex].links = selectedLinks;
+    setFolders(updatedFolders);
+    setIsFolder(false);
+    setIsFolderLinks(false);
   };
   const handleSelectAllFolders = () => {
     let updatedFolders = [...folders];
@@ -278,6 +339,15 @@ export const LinkContext = ({ children }) => {
     },
     [links, setLinks, openModal, setShowCheckboxes]
   );
+  const handleDeleteLinkInFolder = () => {
+    const newFolders = [...folders];
+    newFolders[folderIndex].links = newFolders[folderIndex].links.filter(
+      (link) => !link.selected
+    );
+    setFolders(newFolders);
+    localStorage.setItem("Folders", JSON.stringify(newFolders));
+    toast.success("Deleted");
+  };
   const handleBulkDeleteFolder = useCallback(() => {
     const selectedFolders = folders.filter((folder) => folder.selected);
 
@@ -300,6 +370,8 @@ export const LinkContext = ({ children }) => {
           })
         );
         toast.success("Deleted");
+        setIsFolder(false);
+        setIsFolderLinks(false);
       }
     }
   }, [folders, setFolders, openModal, setShowFolderCheckboxes]);
@@ -314,17 +386,36 @@ export const LinkContext = ({ children }) => {
           return newFolder;
         })
       );
+      setIsFolder(false);
+      setIsFolderLinks(false);
     } else {
       setShowCheckboxes(false);
-      setLinks((prevLinks) =>
-        prevLinks.map((link) => {
-          const newLink = { ...link };
-          delete newLink.selected;
-          return newLink;
-        })
-      );
+      if (isFolderLinks) {
+        setFolders((prevFolders) =>
+          prevFolders.map((folder) => {
+            const newFolder = { ...folder };
+            newFolder.links = newFolder.links.map((link) => {
+              const newLink = { ...link };
+              delete newLink.selected;
+              return newLink;
+            });
+            return newFolder;
+          })
+        );
+        setIsFolder(false);
+        setIsFolderLinks(false);
+      } else {
+        setLinks((prevLinks) =>
+          prevLinks.map((link) => {
+            const newLink = { ...link };
+            delete newLink.selected;
+            return newLink;
+          })
+        );
+      }
     }
   };
+
   return (
     <Context.Provider
       value={{
@@ -340,7 +431,10 @@ export const LinkContext = ({ children }) => {
         handleCopyFolder,
         copiedIndex,
         setCopiedIndex,
-
+        isFolder,
+        isFolderLinks,
+        setIsFolder,
+        setIsFolderLinks,
         handleCopyClick,
         handleBulkDeleteFolder,
         handleSelectAll,
@@ -348,6 +442,8 @@ export const LinkContext = ({ children }) => {
         sortedUnnamedLinks,
         handleCancelSelect,
         handleSelectAllFolders,
+        handleDeleteLinkInFolder,
+        handleSelectAllLinksInFolder,
       }}
     >
       {children}

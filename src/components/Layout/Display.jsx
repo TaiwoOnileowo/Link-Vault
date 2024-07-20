@@ -5,26 +5,24 @@ import { useAppContext } from "../../Context/AppContext";
 import { useLinkContext } from "../../Context/LinkContext";
 import { useFolderContext } from "../../Context/FolderContext";
 import SelectOptions from "../Home/SelectOptions";
+
 const Display = ({ children, display }) => {
   const { showCheckboxes } = useLinkContext();
   const { showFolderCheckboxes } = useFolderContext();
   const { contextMenu, contextMenuRef, links, modalText, folders, routes } =
     useAppContext();
-  const isFolder = routes.folders;
 
   return (
     <>
       {contextMenu.visible && !showCheckboxes && !showFolderCheckboxes && (
         <div ref={contextMenuRef}>
-          <ContextMenu links={isFolder ? folders : links} isFolder={isFolder} />
+          <ContextMenu items={links} />
         </div>
       )}
       {display.length > 0 ? (
         <>
           {(showCheckboxes || showFolderCheckboxes) &&
-            !modalText.includes("Folder") && (
-              <SelectOptions display={display} isFolder={isFolder} />
-            )}
+            !modalText.includes("Folder") && <SelectOptions display={links} />}
           {children}
         </>
       ) : (

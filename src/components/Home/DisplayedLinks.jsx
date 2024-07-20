@@ -5,11 +5,26 @@ import { TbPinFilled } from "react-icons/tb";
 import { GoDotFill } from "react-icons/go";
 import { useAppContext } from "../../Context/AppContext";
 import { useLinkContext } from "../../Context/LinkContext";
+import { useFolderContext } from "../../Context/FolderContext";
 import Checkbox from "./Checkbox";
 
-const DisplayedLinks = ({ display, isSearchResults, isExistingLinks }) => {
-  const { handleSelect, handleCopyClick, copiedIndex, showCheckboxes } =
-    useLinkContext();
+const DisplayedLinks = ({
+  display,
+  isSearchResults,
+  isExistingLinks,
+  openFolder,
+}) => {
+  const {
+    handleSelect,
+    handleCopyClick,
+    copiedIndex,
+    showCheckboxes,
+    setIsFolder,
+    setIsFolderLinks,
+    isFolderLinks,
+    isFolder,
+  } = useLinkContext();
+  // const { showFolderLinkCheckboxes } = useFolderContext();
   const { links, handleContextMenu } = useAppContext();
 
   const getFormattedName = (name) =>
@@ -23,18 +38,30 @@ const DisplayedLinks = ({ display, isSearchResults, isExistingLinks }) => {
     <>
       <ul className="list-disc dark:text-white mb-4 text-black list-inside pt-2 h-full">
         {display?.map((link, index) => {
-          const originalIndex = links.indexOf(link);
-
+          const originalIndex = openFolder
+            ? index
+            : links.indexOf(link) ;
+            console.log(originalIndex)
           return (
             <li
               key={originalIndex}
               className={`${
                 isSearchResults ? "fade-up" : null
               } flex items-center gap-[2px] `}
-              onContextMenu={(e) => handleContextMenu(e, originalIndex)}
+              onContextMenu={(e) => {
+                if (openFolder) {
+                  setIsFolderLinks(true);
+                  setIsFolder(false);
+                }
+                handleContextMenu(e, originalIndex);
+              }}
             >
               {showCheckboxes ? (
-                <Checkbox link={link} originalIndex={originalIndex} />
+                <Checkbox
+                  link={link}
+                  originalIndex={originalIndex}
+                  isFolder={isFolder}
+                />
               ) : (
                 <GoDotFill className="dark:text-white text-black text-xs mt-2" />
               )}
@@ -77,7 +104,7 @@ const DisplayedLinks = ({ display, isSearchResults, isExistingLinks }) => {
                     />
                   )}
                 </span>
-                {link.pinned &&!isExistingLinks && (
+                {link.pinned && !isExistingLinks && (
                   <TbPinFilled className="dark:text-[#4c4c74] text-[#2a4ff6]" />
                 )}
               </div>

@@ -4,7 +4,7 @@ import { useLinkContext } from "../../../Context/LinkContext";
 import { GoDotFill } from "react-icons/go";
 import { styles } from "../../styles";
 import { MdOutlineCancel } from "react-icons/md";
-
+import toast from "react-hot-toast";
 const LinksAdded = () => {
   const {
     handleClose,
@@ -15,6 +15,8 @@ const LinksAdded = () => {
     folders,
     setLinks,
     links,
+    modalText,
+    editIndex,
   } = useAppContext();
   const { setShowCheckboxes } = useLinkContext();
 
@@ -26,8 +28,22 @@ const LinksAdded = () => {
   };
 
   const handleClick = () => {
-    setFolders([folderInputs, ...folders]);
-    localStorage.setItem("Folders", JSON.stringify([folderInputs, ...folders]));
+    let updatedFolders = [...folders];
+    if (modalText.includes("Edit Folder")) {
+      updatedFolders[editIndex].folder_name = folderInputs.folder_name;
+      updatedFolders[editIndex].links = [...folderInputs.links];
+      console.log(updatedFolders)
+      setFolders(updatedFolders);
+      localStorage.setItem("Folders", JSON.stringify(updatedFolders));
+      toast.success("Edited successfully!");
+    } else {
+      updatedFolders = [folderInputs, ...folders];
+      const sortedUpdatedFolders = updatedFolders.sort(
+        (a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0)
+      );
+      setFolders(sortedUpdatedFolders);
+      localStorage.setItem("Folders", JSON.stringify(sortedUpdatedFolders));
+    }
     handleClose();
     setFolderInputs({
       folder_name: "",

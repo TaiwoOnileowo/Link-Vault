@@ -9,7 +9,6 @@ import React, {
 const Context = createContext();
 
 export const AppContext = ({ children }) => {
-  // const {setFolderInputs} = useFolderContext()
   ////////////////////////////         STATE ////////////////////////////
   const [links, setLinks] = useState(() => {
     return JSON.parse(localStorage.getItem("Links")) || [];
@@ -20,21 +19,22 @@ export const AppContext = ({ children }) => {
   const [darkMode, setDarkMode] = useState(
     JSON.parse(localStorage.getItem("mode"))
   );
+  const [active, setActive] = useState("Home");
   const [searchInput, setSearchInput] = useState("");
   const [menu, setMenu] = useState("Unnamed");
   const [isOpen, setIsOpen] = useState(false);
   const [modalText, setModalText] = useState("");
-  const [linkDetails, setLinkDetails] = useState({});
+  const [editIndex, setEditIndex] = useState(null);
   const [inputs, setInputs] = useState({
     url: "",
     url_name: "",
     tags: "",
-    folder_name: "",
+  
   });
   const [folderInputs, setFolderInputs] = useState({
     folder_name: "",
     links: [],
-    manually_added: false,
+     
   });
   const [routes, setRoutes] = useState({
     home: true,
@@ -53,6 +53,7 @@ export const AppContext = ({ children }) => {
   });
 
   ///////////////////// FUNCTIONS ////////////////////////////////////////////
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -70,9 +71,8 @@ export const AppContext = ({ children }) => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-  console.log(toggle);
 
-  const handleContextMenu = (e, index) => {
+  const handleContextMenu = (e, index, isFolderContext) => {
     e.preventDefault();
     setContextMenu({
       visible: true,
@@ -116,10 +116,17 @@ export const AppContext = ({ children }) => {
         search: false,
         home: true,
       }));
+      setActive("Home");
     }
   }, [searchInput]);
 
-  const openModal = (modalText, linkDetails, isFolder) => {
+  const openModal = (
+    modalText,
+    linkDetails,
+    linkIndex,
+    isFolder,
+    
+  ) => {
     modalRef.current.open();
     setModalText(modalText);
     setInputs({
@@ -133,14 +140,16 @@ export const AppContext = ({ children }) => {
       folder_name: "",
       links: [],
     });
+
     if (linkDetails) {
       if (isFolder) {
-        console.log(linkDetails);
         setFolderInputs(linkDetails);
+        setEditIndex(linkIndex);
         setMenu("Name");
       } else {
         setInputs(linkDetails);
-        setLinkDetails(linkDetails);
+        setEditIndex(linkIndex);
+        console.log(linkIndex);
       }
     }
   };
@@ -170,7 +179,7 @@ export const AppContext = ({ children }) => {
         menu,
         setMenu,
         handleClose,
-        linkDetails,
+        editIndex,
         openModal,
         isOpen,
         setIsOpen,
@@ -184,6 +193,8 @@ export const AppContext = ({ children }) => {
         folders,
         setFolders,
         navRef,
+        active,
+        setActive,
       }}
     >
       {children}

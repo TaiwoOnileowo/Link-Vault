@@ -7,7 +7,8 @@ import { RiUnpinLine } from "react-icons/ri";
 import { useLinkContext } from "../../Context/LinkContext";
 import { useAppContext } from "../../Context/AppContext";
 import { useFolderContext } from "../../Context/FolderContext";
-const ContextMenu = ({ links, isFolder }) => {
+
+const ContextMenu = ({ items, isFolder, isFolderLinks, setOpenFolder }) => {
   const menuRef = useRef(null);
   const {
     setShowCheckboxes,
@@ -16,7 +17,11 @@ const ContextMenu = ({ links, isFolder }) => {
     handlePinClick,
     handleCopyFolder,
   } = useLinkContext();
-  const { setShowFolderCheckboxes } = useFolderContext();
+  const {
+    setShowFolderCheckboxes,
+    index: folderIndex,
+    // showFolderLinkCheckboxes,
+  } = useFolderContext();
   const { openModal, searchInput, contextMenu, handleHideContextMenu } =
     useAppContext();
   const { x, y, visible, linkIndex } = contextMenu;
@@ -43,14 +48,13 @@ const ContextMenu = ({ links, isFolder }) => {
       menuRefCurrent.style.top = `${adjustedY}px`;
     }
   }, [x, y, visible]);
-
-  if (!visible) return null;
-
+  console.log(isFolder);
   if (
-    !links ||
+    !visible ||
+    !items ||
     linkIndex === null ||
     linkIndex === undefined ||
-    !links[linkIndex]
+    !items[linkIndex]
   ) {
     return null;
   }
@@ -68,19 +72,21 @@ const ContextMenu = ({ links, isFolder }) => {
       <ul className="flex flex-col w-full">
         <ContextMenuItem
           onClick={() => {
-            const folderDetails = {
-              folder_name: links[linkIndex].folder_name,
-              links: links[linkIndex].links,
-            };
-
-            const linkDetails = {
-              url: links[linkIndex].url,
-              url_name: links[linkIndex].url_name,
-            };
-
+            const details = isFolder
+              ? {
+                  folder_name: items[linkIndex].folder_name,
+                  links: items[linkIndex].links,
+                }
+              : {
+                  url: items[linkIndex].url,
+                  url_name: items[linkIndex].url_name,
+                  pinned: items[linkIndex].pinned,
+                };
+            isFolder && setOpenFolder(false);
             openModal(
               isFolder ? "Edit Folder" : "Edit Link",
-              isFolder ? folderDetails : linkDetails,
+              details,
+              linkIndex,
               isFolder
             );
             handleHideContextMenu();
@@ -90,7 +96,7 @@ const ContextMenu = ({ links, isFolder }) => {
         />
         <ContextMenuItem
           onClick={() => {
-            handleDelete(linkIndex, isFolder);
+            handleDelete(linkIndex, folderIndex, isFolder, isFolderLinks);
             handleHideContextMenu();
           }}
           icon={<RiDeleteBin6Line />}
@@ -101,20 +107,20 @@ const ContextMenu = ({ links, isFolder }) => {
             handlePinClick(linkIndex, isFolder);
             handleHideContextMenu();
           }}
-          icon={links[linkIndex].pinned ? <RiUnpinLine /> : <GrPin />}
-          text={links[linkIndex].pinned ? "Unpin" : "Pin"}
+          icon={items[linkIndex].pinned ? <RiUnpinLine /> : <GrPin />}
+          text={items[linkIndex].pinned ? "Unpin" : "Pin"}
+          hidden={isFolderLinks && true}
         />
         <ContextMenuItem
           onClick={() => {
             isFolder
               ? handleCopyFolder(linkIndex)
-              : handleCopyToClipboard(links[linkIndex].url);
+              : handleCopyToClipboard(items[linkIndex].url);
             handleHideContextMenu();
           }}
           icon={<FaRegCopy />}
-          text={`Copy ${isFolder ? "Content" : ""}`}
+          text={`Copy ${isFolder ? "Folder " : ""}`}
         />
-
         <hr className="w-full border-light border-opacity-10" />
         <ContextMenuItem
           onClick={() => {
@@ -130,12 +136,11 @@ const ContextMenu = ({ links, isFolder }) => {
   );
 };
 
-const ContextMenuItem = ({ icon, text, onClick, disabled }) => (
+const ContextMenuItem = ({ icon, text, onClick, disabled, hidden }) => (
   <li
-    className={`flex items-center text-[15px] cursor-pointer w-full 
-     px-5 py-[6px] rounded transition duration-150 ease-in-out ${
-       disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#444]"
-     }`}
+    className={`flex items-center text-[15px] cursor-pointer w-full px-5 py-[6px] rounded transition duration-150 ease-in-out ${
+      disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#444]"
+    } ${hidden ? "hidden" : ""}`}
     onClick={(e) => {
       e.stopPropagation();
       disabled ? null : onClick();

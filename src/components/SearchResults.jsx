@@ -3,7 +3,7 @@ import { FaBeerMugEmpty } from "react-icons/fa6";
 import { useAppContext } from "../Context/AppContext";
 import DisplayedLinks from "./Home/DisplayedLinks";
 import Display from "./Layout/Display";
-
+import { FaFilter } from "react-icons/fa";
 const SearchResults = () => {
   const { links, searchInput, folders } = useAppContext();
   const [filteredLinks, setFilteredLinks] = useState([]);
@@ -22,7 +22,7 @@ const SearchResults = () => {
     const searchResults = [...newFilteredLinks, ...filteredFolderLinks];
     setFilteredLinks(searchResults);
   }, [searchInput, links]);
-
+console.log(filteredLinks)
   return (
     <div className="p-2">
       {filteredLinks.length > 0 ? (

@@ -3,12 +3,19 @@ import ModalLink from "../../Layout/Modal/ModalLink";
 import DisplayedLinks from "../../Home/DisplayedLinks";
 import { useLinkContext } from "../../../Context/LinkContext";
 import { useAppContext } from "../../../Context/AppContext";
+import { useFolderContext } from "../../../Context/FolderContext";
 import { IoCheckmark } from "react-icons/io5";
 
 const AddLinks = () => {
   const [showLinks, setShowLinks] = useState(false);
-  const { setShowCheckboxes, sortedNamedLinks, sortedUnnamedLinks } = useLinkContext();
+  const {
+    setShowCheckboxes,
+    sortedNamedLinks,
+    sortedUnnamedLinks,
+    setIsFolder,
+  } = useLinkContext();
   const { links, setLinks, folderInputs, setFolderInputs } = useAppContext();
+  // const { setShowFolderLinkCheckboxes } = useFolderContext();
 
   const linksSelected = links.filter((link) => link.selected);
 
@@ -22,7 +29,7 @@ const AddLinks = () => {
     // Add the selected links to the folderInputs.links array
     setFolderInputs({
       ...folderInputs,
-      links: [...folderInputs.links, ...selectedWithIndex],
+      links: [...selectedWithIndex, ...folderInputs.links],
     });
 
     // Remove selected links from the links array and update the state
@@ -52,6 +59,7 @@ const AddLinks = () => {
         <h2
           className="bg-primary/50 p-2 px-4 text-sm cursor-pointer hover:bg-primary rounded-md mt-2"
           onClick={() => {
+            // setShowFolderLinkCheckboxes(true);
             setShowCheckboxes(true);
             setShowLinks(true);
           }}

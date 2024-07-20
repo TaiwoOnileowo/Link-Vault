@@ -12,8 +12,11 @@ const SelectOptions = ({ display, isFolder }) => {
     handleBulkCopyFolder,
     handleBulkDeleteFolder,
     handleSelectAllFolders,
+    handleDeleteLinkInFolder,
+    isFolderLinks,
+    handleSelectAllLinksInFolder,
   } = useLinkContext();
-  const { menu, links } = useAppContext();
+  const { menu } = useAppContext();
   const selected = display.filter((display) => display.selected);
 
   return (
@@ -25,21 +28,29 @@ const SelectOptions = ({ display, isFolder }) => {
         </button>
         <button
           onClick={() =>
-            isFolder ? handleBulkDeleteFolder() : handleBulkDelete(menu)
+            isFolder
+              ? handleBulkDeleteFolder()
+              : isFolderLinks
+              ? handleDeleteLinkInFolder()
+              : handleBulkDelete(menu)
           }
         >
           <RiDeleteBin6Line size={18} />
         </button>
         <button
           onClick={() =>
-            isFolder ? handleSelectAllFolders() : handleSelectAll(menu)
+            isFolder
+              ? handleSelectAllFolders()
+              : isFolderLinks
+              ? handleSelectAllLinksInFolder()
+              : handleSelectAll(menu)
           }
         >
           {selected.length === display.length ? "Unselect all" : "Select all"}
         </button>
         <button
           onClick={() => {
-            isFolder ? handleCancelSelect(isFolder) : handleCancelSelect();
+            handleCancelSelect(isFolder);
           }}
           className="border border-white px-2 rounded-md"
         >

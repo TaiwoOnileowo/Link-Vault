@@ -20,7 +20,7 @@ const Home = () => {
       ) : (
         <Display display={displayedLinks}>
           <DisplayedLinks display={displayedLinks} />
-        </Display>
+        </Display> 
       )}
     </div>
   );

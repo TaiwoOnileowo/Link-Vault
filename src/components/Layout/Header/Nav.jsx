@@ -9,8 +9,6 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { LuCrown } from "react-icons/lu";
 import { useAppContext } from "../../../Context/AppContext";
 const Nav = () => {
-  const [active, setActive] = useState("Home");
-
   const nav = [
     { title: "Home", icon: <LuHome />, route: "home" },
     { title: "Folders", icon: <LuFolders />, route: "folders" },
@@ -18,8 +16,15 @@ const Nav = () => {
     { title: "Settings", icon: <IoSettingsOutline /> },
     { title: "Premium", icon: <LuCrown /> },
   ];
-  const { handleSetRoutes, toggle, setToggle, navRef, setMenu } =
-    useAppContext();
+  const {
+    handleSetRoutes,
+    toggle,
+    setToggle,
+    navRef,
+    setMenu,
+    active,
+    setActive,
+  } = useAppContext();
   const handleClick = (item) => {
     setActive(item.title);
     handleSetRoutes(item.route);
