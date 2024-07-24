@@ -1,15 +1,15 @@
 import React from "react";
 import DisplayedLinks from "./DisplayedLinks";
-import Menu from "./Menu";
-import { useAppContext } from "../../Context/AppContext";
-import { useLinkContext } from "../../Context/LinkContext";
+import Menu from "../Menu";
+import { useAppContext } from "../../context/AppContext";
+import { useLinkContext } from "../../context/LinkContext";
 import Tags from "./Tags";
 import Display from "../Layout/Display";
 
 const Home = () => {
   const { menu } = useAppContext();
   const { sortedNamedLinks, sortedUnnamedLinks } = useLinkContext();
-
+  console.log("reloaded");
   const displayedLinks =
     menu === "Named" ? sortedNamedLinks : sortedUnnamedLinks;
   return (
@@ -20,7 +20,7 @@ const Home = () => {
       ) : (
         <Display display={displayedLinks}>
           <DisplayedLinks display={displayedLinks} />
-        </Display> 
+        </Display>
       )}
     </div>
   );

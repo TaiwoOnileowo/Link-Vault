@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { styles } from "../../styles";
-import { useAppContext } from "../../../Context/AppContext";
+import { styles } from "../../../styles";
+import { useAppContext } from "../../../context/AppContext";
 
 const Name = () => {
-  const { setMenu, folderInputs, setFolderInputs} = useAppContext();
-  
+  const { setMenu, folderInputs, setFolderInputs } = useAppContext();
 
   const handleChange = (e) => {
     setFolderInputs({ ...folderInputs, [e.target.name]: e.target.value });
   };
 
   return (
-    <div className="w-full mt-">
+    <div className="w-full">
       <h1 className={`mb-2 ${styles.label}`}>Folder Name</h1>
       <input
         type="text"
@@ -22,10 +21,10 @@ const Name = () => {
       />
       <div className="w-full flex justify-end mt-2">
         <button
-          className={styles.button1}
+          className={folderInputs.folder_name ? styles.button1 : styles.button1Disabled}
           onClick={() => folderInputs.folder_name && setMenu("Add Links")}
         >
-          Next {">"}
+          Next: Add Links +
         </button>
       </div>
     </div>

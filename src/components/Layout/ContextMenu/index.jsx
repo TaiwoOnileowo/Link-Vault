@@ -1,54 +1,43 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { FaRegEdit, FaRegCopy } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { GrPin } from "react-icons/gr";
 import { RiUnpinLine } from "react-icons/ri";
-import { useLinkContext } from "../../Context/LinkContext";
-import { useAppContext } from "../../Context/AppContext";
-import { useFolderContext } from "../../Context/FolderContext";
-
-const ContextMenu = ({ items, isFolder, isFolderLinks, setOpenFolder }) => {
+import { useLinkContext } from "../../../context/LinkContext.jsx";
+import { useAppContext } from "../../../context/AppContext.jsx";
+import { useFolderContext } from "../../../context/FolderContext.jsx";
+import ContextMenuItem from "./ContextMenuItem.jsx";
+import useContextMenuPosition from "../../../hooks/useContextMenuPosition.js";
+import { copyToClipboard } from "../../../utils/clipboardUtils.js";
+const ContextMenu = ({ items }) => {
   const menuRef = useRef(null);
   const {
     setShowCheckboxes,
     handleDelete,
-    handleCopyToClipboard,
     handlePinClick,
+    handleSelectClick,
+    isFolder,
+    isFolderLinks,
     handleCopyFolder,
   } = useLinkContext();
+
   const {
     setShowFolderCheckboxes,
     index: folderIndex,
-    // showFolderLinkCheckboxes,
+    setOpenFolder,
   } = useFolderContext();
-  const { openModal, searchInput, contextMenu, handleHideContextMenu } =
-    useAppContext();
+  const {
+    openModal,
+    searchInput,
+    contextMenu,
+    handleHideContextMenu,
+    setMenu,
+  } = useAppContext();
   const { x, y, visible, linkIndex } = contextMenu;
 
-  useEffect(() => {
-    const menuRefCurrent = menuRef.current;
-    if (menuRefCurrent) {
-      const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
-      const { offsetWidth: menuWidth, offsetHeight: menuHeight } =
-        menuRefCurrent;
+  useContextMenuPosition(x, y, visible, menuRef);
 
-      let adjustedX = x;
-      let adjustedY = y;
-
-      if (x + menuWidth > windowWidth) {
-        adjustedX = windowWidth - menuWidth - 10;
-      }
-
-      if (y + menuHeight > windowHeight) {
-        adjustedY = windowHeight - menuHeight - 10;
-      }
-
-      menuRefCurrent.style.left = `${adjustedX}px`;
-      menuRefCurrent.style.top = `${adjustedY}px`;
-    }
-  }, [x, y, visible]);
-  console.log(isFolder);
   if (
     !visible ||
     !items ||
@@ -82,7 +71,11 @@ const ContextMenu = ({ items, isFolder, isFolderLinks, setOpenFolder }) => {
                   url_name: items[linkIndex].url_name,
                   pinned: items[linkIndex].pinned,
                 };
-            isFolder && setOpenFolder(false);
+            if (isFolder) {
+              setOpenFolder(false);
+              setMenu("Name");
+            }
+
             openModal(
               isFolder ? "Edit Folder" : "Edit Link",
               details,
@@ -96,7 +89,7 @@ const ContextMenu = ({ items, isFolder, isFolderLinks, setOpenFolder }) => {
         />
         <ContextMenuItem
           onClick={() => {
-            handleDelete(linkIndex, folderIndex, isFolder, isFolderLinks);
+            handleDelete(linkIndex);
             handleHideContextMenu();
           }}
           icon={<RiDeleteBin6Line />}
@@ -104,7 +97,7 @@ const ContextMenu = ({ items, isFolder, isFolderLinks, setOpenFolder }) => {
         />
         <ContextMenuItem
           onClick={() => {
-            handlePinClick(linkIndex, isFolder);
+            handlePinClick(linkIndex);
             handleHideContextMenu();
           }}
           icon={items[linkIndex].pinned ? <RiUnpinLine /> : <GrPin />}
@@ -115,7 +108,7 @@ const ContextMenu = ({ items, isFolder, isFolderLinks, setOpenFolder }) => {
           onClick={() => {
             isFolder
               ? handleCopyFolder(linkIndex)
-              : handleCopyToClipboard(items[linkIndex].url);
+              : copyToClipboard(items[linkIndex].url);
             handleHideContextMenu();
           }}
           icon={<FaRegCopy />}
@@ -124,31 +117,25 @@ const ContextMenu = ({ items, isFolder, isFolderLinks, setOpenFolder }) => {
         <hr className="w-full border-light border-opacity-10" />
         <ContextMenuItem
           onClick={() => {
-            isFolder ? setShowFolderCheckboxes(true) : setShowCheckboxes(true);
+            if (isFolder) {
+              setOpenFolder(false);
+              setShowFolderCheckboxes(true);
+            } else {
+              setShowCheckboxes(true);
+            }
+
             handleHideContextMenu();
+            if (isFolderLinks) {
+              handleSelectClick();
+            }
           }}
           icon={<MdOutlineCheckBox />}
-          disabled={searchInput && true}
+          disabled={searchInput ? true : false}
           text="Select"
         />
       </ul>
     </div>
   );
 };
-
-const ContextMenuItem = ({ icon, text, onClick, disabled, hidden }) => (
-  <li
-    className={`flex items-center text-[15px] cursor-pointer w-full px-5 py-[6px] rounded transition duration-150 ease-in-out ${
-      disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-[#444]"
-    } ${hidden ? "hidden" : ""}`}
-    onClick={(e) => {
-      e.stopPropagation();
-      disabled ? null : onClick();
-    }}
-  >
-    <span className="mr-2 text-lg">{icon}</span>
-    {text}
-  </li>
-);
 
 export default ContextMenu;

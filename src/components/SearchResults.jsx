@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FaBeerMugEmpty } from "react-icons/fa6";
-import { useAppContext } from "../Context/AppContext";
+import { useAppContext } from "../context/AppContext";
 import DisplayedLinks from "./Home/DisplayedLinks";
 import Display from "./Layout/Display";
-import { FaFilter } from "react-icons/fa";
+
 const SearchResults = () => {
   const { links, searchInput, folders } = useAppContext();
   const [filteredLinks, setFilteredLinks] = useState([]);
@@ -22,26 +22,26 @@ const SearchResults = () => {
     const searchResults = [...newFilteredLinks, ...filteredFolderLinks];
     setFilteredLinks(searchResults);
   }, [searchInput, links]);
-console.log(filteredLinks)
+
   return (
     <div className="p-2">
-      {filteredLinks.length > 0 ? (
+      {/* {filteredLinks.length > 0 ? ( */}
         <>
           <h1 className="text-dimWhite text-xs">
             Found ({filteredLinks.length})
           </h1>
-          <Display display={filteredLinks}>
-            <DisplayedLinks display={filteredLinks} isSearchResults />
+          <Display display={filteredLinks} isSearchResults={true}>
+            <DisplayedLinks display={filteredLinks} isSearchResults={true}/>
           </Display>
         </>
-      ) : (
-        <div className=" items-center gap-4 flex flex-col justify-center py-4 mt-4 shadow-xl">
-          <FaBeerMugEmpty className="w-24 h-24 text-[#d5ebff]" />
-          <h2 className="text-white text-[28px] font-semibold pb-4">
-            Nothing Found😐...
-          </h2>
-        </div>
-      )}
+      {/* // ) : (
+      //   <div className=" items-center gap-4 flex flex-col justify-center py-4 mt-4 shadow-xl">
+      //     <FaBeerMugEmpty className="w-24 h-24 text-[#d5ebff]" />
+      //     <h2 className="text-white text-[28px] font-semibold pb-4">
+      //       Nothing Found😐...
+      //     </h2>
+      //   </div>
+      // )} */}
     </div>
   );
 };

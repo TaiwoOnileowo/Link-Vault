@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import close from "../../../assets/close.svg";
-import menu from "../../../assets/menu.svg";
+import React from "react";
+import { AiOutlineClose } from "react-icons/ai";
+import { HiMenuAlt3 } from "react-icons/hi";
 import ToggleModes from "./ToggleModes";
-import { LuHome } from "react-icons/lu";
-import { LuFolders } from "react-icons/lu";
+import { LuHome, LuFolders, LuCrown } from "react-icons/lu";
 import { CgBrowser } from "react-icons/cg";
 import { IoSettingsOutline } from "react-icons/io5";
-import { LuCrown } from "react-icons/lu";
-import { useAppContext } from "../../../Context/AppContext";
+import { useAppContext } from "../../../context/AppContext";
+
 const Nav = () => {
   const nav = [
     { title: "Home", icon: <LuHome />, route: "home" },
     { title: "Folders", icon: <LuFolders />, route: "folders" },
-    { title: "Sessions", icon: <CgBrowser /> },
-    { title: "Settings", icon: <IoSettingsOutline /> },
-    { title: "Premium", icon: <LuCrown /> },
+    { title: "Sessions", icon: <CgBrowser />, route: "sessions" },
+    { title: "Settings", icon: <IoSettingsOutline />, route: "settings" },
+    { title: "Premium", icon: <LuCrown />, route: "premium" },
   ];
+
   const {
     handleSetRoutes,
     toggle,
@@ -24,40 +24,48 @@ const Nav = () => {
     setMenu,
     active,
     setActive,
+    darkMode,
   } = useAppContext();
+
   const handleClick = (item) => {
     setActive(item.title);
     handleSetRoutes(item.route);
     setToggle(false);
   };
-
+  console.log(toggle);
   return (
-    <div className="flex flex-1 justify-end items-center " ref={navRef}>
-      <img
-        src={toggle ? close : menu}
-        alt="menu"
-        className="w-[18px] h-[18px] object-contain cursor-pointer"
-        onClick={() => setToggle(!toggle)}
-      />
-
+    <div className="flex flex-1 justify-end items-center" ref={navRef}>
+      <span
+        className="text-xl text-dark dark:text-white cursor-pointer"
+        onClick={(e) => {
+          e.stopPropagation();
+          setToggle(!toggle);
+        }}
+      >
+        {toggle ? <AiOutlineClose /> : <HiMenuAlt3 />}
+      </span>
       <div
-        className={`${
-          !toggle ? "hidden" : "flex"
-        } p-6 bg-black-gradient absolute top-20 z-[50] right-0 mx-4 my-2 w-[140px] rounded-xl sidebar`}
+        className={`${!toggle ? "hidden" : "flex"} p-6 ${
+          darkMode ? "dark" : ""
+        } nav-bg absolute top-20 z-[50] right-0 mx-4 my-2 w-[140px] rounded-xl sidebar`}
       >
         <ul className="list-none flex justify-end items-start flex-1 flex-col">
           {nav.map((item, index) => (
             <li
               key={index}
               className={`inline-flex items-center gap-2 font-medium cursor-pointer text-[16px] ${
-                active === item.title ? "text-white" : "text-dimWhite"
-              } ${index === item.length - 1 ? "mb-0" : "mb-4"}`}
+                active === item.title
+                  ? "text-black dark:text-white"
+                  : "text-gray-600 dark:text-dimWhite"
+              } ${index === nav.length - 1 ? "mb-0" : "mb-4"}`}
               onClick={() => {
                 item.title === "Home" && setMenu("Unnamed");
                 handleClick(item);
               }}
             >
-              <span className="text-primary text-lg">{item.icon}</span>
+              <span className="text-[#122ca3] dark:text-primary text-lg">
+                {item.icon}
+              </span>
               {item.title}
             </li>
           ))}

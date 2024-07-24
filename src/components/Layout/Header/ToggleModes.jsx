@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-
+import { useAppContext } from "../../../context/AppContext";
 const ToggleModes = () => {
-  const [darkMode, setDarkMode] = useState(
-    JSON.parse(localStorage.getItem("darkMode")) || false
-  );
+  const {setDarkMode, darkMode} = useAppContext()
   const toggleDarkMode = (e) => {
     if (e.target.checked) {
       setDarkMode(true);

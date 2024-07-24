@@ -1,102 +1,43 @@
-import React, {
-  useState,
-  useEffect,
-  createContext,
-  useContext,
-  useRef,
-} from "react";
-// import { useFolderContext } from "./FolderContext"y;
-const Context = createContext();
+import { useState, useEffect, createContext, useContext } from "react";
+import { initialLinks, initialFolders, initialRoutes } from "../constants/initialStates";
+import useContextMenu from "../hooks/useContextMenu";
+import { useModalContext } from "./ModalContext";
+import { useThemeContext } from "./ThemeContext";
+import useNav from "../hooks/useNav";
 
-export const AppContext = ({ children }) => {
-  ////////////////////////////         STATE ////////////////////////////
-  const [links, setLinks] = useState(() => {
-    return JSON.parse(localStorage.getItem("Links")) || [];
-  });
-  const [folders, setFolders] = useState(
-    JSON.parse(localStorage.getItem("Folders")) || []
-  );
-  const [darkMode, setDarkMode] = useState(
-    JSON.parse(localStorage.getItem("mode"))
-  );
+const AppContext = createContext();
+
+export const AppProvider = ({ children }) => {
+  const [links, setLinks] = useState(initialLinks);
+  const [folders, setFolders] = useState(initialFolders);
   const [active, setActive] = useState("Home");
   const [searchInput, setSearchInput] = useState("");
   const [menu, setMenu] = useState("Unnamed");
-  const [isOpen, setIsOpen] = useState(false);
-  const [modalText, setModalText] = useState("");
-  const [editIndex, setEditIndex] = useState(null);
-  const [inputs, setInputs] = useState({
-    url: "",
-    url_name: "",
-    tags: "",
-  
-  });
-  const [folderInputs, setFolderInputs] = useState({
-    folder_name: "",
-    links: [],
-     
-  });
-  const [routes, setRoutes] = useState({
-    home: true,
-    search: false,
-    folders: false,
-  });
-  const [toggle, setToggle] = useState(false);
-  const modalRef = useRef();
-  const contextMenuRef = useRef();
-  const navRef = useRef();
-  const [contextMenu, setContextMenu] = useState({
-    visible: false,
-    x: 0,
-    y: 0,
-    linkIndex: null,
-  });
+  const [routes, setRoutes] = useState(initialRoutes);
+  const { toggle, setToggle, navRef } = useNav();
+  const {
+    contextMenu,
+    setContextMenu,
+    contextMenuRef,
+    handleContextMenu,
+    handleHideContextMenu,
+  } = useContextMenu();
 
-  ///////////////////// FUNCTIONS ////////////////////////////////////////////
+  const {
+    isOpen,
+    setIsOpen,
+    modalText,
+    editIndex,
+    inputs,
+    setInputs,
+    folderInputs,
+    setFolderInputs,
+    openModal,
+    handleClose,
+    modalRef,
+  } = useModalContext();
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        contextMenuRef.current &&
-        !contextMenuRef.current.contains(event.target)
-      ) {
-        setContextMenu({ visible: false, x: 0, y: 0, linkIndex: null });
-      }
-      if (navRef.current && !navRef.current.contains(event.target)) {
-        setToggle(false);
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
-
-  const handleContextMenu = (e, index, isFolderContext) => {
-    e.preventDefault();
-    setContextMenu({
-      visible: true,
-      x: e.pageX,
-      y: e.pageY,
-      linkIndex: index,
-    });
-  };
-
-  const handleHideContextMenu = () => {
-    setContextMenu({ ...contextMenu, visible: false });
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-    setInputs({
-      url: "",
-      url_name: "",
-      tags: "",
-
-      folder_name: "",
-    });
-    setModalText("");
-  };
+  const { darkMode, setDarkMode } = useThemeContext();
 
   const handleSetRoutes = (value) => {
     const updatedRoutes = Object.keys(routes).reduce((acc, key) => {
@@ -120,46 +61,12 @@ export const AppContext = ({ children }) => {
     }
   }, [searchInput]);
 
-  const openModal = (
-    modalText,
-    linkDetails,
-    linkIndex,
-    isFolder,
-    
-  ) => {
-    modalRef.current.open();
-    setModalText(modalText);
-    setInputs({
-      url: "",
-      url_name: "",
-      tags: "",
-
-      folder_name: "",
-    });
-    setFolderInputs({
-      folder_name: "",
-      links: [],
-    });
-
-    if (linkDetails) {
-      if (isFolder) {
-        setFolderInputs(linkDetails);
-        setEditIndex(linkIndex);
-        setMenu("Name");
-      } else {
-        setInputs(linkDetails);
-        setEditIndex(linkIndex);
-        console.log(linkIndex);
-      }
-    }
-  };
-
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
   };
 
   return (
-    <Context.Provider
+    <AppContext.Provider
       value={{
         contextMenu,
         setContextMenu,
@@ -198,8 +105,8 @@ export const AppContext = ({ children }) => {
       }}
     >
       {children}
-    </Context.Provider>
+    </AppContext.Provider>
   );
 };
 
-export const useAppContext = () => useContext(Context);
+export const useAppContext = () => useContext(AppContext);

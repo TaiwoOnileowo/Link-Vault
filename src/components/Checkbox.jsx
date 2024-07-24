@@ -1,9 +1,10 @@
 import React from "react";
-import { useLinkContext } from "../../Context/LinkContext";
+import { useLinkContext } from "../context/LinkContext";
 
 const Checkbox = ({ link, originalIndex }) => {
-  const { handleSelect, isFolder } = useLinkContext();
-
+  const { handleSelect } = useLinkContext();
+  console.log(link)
+console.log(!!link.selected)
   return (
     <input
       type="checkbox"
@@ -11,7 +12,7 @@ const Checkbox = ({ link, originalIndex }) => {
       id="checkbox"
       className="mt-2"
       checked={!!link.selected}
-      onChange={() => handleSelect(originalIndex, isFolder)}
+      onChange={() => handleSelect(originalIndex)}
     />
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import icon from "/icon.png";
-import { useAppContext } from "../../../Context/AppContext";
+import { useAppContext } from "../../../context/AppContext";
 import { IoSearch } from "react-icons/io5";
 
 import Nav from "./Nav";
@@ -22,7 +22,7 @@ const Header = () => {
           <IoSearch className="cursor-pointer" title="Search Links" />
           <input
             type="search"
-            className={`p-4 py-2 outline-none text-black dark:text-white text-sm bg-[#eaf6ff] rounded-md hover:bg-[#d5ebff] dark:bg-darkAlt dark:hover:bg-[#2d2f36] w-full h-[30px]`}
+            className={`p-4 py-2 outline-none text-black dark:text-white text-sm bg-[#eaf6ff] rounded-md hover:bg-[#d5ebff] dark:bg-darkAlt dark:hover:bg-[#212227] w-full h-[30px]`}
             onChange={handleSearchInputChange}
             placeholder="Search Links..."
             value={searchInput}

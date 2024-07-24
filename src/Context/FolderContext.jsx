@@ -1,35 +1,31 @@
-import React, {
-  useState,
-  useEffect,
-  createContext,
-  useContext,
-  useRef,
-} from "react";
+import { useState, createContext, useContext } from "react";
 
-const Context = createContext();
+// Create the context
+const FolderContext = createContext();
 
-export const FolderContext = ({ children }) => {
-  ////////////////////////////         STATE ////////////////////////////
+// Context Provider component
+export const FolderProvider = ({ children }) => {
+  // State variables
   const [showFolderCheckboxes, setShowFolderCheckboxes] = useState(false);
-  // const [showFolderLinkCheckboxes, setShowFolderLinkCheckboxes] =
-  //   useState(false);
   const [index, setIndex] = useState(null);
-  /////////////////////// FUNCTIONS //////////////////////////////
+  const [openFolder, setOpenFolder] = useState(false);
 
+  // Return the context provider
   return (
-    <Context.Provider
+    <FolderContext.Provider
       value={{
-        setShowFolderCheckboxes,
         showFolderCheckboxes,
+        setShowFolderCheckboxes,
         index,
         setIndex,
-        // showFolderLinkCheckboxes,
-        // setShowFolderLinkCheckboxes,
+        openFolder,
+        setOpenFolder,
       }}
     >
       {children}
-    </Context.Provider>
+    </FolderContext.Provider>
   );
 };
 
-export const useFolderContext = () => useContext(Context);
+// Custom hook for using the context
+export const useFolderContext = () => useContext(FolderContext);

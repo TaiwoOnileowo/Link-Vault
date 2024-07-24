@@ -1,8 +1,8 @@
 import React from "react";
-import Modal from "./Modal";
+import Modal from ".";
 import ModalLink from "./ModalLink";
 import ModalDeleteAll from "./ModalDeleteAll";
-import { useAppContext } from "../../../Context/AppContext";
+import { useAppContext } from "../../../context/AppContext.jsx";
 import ModalFolder from "./ModalFolder";
 
 const ModalContent = () => {
@@ -12,11 +12,11 @@ const ModalContent = () => {
     <Modal>
       <>
         {modalText.includes("Delete") ? (
-          <ModalDeleteAll  />
+          <ModalDeleteAll />
         ) : modalText.includes("Link") ? (
-          <ModalLink  />
+          <ModalLink />
         ) : (
-          <ModalFolder/>
+          <ModalFolder />
         )}
       </>
     </Modal>

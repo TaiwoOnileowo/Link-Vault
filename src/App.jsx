@@ -1,12 +1,11 @@
 import React from "react";
-import { useAppContext } from "./Context/AppContext";
-import Home from "./components/Home/Home";
+import { useAppContext } from "./context/AppContext";
+import Home from "./components/Home";
 import SearchResults from "./components/SearchResults";
-
-import Folder from "./components/Folder/Folder";
+import Folder from "./components/Folder";
 const App = () => {
   const { routes } = useAppContext();
- 
+
   return (
     <>
       {routes.search && <SearchResults />}

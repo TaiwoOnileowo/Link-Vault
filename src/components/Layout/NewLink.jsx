@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
-import { useAppContext } from "../../Context/AppContext";
+import { useAppContext } from "../../context/AppContext.jsx";
 const NewLink = () => {
   const [bounce, setBounce] = useState(false);
   const { openModal } = useAppContext();

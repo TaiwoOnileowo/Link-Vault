@@ -8,7 +8,7 @@ export default {
         primary: "#2a4ff6",
         hoverPrimary: "#2aa4eb",
         dark: "#12073d",
-        darkAlt: "#1f1f2e", 
+        darkAlt: "#181d2e", 
         light: "#ffffff",
         lightBg: "#c0d9ff", 
         lightHoverBg: "#d5ebff", 

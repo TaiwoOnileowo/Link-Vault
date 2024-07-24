@@ -1,23 +1,15 @@
 import React from "react";
-import { useAppContext } from "../../Context/AppContext";
-
+import { useNewFolder } from "../../hooks";
 const NewFolder = () => {
-  const { openModal, setMenu,  setFolderInputs } = useAppContext();
-  
+  const { createFolder } = useNewFolder();
+
   return (
     <div className="w-full">
       <button
         className="rounded-md text-white bg-primary px-4 py-2 w-full"
-        onClick={() => {
-          setMenu("Name");
-          openModal("Add New Folder", null);
-          setFolderInputs({
-            folder_name: "",
-            links: [],
-          });
-        }}
+        onClick={createFolder}
       >
-        Add New Folder
+        Add New Folder +
       </button>
     </div>
   );

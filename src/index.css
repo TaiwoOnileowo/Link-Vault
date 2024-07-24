@@ -192,7 +192,10 @@ li {
   }
 }
 
-.bg-black-gradient {
+.nav-bg {
+  background: #c0d9ff;
+}
+.nav-bg.dark {
   background: linear-gradient(
     144.39deg,
     #ffffff -278.56%,
@@ -200,7 +203,17 @@ li {
     #11101d 91.61%
   );
 }
-
+.folder-bg {
+  background: #2a4ff6;
+}
+.folder-bg.dark {
+  background: linear-gradient(
+    144.39deg,
+    #ffffff -278.56%,
+    #6d6d6d -78.47%,
+    #11101d 91.61%
+  );
+}
 .sidebar {
   -webkit-animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
@@ -236,8 +249,9 @@ li {
   --trans-timing: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-html{
-  transition: background-color var(--trans-dur), color var(--trans-dur), background var(--trans-dur);
+html {
+  transition: background-color var(--trans-dur), color var(--trans-dur),
+    background var(--trans-dur);
 }
 .switch,
 .switch__input {
