@@ -22,10 +22,11 @@ import {
   handleBulkDeleteItems,
   handleDeleteItems,
 } from "../utils/deleteUtils.js";
+import { FaSadCry } from "react-icons/fa";
 const LinkContext = createContext();
 
 export const LinkProvider = ({ children }) => {
-  const { links, setLinks, openModal, folders, setFolders, modalText } =
+  const { menu, links, setLinks, openModal, folders, setFolders, modalText } =
     useAppContext();
   const { setShowFolderCheckboxes, index: folderIndex } = useFolderContext();
   const { sortedNamedLinks, sortedUnnamedLinks } = useSortedLinks();
@@ -109,13 +110,14 @@ export const LinkProvider = ({ children }) => {
     ]
   );
   const handleBulkDelete = useCallback(
-    (menu) => {
+    (isModal) => {
+      console.log(isModal);
       const filterCriteria = (link) => {
         return menu === "Unnamed"
           ? !link.url_name && link.selected
           : link.url_name && link.selected;
       };
-
+      console.log(isModal);
       const whatToRetainFilterCriteria = (link) => {
         return menu === "Unnamed" ? link.url_name : !link.url_name;
       };
@@ -127,7 +129,8 @@ export const LinkProvider = ({ children }) => {
         "Links",
         filterCriteria,
         openModal,
-        whatToRetainFilterCriteria
+        whatToRetainFilterCriteria,
+        isModal && isModal
       );
 
       setShowCheckboxes(false);
@@ -135,7 +138,7 @@ export const LinkProvider = ({ children }) => {
     [links, setLinks, setToLocalStorage, openModal, setShowCheckboxes]
   );
 
-  const handleDeleteLinkInFolder = () => {
+  const handleDeleteLinkInFolder = (isModal) => {
     const filterCriteria = (link) => link.selected;
     handleBulkDeleteItems(
       folders[folderIndex].links,
@@ -150,49 +153,46 @@ export const LinkProvider = ({ children }) => {
       "Folders",
       filterCriteria,
       openModal,
-      null
+      null,
+      true
     );
     setShowCheckboxes(false);
   };
-  const handleBulkDeleteFolder = useCallback(() => {
-    const filterCriteria = (folder) => folder.selected;
 
-    handleBulkDeleteItems(
-      folders,
-      null,
-      setFolders,
-      setToLocalStorage,
-      "Folders",
-      filterCriteria,
-      openModal,
-      null
-    );
+  const handleBulkDeleteFolder = useCallback(
+    (isModal) => {
+      const filterCriteria = (folder) => folder.selected;
 
-    setShowFolderCheckboxes(false);
-    setIsFolder(false);
-    setIsFolderLinks(false);
-  }, [
-    folders,
-    setFolders,
-    setToLocalStorage,
-    openModal,
-    setShowFolderCheckboxes,
-  ]);
+      handleBulkDeleteItems(
+        folders,
+        null,
+        setFolders,
+        setToLocalStorage,
+        "Folders",
+        filterCriteria,
+        openModal,
+        null,
+        isModal && isModal
+      );
+
+      setShowFolderCheckboxes(false);
+      setIsFolderLinks(false);
+    },
+    [folders, setFolders, setToLocalStorage, openModal, setShowFolderCheckboxes]
+  );
   ////////////// DELETE LOGIC END /////////////
 
   ////////////// PIN LOGIC START /////////////
   const handlePinClick = useCallback(
     (index) => {
-      console.log(isFolder)
+      console.log(isFolder);
       if (isFolder) {
         setFolders((prevFolders) => {
           const updatedFolders = togglePin(prevFolders, index, "folder");
           setToLocalStorage("Folders", updatedFolders);
           return updatedFolders;
         });
-      
       } else {
-        
         setLinks((prevLinks) => {
           const updatedLinks = togglePin(prevLinks, index, "link");
           setToLocalStorage("Links", updatedLinks);
@@ -200,7 +200,7 @@ export const LinkProvider = ({ children }) => {
         });
       }
     },
-    [setLinks, setFolders,isFolder, setToLocalStorage]
+    [setLinks, setFolders, isFolder, setToLocalStorage]
   );
   ////////////// PIN LOGIC END /////////////
 
@@ -231,11 +231,12 @@ export const LinkProvider = ({ children }) => {
       });
     }
   };
-  console.log(folders);
+
   const handleSelectAllLinksInFolder = () => {
     setFolders((prevFolders) => {
       const updatedFolders = toggleBulkSelection(
         prevFolders,
+        false,
         null,
         false,
         true,
@@ -248,30 +249,61 @@ export const LinkProvider = ({ children }) => {
 
   const handleSelectAllFolders = () => {
     setFolders((prevFolders) =>
-      toggleBulkSelection(prevFolders, "Folders", true)
+      toggleBulkSelection(prevFolders, false, null, true, false, null)
     );
   };
 
-  const handleSelectAll = (menu) => {
-    if (menu === "Unnamed" || menu === "Named") {
-      setLinks((prevLinks) => toggleBulkSelection(prevLinks, menu));
-    } else {
-      setFolders((prevFolders) => toggleBulkSelection(prevFolders, null, true));
-    }
+  const handleSelectAllLinks = (menu) => {
+    // if (menu === "Unnamed" || menu === "Named") {
+    setLinks((prevLinks) =>
+      toggleBulkSelection(prevLinks, false, menu, false, false, null)
+    );
+    // }
+    // } else {
+    //   console.log("ghey")
+    //   setFolders((prevFolders) =>
+    //     toggleBulkSelection(prevFolders, false, null, true, false, null)
+    //   );
+    // }
   };
-  const handleSelectClick = () => {
+  const handleSelectClick = (isSelectClick) => {
     if (isFolderLinks) {
       // Handle selection for links within a specific folder
       setFolders((prevFolders) =>
-        toggleBulkSelection(prevFolders, null, true, folderIndex)
+        toggleBulkSelection(
+          prevFolders,
+          isSelectClick ? isSelectClick : false,
+          null,
+          false,
+          true,
+          folderIndex
+        )
       );
       setIsFolder(false);
     } else if (isFolder) {
       // Handle selection for folders
-      setFolders((prevFolders) => toggleBulkSelection(prevFolders, "Folders"));
+      setFolders((prevFolders) =>
+        toggleBulkSelection(
+          prevFolders,
+          isSelectClick ? isSelectClick : false,
+          null,
+          true,
+          false,
+          null
+        )
+      );
     } else {
       // Handle selection for global links
-      setLinks((prevLinks) => toggleBulkSelection(prevLinks, "Links"));
+      setLinks((prevLinks) =>
+        toggleBulkSelection(
+          prevLinks,
+          isSelectClick ? isSelectClick : false,
+          null,
+          false,
+          false,
+          null
+        )
+      );
     }
   };
   ////////// SELECT LOGIC END ///////////
@@ -296,10 +328,9 @@ export const LinkProvider = ({ children }) => {
         setIsFolderLinks,
         handleCopyClick,
         handleBulkDeleteFolder,
-        handleSelectAll,
+        handleSelectAllLinks,
         sortedNamedLinks,
         sortedUnnamedLinks,
-
         handleSelectAllFolders,
         handleDeleteLinkInFolder,
         handleSelectAllLinksInFolder,

@@ -11,8 +11,8 @@ const Nav = () => {
   const nav = [
     { title: "Home", icon: <LuHome />, route: "home" },
     { title: "Folders", icon: <LuFolders />, route: "folders" },
-    { title: "Sessions", icon: <CgBrowser />, route: "sessions" },
-    { title: "Settings", icon: <IoSettingsOutline />, route: "settings" },
+    // { title: "Sessions", icon: <CgBrowser />, route: "sessions" },
+    // { title: "Settings", icon: <IoSettingsOutline />, route: "settings" },
     { title: "Premium", icon: <LuCrown />, route: "premium" },
   ];
 
@@ -57,7 +57,7 @@ const Nav = () => {
                 active === item.title
                   ? "text-black dark:text-white"
                   : "text-gray-600 dark:text-dimWhite"
-              } ${index === nav.length - 1 ? "mb-0" : "mb-4"}`}
+              } mb-4`}
               onClick={() => {
                 item.title === "Home" && setMenu("Unnamed");
                 handleClick(item);

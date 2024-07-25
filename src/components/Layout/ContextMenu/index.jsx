@@ -4,9 +4,11 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { GrPin } from "react-icons/gr";
 import { RiUnpinLine } from "react-icons/ri";
+import { MdAddLink } from "react-icons/md";
 import { useLinkContext } from "../../../context/LinkContext.jsx";
 import { useAppContext } from "../../../context/AppContext.jsx";
 import { useFolderContext } from "../../../context/FolderContext.jsx";
+import { useProceedToAddLinks } from "../../../hooks";
 import ContextMenuItem from "./ContextMenuItem.jsx";
 import useContextMenuPosition from "../../../hooks/useContextMenuPosition.js";
 import { copyToClipboard } from "../../../utils/clipboardUtils.js";
@@ -21,10 +23,11 @@ const ContextMenu = ({ items }) => {
     isFolderLinks,
     handleCopyFolder,
   } = useLinkContext();
-
+  const { handleClick } = useProceedToAddLinks();
   const {
     setShowFolderCheckboxes,
     index: folderIndex,
+    setIndex: setFolderIndex,
     setOpenFolder,
   } = useFolderContext();
   const {
@@ -74,10 +77,10 @@ const ContextMenu = ({ items }) => {
             if (isFolder) {
               setOpenFolder(false);
               setMenu("Name");
+              setFolderIndex(linkIndex);
             }
-
             openModal(
-              isFolder ? "Edit Folder" : "Edit Link",
+              isFolder ? "Rename Folder" : "Edit Link",
               details,
               linkIndex,
               isFolder
@@ -85,8 +88,23 @@ const ContextMenu = ({ items }) => {
             handleHideContextMenu();
           }}
           icon={<FaRegEdit />}
-          text="Edit"
+          text={isFolder ? "Rename" : " Edit"}
         />
+        {isFolder && (
+          <ContextMenuItem
+            onClick={() => {
+              const details = {
+                folder_name: items[linkIndex].folder_name,
+                links: items[linkIndex].links,
+              };
+              handleClick(true, details);
+              handleHideContextMenu();
+            }}
+            icon={<MdAddLink />}
+            text="Add Links"
+          />
+        )}
+
         <ContextMenuItem
           onClick={() => {
             handleDelete(linkIndex);
@@ -125,9 +143,8 @@ const ContextMenu = ({ items }) => {
             }
 
             handleHideContextMenu();
-            if (isFolderLinks) {
-              handleSelectClick();
-            }
+
+            handleSelectClick(true);
           }}
           icon={<MdOutlineCheckBox />}
           disabled={searchInput ? true : false}

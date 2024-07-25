@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 
-export const handleDeleteItems = (
+const handleDeleteItems = (
   items,
   setItems,
   itemType,
@@ -8,21 +8,18 @@ export const handleDeleteItems = (
   setToLocalStorage,
   localStorageKey
 ) => {
-  // Remove item(s) based on index or all items if no index is provided
   if (index !== null) {
-    // Delete a single item
     const updatedItems = [...items];
     updatedItems.splice(index, 1);
     setToLocalStorage(localStorageKey, updatedItems);
     setItems(updatedItems);
   } else {
-    // Delete all items
     setToLocalStorage(localStorageKey, []);
     setItems([]);
   }
 };
 
-export const handleBulkDeleteItems = (
+const handleBulkDeleteItems = (
   items,
   allItems = null,
   setItems,
@@ -30,13 +27,17 @@ export const handleBulkDeleteItems = (
   localStorageKey,
   filterCriteria,
   showModal,
-  whatToRetainFilterCriteria = null
+  whatToRetainFilterCriteria = null,
+  shouldShowModal = false
 ) => {
+  console.log("Items:", items);
+  console.log(filterCriteria);
   const itemsToDelete = items.filter(filterCriteria);
-  console.log(itemsToDelete);
-  console.log(items);
+  console.log("Items to delete:", itemsToDelete);
+  console.log("Should show modal:", shouldShowModal);
+
   if (itemsToDelete.length > 0) {
-    if (itemsToDelete.length === items.length) {
+    if (itemsToDelete.length === items.length && !shouldShowModal) {
       showModal(`Delete All Items`, null, null);
     } else {
       const itemsToKeep = items.filter((item) => !filterCriteria(item));
@@ -44,8 +45,7 @@ export const handleBulkDeleteItems = (
       if (allItems) {
         updatedItems = [
           ...itemsToKeep,
-
-          allItems.filter((item) => whatToRetainFilterCriteria(item)),
+          ...allItems.filter((item) => whatToRetainFilterCriteria(item)),
         ];
       } else {
         updatedItems = itemsToKeep;
@@ -56,3 +56,5 @@ export const handleBulkDeleteItems = (
     }
   }
 };
+
+export { handleDeleteItems, handleBulkDeleteItems };

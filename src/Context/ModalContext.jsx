@@ -9,6 +9,7 @@ export const ModalProvider = ({ children }) => {
   const [editIndex, setEditIndex] = useState(null);
   const [inputs, setInputs] = useState(initialInputs);
   const [folderInputs, setFolderInputs] = useState(initialFolderInputs);
+  const [folderDetails, setFolderDetails] = useState(null);
   const modalRef = useRef();
 
   const openModal = (modalText, linkDetails, linkIndex, isFolder) => {
@@ -21,6 +22,7 @@ export const ModalProvider = ({ children }) => {
       if (isFolder) {
         setFolderInputs(linkDetails);
         setEditIndex(linkIndex);
+        setFolderDetails(linkDetails);
       } else {
         setInputs(linkDetails);
         setEditIndex(linkIndex);
@@ -51,6 +53,7 @@ export const ModalProvider = ({ children }) => {
         openModal,
         handleClose,
         modalRef,
+        folderDetails,
       }}
     >
       {children}

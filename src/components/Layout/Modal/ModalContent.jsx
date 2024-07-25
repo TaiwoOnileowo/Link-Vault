@@ -13,10 +13,12 @@ const ModalContent = () => {
       <>
         {modalText.includes("Delete") ? (
           <ModalDeleteAll />
-        ) : modalText.includes("Link") ? (
-          <ModalLink />
-        ) : (
+        ) : modalText.includes("Add Links To Folder") ||
+          modalText.includes("Add New Folder") ||
+          modalText.includes("Rename Folder") ? (
           <ModalFolder />
+        ) : (
+          <ModalLink />
         )}
       </>
     </Modal>

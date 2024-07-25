@@ -46,7 +46,7 @@ const FolderListItem = ({ folder, index }) => {
           <span
             className={`flex items-center ${
               darkMode ? "dark" : null
-            } folder-bg rounded-md cursor-pointer p-1 px-2 gap-1 min-w-[120px]`}
+            } folder-bg rounded-md cursor-pointer p-1 px-2 gap-2 min-w-[120px]`}
           >
             <span className="">
               <img src={adobe} alt="" className="w-4 h-4 object-contain" />
@@ -54,7 +54,7 @@ const FolderListItem = ({ folder, index }) => {
             <span
               className={`${
                 openFolder && index === folderIndex
-                  ? "opacity-80"
+                  ? "text-hoverPrimary"
                   : "text-white"
               }`}
             >

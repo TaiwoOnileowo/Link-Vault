@@ -49,30 +49,36 @@ export const toggleSelection = (
  */
 export const toggleBulkSelection = (
   items,
+  isSelectClick = false,
   menu = null,
   isFolder = false,
   isFolderLinks = false,
   folderIndex = null
 ) => {
   const updatedItems = [...items];
-
+ console.log(folderIndex, isFolderLinks);
   if (isFolderLinks && folderIndex !== null) {
     // Toggle selection for all links inside a specific folder
     const folder = { ...updatedItems[folderIndex] };
-    const allSelected = folder.links.every((link) => link.selected);
+    const allSelected = isSelectClick ? true :folder.links.every((link) => link.selected);
     folder.links = folder.links.map((link) => ({
       ...link,
       selected: !allSelected,
     }));
+   
     updatedItems[folderIndex] = folder;
   } else {
     // Toggle selection for folders or global links
-    const allSelected = items.every((item) => item.selected);
+    const allSelected =isSelectClick ? true : items.every((item) => item.selected);
+    console.log("Inside toggleBulkSelection:", isSelectClick, allSelected);
     updatedItems.forEach((item, index) => {
       if (isFolder) {
         updatedItems[index] = { ...item, selected: !allSelected };
       } else if (menu) {
-        if ((menu === "Unnamed" && !item.url_name) || (menu === "Named" && item.url_name)) {
+        if (
+          (menu === "Unnamed" && !item.url_name) ||
+          (menu === "Named" && item.url_name)
+        ) {
           updatedItems[index] = { ...item, selected: !allSelected };
         }
       } else {

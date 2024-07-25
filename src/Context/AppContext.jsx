@@ -35,6 +35,7 @@ export const AppProvider = ({ children }) => {
     openModal,
     handleClose,
     modalRef,
+    folderDetails,
   } = useModalContext();
 
   const { darkMode, setDarkMode } = useThemeContext();
@@ -68,6 +69,7 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
+        folderDetails,
         contextMenu,
         setContextMenu,
         contextMenuRef,

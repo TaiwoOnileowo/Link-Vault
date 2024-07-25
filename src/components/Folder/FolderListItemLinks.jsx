@@ -4,10 +4,11 @@ import { useLinkContext } from "../../context/LinkContext";
 import { useAppContext } from "../../context/AppContext";
 import { useFolderContext } from "../../context/FolderContext";
 import SelectOptions from "../SelectOptions";
+import ProceedToAddLinks from "./AddNewFolder/LinksAddedToFolder/ProceedToAddLinks";
 const FolderListItemLinks = ({ folder }) => {
   const { showCheckboxes } = useLinkContext();
   const { openFolder, index: folderIndex } = useFolderContext();
-  const { modalText, folders, openModal } = useAppContext();
+  const { modalText, folders } = useAppContext();
 
   return (
     <>
@@ -26,17 +27,7 @@ const FolderListItemLinks = ({ folder }) => {
           <DisplayedLinks display={folder.links} />
         </div>
       ) : (
-        <p className="text-xs my-4">
-          Empty folder 🫠{" "}
-          <span
-            className="underline text-primary cursor-pointer"
-            // onClick={() =>
-            //   openModal("Edit Folder", details, linkIndex, isFolder)
-            // }
-          >
-            add links
-          </span>
-        </p>
+        <ProceedToAddLinks showModal={true} />
       )}
     </>
   );

@@ -6,8 +6,10 @@ const useModal = () => {
     setLinks,
     folderInputs,
     setFolderInputs,
-    links,
+    editIndex,
     modalText,
+    folders,
+    folderDetails,
   } = useAppContext();
 
   const handleModalClose = () => {
@@ -28,6 +30,10 @@ const useModal = () => {
 
       setLinks(updatedLinks);
       localStorage.setItem("Links", JSON.stringify(updatedLinks));
+    }
+    if (modalText.includes("Rename Folder")) {
+      const updatedFolders = [...folders];
+      updatedFolders[editIndex].folder_name = folderDetails.folder_name;
     }
     setFolderInputs((prevFolderInputs) => ({
       ...prevFolderInputs,

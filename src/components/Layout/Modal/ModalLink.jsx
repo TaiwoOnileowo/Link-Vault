@@ -6,7 +6,7 @@ import { useAppContext } from "../../../context/AppContext";
 
 const ModalLink = () => {
   const { handleSubmit, handleChange, handleCancel, error } = useModalLink();
-  const { inputs, modalText } = useAppContext();
+  const { inputs, modalText, setMenu } = useAppContext();
 
   return (
     <form
@@ -39,14 +39,37 @@ const ModalLink = () => {
         value={inputs.tags}
         onChange={handleChange}
       />
-      <div className="flex justify-start gap-2">
-        <button className={styles.button1} type="submit">
-          {modalText.includes("Folder") ? "Add" : "Save"}
-        </button>
-        <button className={styles.button2} type="button" onClick={handleCancel}>
-          Cancel
-        </button>
-      </div>
+      {modalText.includes("Add New Folder") || modalText.includes("Add Links To Folder") ? (
+        <div className="flex justify-end gap-2">
+          <button
+            className={styles.button2}
+            type="submit"
+            // onClick={() => setMenu("View Links")}
+          >
+            Add
+          </button>
+          <button
+            className={styles.button1}
+            type="button"
+            onClick={() => setMenu("View Links")}
+          >
+            Next: View Links
+          </button>
+        </div>
+      ) : (
+        <div className="flex justify-start gap-2">
+          <button className={styles.button1} type="submit">
+            Save
+          </button>
+          <button
+            className={styles.button2}
+            type="button"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
     </form>
   );
 };

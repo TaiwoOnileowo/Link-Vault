@@ -1,6 +1,9 @@
-import { useLinkContext } from "../context/LinkContext";
-import { useAppContext } from "../context/AppContext";
-import { useFolderContext } from "../context/FolderContext";
+import { useCallback } from 'react';
+import { useLinkContext } from '../context/LinkContext';
+import { useAppContext } from '../context/AppContext';
+import { useFolderContext } from '../context/FolderContext';
+import toast from "react-hot-toast";
+
 const useSelectOptions = () => {
   const { menu, setFolders, setLinks } = useAppContext();
   const {
@@ -16,19 +19,26 @@ const useSelectOptions = () => {
     setIsFolder,
     setIsFolderLinks,
     setShowCheckboxes,
-    handleSelectAll,
+    handleSelectAllLinks,
   } = useLinkContext();
 
   const { setShowFolderCheckboxes } = useFolderContext();
-  const handleDelete = () => {
+
+  const handleDelete = (isModal) => {
+    console.log(isFolder, isFolderLinks); // Debug log
+    console.log('Delete triggered with isModal:', isModal); // Debug log
     if (isFolder) {
-      handleBulkDeleteFolder();
+      console.log('delete all folders');
+      handleBulkDeleteFolder(isModal);
     } else if (isFolderLinks) {
-      handleDeleteLinkInFolder();
+      console.log('delete all links in folder');
+      handleDeleteLinkInFolder(isModal);
     } else {
-      handleBulkDelete(menu);
+      console.log('delete all links');
+      handleBulkDelete(isModal);
     }
   };
+
   const handleCopy = () => {
     if (isFolder) {
       handleBulkCopyFolder();
@@ -36,15 +46,18 @@ const useSelectOptions = () => {
       handleBulkCopy();
     }
   };
+
   const handleClickSelectAll = () => {
+    console.log(isFolder, isFolderLinks); // Debug log
     if (isFolder) {
       handleSelectAllFolders();
     } else if (isFolderLinks) {
       handleSelectAllLinksInFolder();
     } else {
-      handleSelectAll(menu);
+      handleSelectAllLinks(menu);
     }
   };
+
   const handleCancelSelect = () => {
     if (isFolder) {
       setShowFolderCheckboxes(false);
@@ -87,4 +100,5 @@ const useSelectOptions = () => {
 
   return { handleDelete, handleCopy, handleClickSelectAll, handleCancelSelect };
 };
+
 export default useSelectOptions;

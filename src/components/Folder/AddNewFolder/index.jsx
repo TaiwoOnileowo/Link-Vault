@@ -1,5 +1,5 @@
 import React from "react";
-import Name from "./Name";
+import NameFolder from "./NameFolder";
 import { useAppContext } from "../../../context/AppContext";
 import AddLinksToFolder from "./AddLinksToFolder";
 import LinksAddedToFolder from "./LinksAddedToFolder";
@@ -8,9 +8,9 @@ const AddNewFolder = () => {
   
   return (
     <div className="mt-4">
-      {menu === "Name" && <Name />}
+      {menu === "Name" && <NameFolder />}
       {menu === "Add Links" && <AddLinksToFolder />}
-      {menu === "Links Added" && <LinksAddedToFolder />}
+      {menu === "View Links" && <LinksAddedToFolder />}
     </div>
   );
 };

@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { styles } from "../../../styles";
 import { useAppContext } from "../../../context/AppContext";
-
-const Name = () => {
-  const { setMenu, folderInputs, setFolderInputs } = useAppContext();
-
-  const handleChange = (e) => {
-    setFolderInputs({ ...folderInputs, [e.target.name]: e.target.value });
-  };
+import { useNameFolder } from "../../../hooks";
+const NameFolder = () => {
+  const { folderInputs, modalText } = useAppContext();
+  const { handleChange, handleClick } = useNameFolder();
 
   return (
     <div className="w-full">
@@ -21,14 +18,16 @@ const Name = () => {
       />
       <div className="w-full flex justify-end mt-2">
         <button
-          className={folderInputs.folder_name ? styles.button1 : styles.button1Disabled}
-          onClick={() => folderInputs.folder_name && setMenu("Add Links")}
+          className={
+            folderInputs.folder_name ? styles.button1 : styles.button1Disabled
+          }
+          onClick={handleClick}
         >
-          Next: Add Links +
+          {modalText.includes("Rename Folder") ? "Done" : "Next: Add Links +"}
         </button>
       </div>
     </div>
   );
 };
 
-export default Name;
+export default NameFolder;

@@ -16,12 +16,12 @@ const useLinksAddedToFolder = () => {
   const { setShowCheckboxes } = useLinkContext();
   const handleClick = () => {
     let updatedFolders = [...folders];
-    if (modalText.includes("Edit Folder")) {
+    if (modalText.includes("Add Links To Folder")) {
       updatedFolders[editIndex].folder_name = folderInputs.folder_name;
       updatedFolders[editIndex].links = [...folderInputs.links];
       setFolders(updatedFolders);
       localStorage.setItem("Folders", JSON.stringify(updatedFolders));
-      toast.success("Edited successfully!");
+      toast.success("Links Added successfully!");
     } else {
       updatedFolders = [folderInputs, ...folders];
       const sortedUpdatedFolders = updatedFolders.sort(
