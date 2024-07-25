@@ -4,6 +4,7 @@ import ModalLink from "./ModalLink";
 import ModalDeleteAll from "./ModalDeleteAll";
 import { useAppContext } from "../../../context/AppContext.jsx";
 import ModalFolder from "./ModalFolder";
+import ModalAddLinksToFolder from "./ModalAddLinksToFolder.jsx";
 
 const ModalContent = () => {
   const { modalText } = useAppContext();
@@ -17,6 +18,8 @@ const ModalContent = () => {
           modalText.includes("Add New Folder") ||
           modalText.includes("Rename Folder") ? (
           <ModalFolder />
+        ) : modalText.includes("Add to Folder") ? (
+          <ModalAddLinksToFolder />
         ) : (
           <ModalLink />
         )}

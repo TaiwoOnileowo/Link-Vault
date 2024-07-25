@@ -5,7 +5,7 @@ import { useSelectOptions } from "../hooks";
 import { HiOutlineFolderAdd } from "react-icons/hi";
 const SelectOptions = ({ display }) => {
   const selected = display.filter((display) => display.selected);
-  const { handleDelete, handleCopy, handleClickSelectAll, handleCancelSelect, handleAddFolder } =
+  const { handleDelete, handleCopy, handleClickSelectAll, handleCancelSelect, handleShowAddFolder } =
     useSelectOptions();
 
   return (
@@ -13,7 +13,7 @@ const SelectOptions = ({ display }) => {
       <p>{selected.length} selected</p>
       <div className="flex gap-2">
         {selected.length > 0 && (
-          <button onClick={() => handleAddFolder()}>
+          <button onClick={() => handleShowAddFolder()}>
             <HiOutlineFolderAdd size={16} title="Add to folder" />
           </button>
         )}

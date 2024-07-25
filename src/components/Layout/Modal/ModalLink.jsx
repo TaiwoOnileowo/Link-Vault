@@ -5,7 +5,13 @@ import { styles } from "../../../styles";
 import { useAppContext } from "../../../context/AppContext";
 
 const ModalLink = () => {
-  const { handleSubmit, handleChange, handleCancel, error } = useModalLink();
+  const {
+    handleSubmit,
+    handleChange,
+    handleCancel,
+    error,
+    handleSaveToFolder,
+  } = useModalLink();
   const { inputs, modalText, setMenu } = useAppContext();
 
   return (
@@ -39,7 +45,8 @@ const ModalLink = () => {
         value={inputs.tags}
         onChange={handleChange}
       />
-      {modalText.includes("Add New Folder") || modalText.includes("Add Links To Folder") ? (
+      {modalText.includes("Add New Folder") ||
+      modalText.includes("Add Links To Folder") ? (
         <div className="flex justify-end gap-2">
           <button
             className={styles.button2}
@@ -57,17 +64,25 @@ const ModalLink = () => {
           </button>
         </div>
       ) : (
-        <div className="flex justify-start gap-2">
-          <button className={styles.button1} type="submit">
-            Save
-          </button>
-          <button
-            className={styles.button2}
-            type="button"
-            onClick={handleCancel}
+        <div className="flex justify-between items-end h-fit">
+          <div className="flex justify-start gap-2">
+            <button className={styles.button1} type="submit">
+              Save
+            </button>
+            <button
+              className={styles.button2}
+              type="button"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+          </div>
+          <p
+            className="text-xs my-[10px] text-primary underline cursor-pointer"
+            onClick={handleSaveToFolder}
           >
-            Cancel
-          </button>
+            Save to folder
+          </p>
         </div>
       )}
     </form>

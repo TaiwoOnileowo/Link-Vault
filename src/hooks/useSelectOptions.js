@@ -5,7 +5,7 @@ import { useFolderContext } from '../context/FolderContext';
 import toast from "react-hot-toast";
 
 const useSelectOptions = () => {
-  const { menu, setFolders, setLinks } = useAppContext();
+  const { menu, setFolders, setLinks , openModal} = useAppContext();
   const {
     handleBulkCopy,
     handleBulkDelete,
@@ -97,8 +97,11 @@ const useSelectOptions = () => {
       }
     }
   };
+  const handleShowAddFolder = (linksAdded) => {
+    openModal("Add to Folder", linksAdded ? linksAdded : null, null, null);
+  };
 
-  return { handleDelete, handleCopy, handleClickSelectAll, handleCancelSelect };
+  return { handleShowAddFolder,handleDelete, handleCopy, handleClickSelectAll, handleCancelSelect };
 };
 
 export default useSelectOptions;

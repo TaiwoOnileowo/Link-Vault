@@ -19,6 +19,7 @@ export const toggleSelection = (
     const folder = { ...updatedItems[index] };
     folder.selected = !folder.selected;
     updatedItems[index] = folder;
+    console.log("Inside toggleSelection:", folder.selected);
   } else if (folderIndex !== null) {
     // Toggle selection for a link inside a folder
     const folder = { ...updatedItems[folderIndex] };
@@ -30,6 +31,7 @@ export const toggleSelection = (
     updatedItems[folderIndex] = folder;
   } else {
     // Toggle selection for a global link
+    console.log("Inside toggleSelection: link", updatedItems[index].selected);
     const link = { ...updatedItems[index] };
     link.selected = !link.selected;
     updatedItems[index] = link;
@@ -73,6 +75,7 @@ export const toggleBulkSelection = (
     console.log("Inside toggleBulkSelection:", isSelectClick, allSelected);
     updatedItems.forEach((item, index) => {
       if (isFolder) {
+        
         updatedItems[index] = { ...item, selected: !allSelected };
       } else if (menu) {
         if (

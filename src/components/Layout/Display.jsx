@@ -21,8 +21,9 @@ const Display = ({ children, display, isSearchResults }) => {
       )}
       {display.length > 0 ? (
         <>
-          {(showCheckboxes || showFolderCheckboxes) &&
-            !modalText.includes("Folder") && <SelectOptions display={links} />}
+          {(showCheckboxes || showFolderCheckboxes) && (
+            <SelectOptions display={links} />
+          )}
           {children}
         </>
       ) : (

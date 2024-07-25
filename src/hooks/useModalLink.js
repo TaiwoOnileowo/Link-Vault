@@ -4,7 +4,7 @@ import { useLinkContext } from "../context/LinkContext";
 import { useFolderContext } from "../context/FolderContext";
 import toast from "react-hot-toast";
 import { getCurrentTab } from "../utils/chromeUtilis";
-
+import useSelectOptions from "./useSelectOptions";
 const useModalLink = () => {
   const {
     handleClose,
@@ -23,6 +23,7 @@ const useModalLink = () => {
   const { index: folderIndex } = useFolderContext();
   const [bounce, setBounce] = useState(false);
   const [error, setError] = useState(false);
+  const { handleShowAddFolder } = useSelectOptions();
   const handleSaveTab = () => {
     getCurrentTab().then((tab) => {
       setInputs({ ...inputs, url: tab.url });
@@ -105,6 +106,12 @@ const useModalLink = () => {
     handleClose();
     setShowCheckboxes(false);
   };
+  const handleSaveToFolder = () => {
+    const updatedInputs = { ...inputs, selected: true };
+
+    handleShowAddFolder(updatedInputs);
+  };
+
   return {
     handleSubmit,
     handleSaveTab,
@@ -112,6 +119,7 @@ const useModalLink = () => {
     bounce,
     setBounce,
     handleCancel,
+    handleSaveToFolder,
     error,
   };
 };
