@@ -1,6 +1,6 @@
-import { useLinkContext } from "../context/LinkContext";
-import { useAppContext } from "../context/AppContext";
-
+import { useLinkContext } from "../context";
+import { useAppContext } from "../context";
+import { updateStorage } from "../utils/api";
 const useNameFolder = () => {
   const {
     folderInputs,
@@ -19,7 +19,7 @@ const useNameFolder = () => {
     if (folderInputs.folder_name) {
       if (modalText.includes("Rename Folder")) {
         setFolders(updatedFolders);
-        localStorage.setItem("Folders", JSON.stringify(updatedFolders));
+        updateStorage("Folders", updatedFolders);
         handleClose();
         setFolderInputs({
           folder_name: "",

@@ -1,5 +1,5 @@
-import { useAppContext } from "../context/AppContext";
-import { useLinkContext } from "../context/LinkContext";
+import { useAppContext } from "../context";
+import { useLinkContext } from "../context";
 
 const useModalDeleteAll = () => {
   const { handleClose, setLinks, setFolders } = useAppContext();

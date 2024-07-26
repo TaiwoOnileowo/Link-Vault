@@ -16,19 +16,31 @@
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "permissions": ["tabs", "activeTab", "sidePanel"],
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "contextMenus",
+    "scripting",
+    "sidePanel",
+    "storage",
+    "notifications"
+  ],
   "background": {
     "service_worker": "background.js"
   },
   "side_panel": {
     "default_path": "index.html"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
   },
-  "host_permissions": [
-    "https://linkvaultapp.netlify.app/"
-  ],
+  "host_permissions": ["https://linkvaultapp.netlify.app/"],
   "author": "Taiwo Onileowo",
   "homepage_url": "https://linkvaultapp.netlify.app/",
   "minimum_chrome_version": "88"

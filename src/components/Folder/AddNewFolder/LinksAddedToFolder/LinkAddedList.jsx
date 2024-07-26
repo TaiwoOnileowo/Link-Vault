@@ -1,5 +1,5 @@
-import React from "react";
-import { useAppContext } from "../../../../context/AppContext";
+
+import { useAppContext } from "../../../../context";
 import LinkAddedItem from "./LinkAddedItem";
 const LinkAddedList = () => {
   const { folderInputs } = useAppContext();

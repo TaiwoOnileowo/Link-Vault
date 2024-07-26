@@ -1,8 +1,7 @@
-import React from "react";
 import DisplayedLinks from "./DisplayedLinks";
 import Menu from "../Menu";
-import { useAppContext } from "../../context/AppContext";
-import { useLinkContext } from "../../context/LinkContext";
+import { useAppContext } from "../../context";
+import { useLinkContext } from "../../context";
 import Tags from "./Tags";
 import Display from "../Layout/Display";
 

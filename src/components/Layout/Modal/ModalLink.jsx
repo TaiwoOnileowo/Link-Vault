@@ -1,8 +1,7 @@
-import React from "react";
 import { useModalLink } from "../../../hooks";
 import FormInput from "../../FormInput";
 import { styles } from "../../../styles";
-import { useAppContext } from "../../../context/AppContext";
+import { useAppContext } from "../../../context";
 
 const ModalLink = () => {
   const {

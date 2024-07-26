@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useAppContext } from "../context/AppContext";
-import { useLinkContext } from "../context/LinkContext";
-import { useFolderContext } from "../context/FolderContext";
+import { useAppContext } from "../context";
+import { useLinkContext } from "../context";
+import { useFolderContext } from "../context";
 import toast from "react-hot-toast";
 import { getCurrentTab } from "../utils/chromeUtilis";
 import useSelectOptions from "./useSelectOptions";
+import { updateStorage } from "../utils/api";
 const useModalLink = () => {
   const {
     handleClose,
@@ -43,7 +44,6 @@ const useModalLink = () => {
     e.preventDefault();
     if (inputs.url) {
       let updatedLinks = [...links];
-
       if (modalText.includes("Edit Link")) {
         if (isFolderLinks) {
           setFolders((prevFolders) =>
@@ -66,7 +66,7 @@ const useModalLink = () => {
         } else {
           updatedLinks[editIndex] = { ...inputs };
           setLinks(updatedLinks);
-          localStorage.setItem("Links", JSON.stringify(updatedLinks));
+          updateStorage("Links", updatedLinks);
           toast.success("Edited successfully!");
         }
         setInputs({
@@ -87,7 +87,7 @@ const useModalLink = () => {
           (a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0)
         );
         setLinks(sortedUpdatedLinks);
-        localStorage.setItem("Links", JSON.stringify(sortedUpdatedLinks));
+        updateStorage("Links", sortedUpdatedLinks);
         toast.success("Saved successfully!");
         inputs.url_name ? setMenu("Named") : setMenu("Unnamed");
         handleClose();

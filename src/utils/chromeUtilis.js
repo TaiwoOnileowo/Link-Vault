@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 
 export const getCurrentTab = async () => {
     let queryOptions = { active: true, lastFocusedWindow: true };

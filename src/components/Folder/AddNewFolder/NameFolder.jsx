@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+
 import { styles } from "../../../styles";
-import { useAppContext } from "../../../context/AppContext";
+import { useAppContext } from "../../../context";
 import { useNameFolder } from "../../../hooks";
 const NameFolder = () => {
   const { folderInputs, modalText } = useAppContext();

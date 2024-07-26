@@ -1,9 +1,13 @@
-import React from "react";
+import propTypes from "prop-types";
 
 import LinkList from "./LinkList";
 
 const DisplayedLinks = ({ display, isSearchResults, isExistingLinks }) => {
-  
+  DisplayedLinks.propTypes = {
+    display: propTypes.array.isRequired,
+    isSearchResults: propTypes.bool,
+    isExistingLinks: propTypes,
+  };
   return (
     <>
       <LinkList

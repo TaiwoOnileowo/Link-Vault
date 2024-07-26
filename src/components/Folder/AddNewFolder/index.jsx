@@ -1,6 +1,6 @@
-import React from "react";
+
 import NameFolder from "./NameFolder";
-import { useAppContext } from "../../../context/AppContext";
+import { useAppContext } from "../../../context";
 import AddLinksToFolder from "./AddLinksToFolder";
 import LinksAddedToFolder from "./LinksAddedToFolder";
 const AddNewFolder = () => {

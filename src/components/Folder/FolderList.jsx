@@ -1,7 +1,10 @@
-import React from "react";
 import FolderListItem from "./FolderListItem";
-import { useAppContext } from "../../context/AppContext";
-const FolderList = ({isModal}) => {
+import { useAppContext } from "../../context";
+import propTypes from "prop-types";
+const FolderList = ({ isModal }) => {
+  FolderList.propTypes = {
+    isModal: propTypes.bool,
+  };
   const { folders } = useAppContext();
   return (
     <ul className="flex flex-col gap-2">

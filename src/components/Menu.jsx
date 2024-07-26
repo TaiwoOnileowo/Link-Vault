@@ -1,8 +1,10 @@
-import React from "react";
-import { useAppContext } from "../context/AppContext";
-import { useLinkContext } from "../context/LinkContext";
-
+import { useAppContext } from "../context";
+import { useLinkContext } from "../context";
+import proptypes from "prop-types";
 const Menu = ({ text }) => {
+  Menu.propTypes = {
+    text: proptypes.string.isRequired,
+  };
   const { menu, setMenu, folderInputs } = useAppContext();
   const { setShowCheckboxes } = useLinkContext();
 

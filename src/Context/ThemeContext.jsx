@@ -1,11 +1,14 @@
-import { useState, useContext, createContext, useEffect } from "react";
+import { useState, createContext, useEffect } from "react";
 import { initialDarkMode } from "../constants/initialStates";
-
-const ThemeContext = createContext();
+import proptype from "prop-types";
+export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
+  ThemeProvider.propTypes = {
+    children: proptype.node.isRequired,
+  };
   const [darkMode, setDarkMode] = useState(initialDarkMode);
- 
+
   useEffect(() => {
     localStorage.setItem("mode", JSON.stringify(darkMode));
   }, [darkMode]);
@@ -16,5 +19,3 @@ export const ThemeProvider = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
-
-export const useThemeContext = () => useContext(ThemeContext);

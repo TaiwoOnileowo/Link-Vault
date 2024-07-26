@@ -1,10 +1,15 @@
-import { useState, createContext, useContext } from "react";
-
+import { useState, createContext } from "react";
+import PropTypes from "prop-types";
 // Create the context
-const FolderContext = createContext();
+export const FolderContext = createContext();
 
 // Context Provider component
 export const FolderProvider = ({ children }) => {
+  // Component logic here
+
+  FolderProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+  };
   // State variables
   const [showFolderCheckboxes, setShowFolderCheckboxes] = useState(false);
   const [index, setIndex] = useState(null);
@@ -26,6 +31,3 @@ export const FolderProvider = ({ children }) => {
     </FolderContext.Provider>
   );
 };
-
-// Custom hook for using the context
-export const useFolderContext = () => useContext(FolderContext);

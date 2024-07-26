@@ -72,7 +72,8 @@ export const toggleBulkSelection = (
   } else {
     // Toggle selection for folders or global links
     const allSelected =isSelectClick ? true : items.every((item) => item.selected);
-    console.log("Inside toggleBulkSelection:", isSelectClick, allSelected);
+
+    console.log("dax", items, isSelectClick, allSelected, isFolder, menu)
     updatedItems.forEach((item, index) => {
       if (isFolder) {
         

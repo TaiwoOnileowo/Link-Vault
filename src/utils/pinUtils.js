@@ -1,4 +1,4 @@
-export const togglePin = (items, index, itemType) => {
+export const togglePin = (items, index) => {
   let updatedItems = [...items];
   const item = { ...updatedItems[index] };
 

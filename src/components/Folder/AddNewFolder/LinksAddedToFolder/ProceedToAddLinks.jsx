@@ -1,6 +1,9 @@
-import React from "react";
+import propTypes from "prop-types";
 import { useProceedToAddLinks } from "../../../../hooks";
 const ProceedToAddLinks = ({ showModal }) => {
+  ProceedToAddLinks.propTypes = {
+    showModal: propTypes.bool,
+  };
   const { handleClick } = useProceedToAddLinks();
   return (
     <h1 className="text-dimWhite font-medium text-xs my-2">

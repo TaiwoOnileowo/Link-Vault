@@ -1,13 +1,17 @@
-import React from "react";
-import { useAppContext } from "../../context/AppContext";
-import { useLinkContext } from "../../context/LinkContext";
+import { useAppContext } from "../../context";
+import { useLinkContext } from "../../context";
 import Checkbox from "../Checkbox";
 import FolderListItemLinks from "./FolderListItemLinks";
-import { useFolderContext } from "../../context/FolderContext";
+import { useFolderContext } from "../../context";
 import { TbPinFilled } from "react-icons/tb";
-
+import propTypes from "prop-types";
 import adobe from "../../assets/Adobe.png";
 const FolderListItem = ({ folder, index, isModal }) => {
+  FolderListItem.propTypes = {
+    folder: propTypes.object.isRequired,
+    index: propTypes.number.isRequired,
+    isModal: propTypes.bool,
+  };
   const { handleContextMenu, darkMode } = useAppContext();
   const { handleSelect, setIsFolder, setIsFolderLinks, setShowCheckboxes } =
     useLinkContext();
@@ -28,11 +32,12 @@ const FolderListItem = ({ folder, index, isModal }) => {
           handleContextMenu(e, index);
         }}
       >
-        {showFolderCheckboxes ||
-          (isModal && <Checkbox link={folder} originalIndex={index} isModal={isModal}/>)}
+        {(showFolderCheckboxes || isModal) && (
+          <Checkbox link={folder} originalIndex={index} isModal={isModal} />
+        )}
         <li
           className="inline-flex items-center gap-2 font-bold text-base"
-          onClick={(e) => {
+          onClick={() => {
             if (showFolderCheckboxes) {
               handleSelect(index, true);
             } else {

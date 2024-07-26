@@ -1,18 +1,22 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { FaRegEdit, FaRegCopy } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdOutlineCheckBox } from "react-icons/md";
 import { GrPin } from "react-icons/gr";
 import { RiUnpinLine } from "react-icons/ri";
 import { MdAddLink } from "react-icons/md";
-import { useLinkContext } from "../../../context/LinkContext.jsx";
-import { useAppContext } from "../../../context/AppContext.jsx";
-import { useFolderContext } from "../../../context/FolderContext.jsx";
+import { useLinkContext } from "../../../context";
+import { useAppContext } from "../../../context";
+import { useFolderContext } from "../../../context";
 import { useProceedToAddLinks } from "../../../hooks";
 import ContextMenuItem from "./ContextMenuItem.jsx";
 import useContextMenuPosition from "../../../hooks/useContextMenuPosition.js";
 import { copyToClipboard } from "../../../utils/clipboardUtils.js";
+import propTypes from "prop-types";
 const ContextMenu = ({ items }) => {
+  ContextMenu.propTypes = {
+    items: propTypes.array.isRequired,
+  };
   const menuRef = useRef(null);
   const {
     setShowCheckboxes,
@@ -26,7 +30,6 @@ const ContextMenu = ({ items }) => {
   const { handleClick } = useProceedToAddLinks();
   const {
     setShowFolderCheckboxes,
-    index: folderIndex,
     setIndex: setFolderIndex,
     setOpenFolder,
   } = useFolderContext();

@@ -1,4 +1,4 @@
-import React from "react";
+
 import NewFolder from "./NewFolder";
 import DisplayedFolders from "./DisplayedFolders";
 

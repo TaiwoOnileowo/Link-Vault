@@ -1,5 +1,4 @@
-import React from "react";
-import { useLinkContext } from "../../context/LinkContext";
+import { useLinkContext } from "../../context";
 import { MdCheckCircleOutline } from "react-icons/md";
 import { FaRegCopy } from "react-icons/fa";
 import { TbPinFilled } from "react-icons/tb";
@@ -7,8 +6,13 @@ import {
   getFormattedLink,
   getFormattedName,
 } from "../../utils/stringFormatters";
-
+import propTypes from "prop-types";
 const Link = ({ isExistingLinks, link, index }) => {
+  Link.propTypes = {
+    isExistingLinks: propTypes.bool,
+    link: propTypes.object.isRequired,
+    index: propTypes.number.isRequired,
+  };
   const { showCheckboxes, handleSelect, copiedIndex, handleCopyClick } =
     useLinkContext();
 
@@ -16,7 +20,9 @@ const Link = ({ isExistingLinks, link, index }) => {
     <div
       className={`${
         isExistingLinks ? "text-[12px]" : "text-[15px] w-[430px]"
-      } mt-2 inline-flex items-center gap-1  cursor-pointer ${link.selected ? "opacity-80 text-[#007bff] shadow-sm" : "text-white"}`}
+      } mt-2 inline-flex items-center gap-1  cursor-pointer ${
+        link.selected ? "opacity-80 text-[#007bff] shadow-sm" : "text-white"
+      }`}
     >
       <a
         href={`${

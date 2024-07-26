@@ -1,4 +1,4 @@
-import React from "react";
+
 import { useNewFolder } from "../../hooks";
 const NewFolder = () => {
   const { createFolder } = useNewFolder();

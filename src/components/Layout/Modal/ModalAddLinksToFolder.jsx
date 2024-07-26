@@ -1,7 +1,7 @@
-import React from "react";
+
 import FolderList from "../../Folder/FolderList";
 import { styles } from "../../../styles";
-import { useLinkContext } from "../../../context/LinkContext";
+import { useLinkContext } from "../../../context";
 const ModalAddLinksToFolder = () => {
   const { handleAddLinksToFolder } = useLinkContext();
   return (

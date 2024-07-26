@@ -1,15 +1,22 @@
-import { useState, useEffect, createContext, useContext } from "react";
-import { initialLinks, initialFolders, initialRoutes } from "../constants/initialStates";
+/* eslint-disable no-undef */
+import { useState, useEffect, createContext, useCallback } from "react";
+import { initialRoutes } from "../constants/initialStates";
 import useContextMenu from "../hooks/useContextMenu";
-import { useModalContext } from "./ModalContext";
-import { useThemeContext } from "./ThemeContext";
+import { useModalContext } from ".";
+import { useThemeContext } from ".";
 import useNav from "../hooks/useNav";
+import { getInitialLinks, getInitialFolders } from "../utils/api";
 
-const AppContext = createContext();
+export const AppContext = createContext();
+
+import PropTypes from "prop-types";
 
 export const AppProvider = ({ children }) => {
-  const [links, setLinks] = useState(initialLinks);
-  const [folders, setFolders] = useState(initialFolders);
+  AppProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+  };
+  const [links, setLinks] = useState([]);
+  const [folders, setFolders] = useState([]);
   const [active, setActive] = useState("Home");
   const [searchInput, setSearchInput] = useState("");
   const [menu, setMenu] = useState("Unnamed");
@@ -40,31 +47,59 @@ export const AppProvider = ({ children }) => {
 
   const { darkMode, setDarkMode } = useThemeContext();
 
-  const handleSetRoutes = (value) => {
-    const updatedRoutes = Object.keys(routes).reduce((acc, key) => {
-      acc[key] = key === value; // Set current key to true if it matches the value, false otherwise
-      return acc;
-    }, {});
+  const handleSetRoutes = useCallback(
+    (value) => {
+      const updatedRoutes = Object.keys(routes).reduce((acc, key) => {
+        acc[key] = key === value;
+        return acc;
+      }, {});
 
-    setRoutes(updatedRoutes);
-  };
+      setRoutes(updatedRoutes);
+    },
+    [routes]
+  );
 
   useEffect(() => {
     if (searchInput) {
       handleSetRoutes("search");
-    } else {
-      setRoutes((prevRoutes) => ({
-        ...prevRoutes,
-        search: false,
-        home: true,
-      }));
-      setActive("Home");
     }
-  }, [searchInput]);
+  }, [searchInput, handleSetRoutes]);
 
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
   };
+
+  useEffect(() => {
+    async function initializeLinks() {
+      const links = await getInitialLinks();
+      setLinks(links);
+    }
+    async function initializeFolders() {
+      const folders = await getInitialFolders();
+      setFolders(folders);
+    }
+    initializeLinks();
+    initializeFolders();
+
+    const messageListener = (message) => {
+      if (message.action === "updateLinks") {
+        initializeLinks();
+      }
+      if (message.action === "updateFolders") {
+        initializeFolders();
+        handleSetRoutes("folders");
+      }
+      if (message.action === "namedLinkAdded") {
+        setMenu("Named");
+      }
+    };
+
+    chrome.runtime.onMessage.addListener(messageListener);
+
+    return () => {
+      chrome.runtime.onMessage.removeListener(messageListener);
+    };
+  }, [handleSetRoutes]);
 
   return (
     <AppContext.Provider
@@ -111,4 +146,4 @@ export const AppProvider = ({ children }) => {
   );
 };
 
-export const useAppContext = () => useContext(AppContext);
+// Remove the useAppContext hook from this file

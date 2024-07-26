@@ -1,8 +1,6 @@
-import React from "react";
-
-import { useAppContext } from "../../context/AppContext";
-import { useLinkContext } from "../../context/LinkContext";
-import { useFolderContext } from "../../context/FolderContext";
+import { useAppContext } from "../../context";
+import { useLinkContext } from "../../context";
+import { useFolderContext } from "../../context";
 
 import ContextMenu from "../Layout/ContextMenu";
 import SelectOptions from "../SelectOptions";

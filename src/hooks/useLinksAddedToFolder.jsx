@@ -1,6 +1,8 @@
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../context";
 import toast from "react-hot-toast";
-import { useLinkContext } from "../context/LinkContext";
+import { useLinkContext } from "../context";
+import { updateStorage } from "../utils/api";
+import { getInitialLinks } from "../utils/api";
 const useLinksAddedToFolder = () => {
   const {
     setMenu,
@@ -20,7 +22,7 @@ const useLinksAddedToFolder = () => {
       updatedFolders[editIndex].folder_name = folderInputs.folder_name;
       updatedFolders[editIndex].links = [...folderInputs.links];
       setFolders(updatedFolders);
-      localStorage.setItem("Folders", JSON.stringify(updatedFolders));
+      updateStorage("Folders", updatedFolders);
       toast.success("Links Added successfully!");
     } else {
       updatedFolders = [folderInputs, ...folders];
@@ -28,7 +30,7 @@ const useLinksAddedToFolder = () => {
         (a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0)
       );
       setFolders(sortedUpdatedFolders);
-      localStorage.setItem("Folders", JSON.stringify(sortedUpdatedFolders));
+      updateStorage("Folders", sortedUpdatedFolders);
     }
     handleClose();
     setFolderInputs({
@@ -39,7 +41,7 @@ const useLinksAddedToFolder = () => {
     setMenu("Unnamed");
   };
 
-  const deleteLink = (index) => {
+  const deleteLink = async (index) => {
     const linkToRemove = folderInputs.links[index];
     const newFolderInputs = [...folderInputs.links];
     newFolderInputs.splice(index, 1);
@@ -57,12 +59,12 @@ const useLinksAddedToFolder = () => {
         });
         return newLinks;
       });
-      const updatedLinks = JSON.parse(localStorage.getItem("Links")) || [];
+      const updatedLinks = (await getInitialLinks()) || [];
       updatedLinks.splice(linkToRemove.originalIndex, 0, {
         ...linkToRemove,
         selected: false,
       });
-      localStorage.setItem("Links", JSON.stringify(updatedLinks));
+     updateStorage("Links", updatedLinks);
     }
   };
   const AddLinks = () => {

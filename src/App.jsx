@@ -1,5 +1,4 @@
-import React from "react";
-import { useAppContext } from "./context/AppContext";
+import { useAppContext } from "./context";
 import Home from "./components/Home";
 import SearchResults from "./components/SearchResults";
 import Folder from "./components/Folder";

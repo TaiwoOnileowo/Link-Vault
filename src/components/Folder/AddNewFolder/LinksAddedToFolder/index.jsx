@@ -1,7 +1,6 @@
-import React from "react";
-import { useAppContext } from "../../../../context/AppContext";
-import { styles } from "../../../../styles";
 
+import { useAppContext } from "../../../../context";
+import { styles } from "../../../../styles";
 import LinkAddedList from "./LinkAddedList";
 import useLinksAddedToFolder from "../../../../hooks/useLinksAddedToFolder";
 import ProceedToAddLinks from "./ProceedToAddLinks";

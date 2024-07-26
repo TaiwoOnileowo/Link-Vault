@@ -1,5 +1,5 @@
-import { useAppContext } from "../context/AppContext";
-
+import { useAppContext } from "../context";
+import { getInitialLinks } from "../utils/api";
 const useModal = () => {
   const {
     handleClose,
@@ -12,7 +12,7 @@ const useModal = () => {
     folderDetails,
   } = useAppContext();
 
-  const handleModalClose = () => {
+  const handleModalClose = async () => {
     if (modalText.includes("Add New Folder")) {
       // Move links back to their original positions in the links array
       const movedBackLinks = folderInputs.links
@@ -22,7 +22,7 @@ const useModal = () => {
           selected: false,
         }));
 
-      const updatedLinks = JSON.parse(localStorage.getItem("Links")) || [];
+      const updatedLinks = (await getInitialLinks()) || [];
 
       movedBackLinks.forEach((link) => {
         updatedLinks.splice(link.originalIndex, 0, link);

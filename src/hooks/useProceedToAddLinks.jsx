@@ -1,6 +1,6 @@
 import useLinksAddedToFolder from "./useLinksAddedToFolder";
-import { useAppContext } from "../context/AppContext";
-import { useFolderContext } from "../context/FolderContext";
+import { useAppContext } from "../context";
+import { useFolderContext } from "../context";
 
 const useProceedToAddLinks = () => {
   const { openModal, folders, setMenu } = useAppContext();
@@ -13,7 +13,7 @@ const useProceedToAddLinks = () => {
   const handleClick = (showModal, details) => {
     if (showModal) {
       openModal(
-        "Add Links To Folder",
+        "Save Links To Folder",
         details ? details : defaultDetails,
         folderIndex,
         true

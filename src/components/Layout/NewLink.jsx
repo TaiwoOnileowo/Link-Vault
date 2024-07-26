@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
-import { useAppContext } from "../../context/AppContext.jsx";
+import { useAppContext } from "../../context";
 const NewLink = () => {
   const [bounce, setBounce] = useState(false);
   const { openModal } = useAppContext();
@@ -11,7 +11,7 @@ const NewLink = () => {
         setTimeout(() => {
           setBounce(false);
         }, 300);
-        openModal("Add New Link");
+        openModal("Save New Link");
       }}
       title="Add New Link"
       className={`${

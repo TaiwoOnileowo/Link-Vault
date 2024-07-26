@@ -1,6 +1,6 @@
-import React from "react";
 import { styles } from "../styles";
 import { useModalLink } from "../hooks";
+import propTypes from "prop-types";
 const FormInput = ({
   label,
   type,
@@ -11,6 +11,16 @@ const FormInput = ({
   showSaveTab,
   error,
 }) => {
+  FormInput.propTypes = {
+    label: propTypes.string.isRequired,
+    type: propTypes.string.isRequired,
+    name: propTypes.string.isRequired,
+    value: propTypes.string.isRequired,
+    onChange: propTypes.func.isRequired,
+    extraLabelClass: propTypes.string,
+    showSaveTab: propTypes.bool,
+    error: propTypes.bool,
+  };
   const { handleSaveTab, bounce, setBounce } = useModalLink();
   const handleSaveTabClick = () => {
     setBounce(true);

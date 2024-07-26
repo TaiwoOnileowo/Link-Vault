@@ -14,15 +14,15 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider>
       <ModalProvider>
-        <AppProvider>
-          <FolderProvider>
+        <FolderProvider>
+          <AppProvider>
             <LinkProvider>
               <Layout>
                 <App />
               </Layout>
             </LinkProvider>
-          </FolderProvider>
-        </AppProvider>
+          </AppProvider>
+        </FolderProvider>
       </ModalProvider>
     </ThemeProvider>
   </React.StrictMode>

@@ -1,16 +1,22 @@
-import React from "react";
-import { useLinkContext } from "../../context/LinkContext";
-import { useAppContext } from "../../context/AppContext";
-import { useFolderContext } from "../../context/FolderContext";
+import { useLinkContext } from "../../context";
+import { useAppContext } from "../../context";
+import { useFolderContext } from "../../context";
 import { GoDotFill } from "react-icons/go";
 import Checkbox from "../Checkbox";
 import Link from "./Link";
+import propTypes from "prop-types";
 const LinkListItem = ({ link, index, isSearchResults, isExistingLinks }) => {
+  LinkListItem.propTypes = {
+    link: propTypes.object.isRequired,
+    index: propTypes.number.isRequired,
+    isSearchResults: propTypes.bool,
+    isExistingLinks: propTypes.bool,
+  };
   const { setIsFolder, setIsFolderLinks, showCheckboxes, isFolder } =
     useLinkContext();
   const { openFolder } = useFolderContext();
   const { handleContextMenu } = useAppContext();
- 
+
   return (
     <li
       key={index}

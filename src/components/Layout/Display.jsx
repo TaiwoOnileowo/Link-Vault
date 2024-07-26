@@ -1,16 +1,19 @@
-import React from "react";
 import { FaBeerMugEmpty } from "react-icons/fa6";
 import ContextMenu from "./ContextMenu";
-import { useAppContext } from "../../context/AppContext";
-import { useLinkContext } from "../../context/LinkContext";
-import { useFolderContext } from "../../context/FolderContext";
+import { useAppContext } from "../../context";
+import { useLinkContext } from "../../context";
+import { useFolderContext } from "../../context";
 import SelectOptions from "../SelectOptions";
-
+import propTypes from "prop-types";
 const Display = ({ children, display, isSearchResults }) => {
+  Display.propTypes = {
+    children: propTypes.node.isRequired,
+    display: propTypes.array.isRequired,
+    isSearchResults: propTypes.bool,
+  };
   const { showCheckboxes } = useLinkContext();
   const { showFolderCheckboxes } = useFolderContext();
-  const { contextMenu, contextMenuRef, links, modalText, folders, routes } =
-    useAppContext();
+  const { contextMenu, contextMenuRef, links } = useAppContext();
 
   return (
     <>

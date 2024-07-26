@@ -1,9 +1,12 @@
-import { useState, useContext, createContext, useRef } from "react";
+import { useState, createContext, useRef } from "react";
 import { initialInputs, initialFolderInputs } from "../constants/initialStates";
-
-const ModalContext = createContext();
+import proptype from "prop-types";
+export const ModalContext = createContext();
 
 export const ModalProvider = ({ children }) => {
+  ModalProvider.propTypes = {
+    children: proptype.node.isRequired,
+  };
   const [isOpen, setIsOpen] = useState(false);
   const [modalText, setModalText] = useState("");
   const [editIndex, setEditIndex] = useState(null);
@@ -60,5 +63,3 @@ export const ModalProvider = ({ children }) => {
     </ModalContext.Provider>
   );
 };
-
-export const useModalContext = () => useContext(ModalContext);

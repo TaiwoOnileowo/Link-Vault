@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useAppContext } from "../../../context/AppContext";
+import  { useEffect } from "react";
+import { useAppContext } from "../../../context";
 const ToggleModes = () => {
   const {setDarkMode, darkMode} = useAppContext()
   const toggleDarkMode = (e) => {

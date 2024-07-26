@@ -1,11 +1,15 @@
-import React from "react";
+
 import DisplayedLinks from "../Home/DisplayedLinks";
-import { useLinkContext } from "../../context/LinkContext";
-import { useAppContext } from "../../context/AppContext";
-import { useFolderContext } from "../../context/FolderContext";
+import { useLinkContext } from "../../context";
+import { useAppContext } from "../../context";
+import { useFolderContext } from "../../context";
 import SelectOptions from "../SelectOptions";
 import ProceedToAddLinks from "./AddNewFolder/LinksAddedToFolder/ProceedToAddLinks";
+import propTypes from "prop-types";
 const FolderListItemLinks = ({ folder }) => {
+  FolderListItemLinks.propTypes = {
+    folder: propTypes.object
+  };
   const { showCheckboxes } = useLinkContext();
   const { openFolder, index: folderIndex } = useFolderContext();
   const { modalText, folders } = useAppContext();

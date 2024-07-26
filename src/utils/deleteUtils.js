@@ -5,16 +5,16 @@ const handleDeleteItems = (
   setItems,
   itemType,
   index = null,
-  setToLocalStorage,
-  localStorageKey
+  updateStorage,
+  storageKey
 ) => {
   if (index !== null) {
     const updatedItems = [...items];
     updatedItems.splice(index, 1);
-    setToLocalStorage(localStorageKey, updatedItems);
+    updateStorage(storageKey, updatedItems);
     setItems(updatedItems);
   } else {
-    setToLocalStorage(localStorageKey, []);
+    updateStorage(storageKey, []);
     setItems([]);
   }
 };
@@ -23,8 +23,8 @@ const handleBulkDeleteItems = (
   items,
   allItems = null,
   setItems,
-  setToLocalStorage,
-  localStorageKey,
+  updateStorage,
+  storageKey,
   filterCriteria,
   showModal,
   whatToRetainFilterCriteria = null,
@@ -50,7 +50,7 @@ const handleBulkDeleteItems = (
       } else {
         updatedItems = itemsToKeep;
       }
-      setToLocalStorage(localStorageKey, updatedItems);
+      updateStorage(storageKey, updatedItems);
       setItems(updatedItems);
       toast.success("Deleted");
     }

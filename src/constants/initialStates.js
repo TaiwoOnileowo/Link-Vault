@@ -1,5 +1,4 @@
-export const initialLinks = () => JSON.parse(localStorage.getItem("Links")) || [];
-export const initialFolders = JSON.parse(localStorage.getItem("Folders")) || [];
+
 export const initialDarkMode = JSON.parse(localStorage.getItem("darkMode"));
 
 export const initialInputs = {

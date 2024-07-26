@@ -1,13 +1,15 @@
-import React from "react";
 import Header from "./Header";
 import Footer from "./Footer.jsx";
-
 import NewLink from "./NewLink.jsx";
 import ModalContent from "./Modal/ModalContent.jsx";
 import ContextMenu from "./ContextMenu";
 import { Toaster } from "react-hot-toast";
-import { useAppContext } from "../../context/AppContext.jsx";
+import { useAppContext } from "../../context";
+import propTypes from "prop-types";
 const Layout = ({ children }) => {
+  Layout.propTypes = {
+    children: propTypes.node.isRequired,
+  };
   const { darkMode } = useAppContext();
 
   return (

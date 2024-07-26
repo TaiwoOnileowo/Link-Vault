@@ -1,8 +1,7 @@
-import React from "react";
 import { styles } from "../../../styles";
 import { useModalDeleteAll } from "../../../hooks";
 import { useSelectOptions } from "../../../hooks";
-import { useAppContext } from "../../../context/AppContext";
+import { useAppContext } from "../../../context";
 const ModalDeleteAll = () => {
   const { handleCancel } = useModalDeleteAll();
   const { handleDelete } = useSelectOptions();

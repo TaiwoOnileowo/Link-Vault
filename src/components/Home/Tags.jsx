@@ -1,4 +1,4 @@
-import React from "react";
+
 import coming from "../../assets/coming.png";
 
 const Tags = () => {

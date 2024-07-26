@@ -1,11 +1,9 @@
-import React from "react";
+
 import { AiOutlineClose } from "react-icons/ai";
 import { HiMenuAlt3 } from "react-icons/hi";
 import ToggleModes from "./ToggleModes";
 import { LuHome, LuFolders, LuCrown } from "react-icons/lu";
-import { CgBrowser } from "react-icons/cg";
-import { IoSettingsOutline } from "react-icons/io5";
-import { useAppContext } from "../../../context/AppContext";
+import { useAppContext } from "../../../context";
 
 const Nav = () => {
   const nav = [

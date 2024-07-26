@@ -1,12 +1,20 @@
-import React from "react";
 import { FaRegCopy } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useSelectOptions } from "../hooks";
 import { HiOutlineFolderAdd } from "react-icons/hi";
+import proptypes from "prop-types";
 const SelectOptions = ({ display }) => {
+  SelectOptions.propTypes = {
+    display: proptypes.array.isRequired,
+  };
   const selected = display.filter((display) => display.selected);
-  const { handleDelete, handleCopy, handleClickSelectAll, handleCancelSelect, handleShowAddFolder } =
-    useSelectOptions();
+  const {
+    handleDelete,
+    handleCopy,
+    handleClickSelectAll,
+    handleCancelSelect,
+    handleShowAddFolder,
+  } = useSelectOptions();
 
   return (
     <div className="flex justify-between w-full mt-2 text-xs dark:text-white">
@@ -18,7 +26,7 @@ const SelectOptions = ({ display }) => {
           </button>
         )}
         <button onClick={() => handleCopy()}>
-          <FaRegCopy size={16}/>
+          <FaRegCopy size={16} />
         </button>
         <button onClick={() => handleDelete(false)}>
           <RiDeleteBin6Line size={16} />

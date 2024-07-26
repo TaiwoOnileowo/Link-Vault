@@ -1,8 +1,8 @@
-import { useCallback } from 'react';
-import { useLinkContext } from '../context/LinkContext';
-import { useAppContext } from '../context/AppContext';
-import { useFolderContext } from '../context/FolderContext';
-import toast from "react-hot-toast";
+
+import { useLinkContext } from '../context';
+import { useAppContext } from '../context';
+import { useFolderContext } from '../context';
+
 
 const useSelectOptions = () => {
   const { menu, setFolders, setLinks , openModal} = useAppContext();
@@ -98,7 +98,7 @@ const useSelectOptions = () => {
     }
   };
   const handleShowAddFolder = (linksAdded) => {
-    openModal("Add to Folder", linksAdded ? linksAdded : null, null, null);
+    openModal("Save to Folder", linksAdded ? linksAdded : null, null, null);
   };
 
   return { handleShowAddFolder,handleDelete, handleCopy, handleClickSelectAll, handleCancelSelect };
