@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { getCurrentTab } from "../utils/chromeUtilis";
 import useSelectOptions from "./useSelectOptions";
 import { updateStorage } from "../utils/api";
+
 const useModalLink = () => {
   const {
     handleClose,
@@ -19,12 +20,14 @@ const useModalLink = () => {
     setFolderInputs,
     folderInputs,
     setFolders,
+    route
   } = useAppContext();
   const { isFolderLinks, setShowCheckboxes } = useLinkContext();
   const { index: folderIndex } = useFolderContext();
   const [bounce, setBounce] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
   const { handleShowAddFolder } = useSelectOptions();
+const folderRoute = route==="Folder";
   const handleSaveTab = () => {
     getCurrentTab().then((tab) => {
       setInputs({ ...inputs, url: tab.url });
@@ -32,17 +35,36 @@ const useModalLink = () => {
   };
 
   const handleChange = (e) => {
-    if (e.target.name === "url" && e.target.value === "") {
-      setError(true);
-    } else if (e.target.name === "url") {
-      setError(false);
+    const { name, value } = e.target;
+
+    if (name === "url") {
+      if (value === "") {
+        setError("Url is required");
+      } else {
+        setError(null);
+      }
     }
-    setInputs({ ...inputs, [e.target.name]: e.target.value });
+
+ 
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      [name]: value,
+    }));
+
+    // Perform error check for URL existence as the user types
+    if (name === "url" && !folderRoute) {
+      const alreadyExists = links.some((link) => link.url === value);
+      if (alreadyExists) {
+        setError("Link already exists");
+      } else {
+        setError(null);
+      }
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (inputs.url) {
+    if (inputs.url && !error) {
       let updatedLinks = [...links];
       if (modalText.includes("Edit Link")) {
         if (isFolderLinks) {
@@ -98,14 +120,16 @@ const useModalLink = () => {
         url_name: "",
         tags: "",
       });
-    } else {
-      setError(true);
+    }else if (!inputs.url) {
+      setError("Url is required");  
     }
   };
+
   const handleCancel = () => {
     handleClose();
     setShowCheckboxes(false);
   };
+
   const handleSaveToFolder = () => {
     const updatedInputs = { ...inputs, selected: true };
 
@@ -121,6 +145,7 @@ const useModalLink = () => {
     handleCancel,
     handleSaveToFolder,
     error,
+  
   };
 };
 

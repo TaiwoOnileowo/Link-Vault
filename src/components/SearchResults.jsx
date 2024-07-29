@@ -4,10 +4,10 @@ import DisplayedLinks from "./Home/DisplayedLinks";
 import Display from "./Layout/Display";
 
 const SearchResults = () => {
-  const { links, searchInput, folders, routes } = useAppContext();
+  const { links, searchInput, folders , route} = useAppContext();
   const [filteredLinks, setFilteredLinks] = useState([]);
   const lowerCaseSearchInput = searchInput.toLowerCase();
-  const folderRoute = routes.folders;
+  const folderRoute = route==="Folder";
   useEffect(() => {
     const newFilteredLinks = links.filter((link) => {
       const linkText = link.url_name || link.url;
@@ -18,6 +18,7 @@ const SearchResults = () => {
     const filteredFolderLinks = folderLinks.filter((link) =>
       link.url.toLowerCase().includes(lowerCaseSearchInput)
     );
+
     let searchResults = [];
     if (folderRoute) {
       searchResults = [...filteredFolderLinks];
@@ -29,6 +30,7 @@ const SearchResults = () => {
   }, [searchInput, links, folderRoute, folders, lowerCaseSearchInput]);
   console.log(filteredLinks);
   console.log(folderRoute);
+  console.log(route)
   return (
     <div className="p-2">
       <>

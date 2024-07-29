@@ -1,15 +1,12 @@
-import { useAppContext } from "./context";
 import Home from "./components/Home";
-import SearchResults from "./components/SearchResults";
-import Folder from "./components/Folder";
+import { Router } from "react-chrome-extension-router";
 const App = () => {
-  const { routes } = useAppContext();
-
   return (
     <>
-      {routes.search && <SearchResults />}
-      {routes.home && <Home />}
-      {routes.folders && <Folder />}
+    
+      <Router>
+        <Home />
+      </Router>
     </>
   );
 };

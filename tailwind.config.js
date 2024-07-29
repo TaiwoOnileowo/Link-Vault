@@ -5,15 +5,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#2a4ff6",
-        hoverPrimary: "#2aa4eb",
-        dark: "#12073d",
-        darkAlt: "#181d2e", 
-        light: "#ffffff",
-        lightBg: "#c0d9ff", 
-        lightHoverBg: "#d5ebff", 
+        primary: {
+          1: " #5CE4E4",
+          2: "#2B4CF4",
+          3: " #40E8F0",
+        },
+        hoverBlue: "#1A3A8A ",
+        lightGray: "#F0F4F8",
+        mediumGray: "#495057",
         dimWhite: "rgba(255, 255, 255, 0.7)",
+        inputBg: "#CED4DA",
+        hoverInputBg: "rgba(206, 212, 218, 0.5)",
+        darkGray: "#212529",
       },
+      backgroundImage: (theme) => ({
+        "gradient-radial": `radial-gradient(ellipse at center, ${theme(
+          "colors.primary.1"
+        )} 0%, ${theme("colors.primary.2")} 100%)`,
+        "gradient-1": " linear-gradient(45deg, #2B4CF4, #40E8F0)",
+        "gradient-2": "linear-gradient(45deg, #5CE4E4, #40E8F0)",
+        "gradient-3": "linear-gradient(45deg, #1A3A8A, #1A3A8A)",
+      }),
     },
     // screens: {
     //   ip: "200px",

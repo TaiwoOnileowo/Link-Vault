@@ -5,7 +5,7 @@ import FolderListItemLinks from "./FolderListItemLinks";
 import { useFolderContext } from "../../context";
 import { TbPinFilled } from "react-icons/tb";
 import propTypes from "prop-types";
-import adobe from "../../assets/Adobe.png";
+
 const FolderListItem = ({ folder, index, isModal }) => {
   FolderListItem.propTypes = {
     folder: propTypes.object.isRequired,
@@ -30,6 +30,7 @@ const FolderListItem = ({ folder, index, isModal }) => {
           setIsFolder(true);
           setIsFolderLinks(false);
           handleContextMenu(e, index);
+          setIndex(index);
         }}
       >
         {(showFolderCheckboxes || isModal) && (
@@ -54,22 +55,22 @@ const FolderListItem = ({ folder, index, isModal }) => {
           >
             <span className="">
               <img
-                src={adobe}
+                src={folder.folder_icon}
                 alt="Folder Icon"
-                className={`${isModal ? "w-3 h-3" : "w-4 h-4"} object-contain`}
+                className={`${isModal ? "w-4 h-4" : "w-6 h-6"} object-contain`}
               />
             </span>
             <span
               className={`${
                 openFolder && index === folderIndex
-                  ? "text-hoverPrimary"
+                  ? "text-lightGray"
                   : "text-white"
-              } ${isModal ? "text-xs" : "text-base"}`}
+              } ${isModal ? "text-sm" : "text-base"}`}
             >
               {folder.folder_name}
             </span>
           </span>
-          {folder.pinned && (
+          {folder.pinned &&!isModal && (
             <TbPinFilled className="dark:text-[#4c4c74] text-[#122ca3]" />
           )}
         </li>

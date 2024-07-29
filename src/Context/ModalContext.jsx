@@ -20,7 +20,8 @@ export const ModalProvider = ({ children }) => {
     setModalText(modalText);
     setInputs(initialInputs);
     setFolderInputs(initialFolderInputs);
-
+    console.log(linkDetails)
+    console.log(linkIndex)
     if (linkDetails) {
       if (isFolder) {
         setFolderInputs(linkDetails);

@@ -1,4 +1,4 @@
-import { useState, createContext, useCallback } from "react";
+import { useState, createContext, useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
 import { updateStorage } from "../utils/api.js";
 import { useAppContext } from "./index.jsx";
@@ -36,15 +36,23 @@ export const LinkProvider = ({ children }) => {
     handleClose,
     inputs,
     setInputs,
+    route
   } = useAppContext();
   const { setShowFolderCheckboxes, index: folderIndex } = useFolderContext();
   const { sortedNamedLinks, sortedUnnamedLinks } = useSortedLinks();
   const [copiedIndex, setCopiedIndex] = useState(null);
 
   const [showCheckboxes, setShowCheckboxes] = useState(false);
-  const [isFolder, setIsFolder] = useState(false);
+  const [isFolder, setIsFolder] = useState(route === "Folder");
   const [isFolderLinks, setIsFolderLinks] = useState(false);
+  const [existingLinks, setExistingLinks] = useState(links);
 
+
+  useEffect(() => {
+    setExistingLinks(links);
+  }, [links]);
+
+  
   ////////////// COPY LOGIC START /////////////
   const handleCopyClick = (url, index) => {
     setCopiedIndex(index);
@@ -74,6 +82,10 @@ export const LinkProvider = ({ children }) => {
     handleBulkCopyItems(folders, setFolders, "folder");
     setShowFolderCheckboxes(false);
   }, [folders, setShowFolderCheckboxes, setFolders]);
+
+
+
+ 
 
   ////////////// COPY LOGIC END /////////////
 
@@ -108,36 +120,39 @@ export const LinkProvider = ({ children }) => {
     },
     [isFolder, isFolderLinks, folderIndex, folders, links, setFolders, setLinks]
   );
-  const handleBulkDelete = useCallback(() => {
-    const filterCriteria = (link) =>
-      menu === "Unnamed"
-        ? !link.url_name && link.selected
-        : link.url_name && link.selected;
-    const whatToRetainFilterCriteria = (link) =>
-      menu === "Unnamed" ? link.url_name : !link.url_name;
+  const handleBulkDelete = useCallback(
+    (isModal) => {
+      const filterCriteria = (link) =>
+        menu === "Unnamed"
+          ? !link.url_name && link.selected
+          : link.url_name && link.selected;
+      const whatToRetainFilterCriteria = (link) =>
+        menu === "Unnamed" ? link.url_name : !link.url_name;
 
-    handleBulkDeleteItems(
-      menu === "Unnamed" ? sortedUnnamedLinks : sortedNamedLinks,
+      handleBulkDeleteItems(
+        menu === "Unnamed" ? sortedUnnamedLinks : sortedNamedLinks,
+        links,
+        setLinks,
+        updateStorage,
+        "Links",
+        filterCriteria,
+        openModal,
+        whatToRetainFilterCriteria,
+        isModal && isModal
+      );
+
+      setShowCheckboxes(false);
+    },
+    [
       links,
+      sortedNamedLinks,
+      sortedUnnamedLinks,
       setLinks,
-      updateStorage,
-      "Links",
-      filterCriteria,
       openModal,
-      whatToRetainFilterCriteria,
-      false
-    );
-
-    setShowCheckboxes(false);
-  }, [
-    links,
-    sortedNamedLinks,
-    sortedUnnamedLinks,
-    setLinks,
-    openModal,
-    setShowCheckboxes,
-    menu,
-  ]);
+      setShowCheckboxes,
+      menu,
+    ]
+  );
   const handleDeleteLinkInFolder = () => {
     const filterCriteria = (link) => link.selected;
     handleBulkDeleteItems(
@@ -204,16 +219,19 @@ export const LinkProvider = ({ children }) => {
   );
   ////////////// PIN LOGIC END /////////////
 
-  
   ////// SELECT LOGIC START ///////////
   const handleSelect = (index, isModal) => {
+    console.log("Index:", index);
+    console.log("IsModal:", isModal);
     if ((isFolder && !modalText.includes("Folder")) || isModal) {
+      console.log("Folder selection");
       setFolders((prevFolders) => {
         const newFolders = toggleSelection(prevFolders, index, true, null);
         console.log("After folder selection:", newFolders);
         return newFolders;
       });
     } else if (isFolderLinks && !modalText.includes("Folder")) {
+      console.log("Link selection inside folder");
       setFolders((prevFolders) => {
         const newFolders = toggleSelection(
           prevFolders,
@@ -225,11 +243,19 @@ export const LinkProvider = ({ children }) => {
         return newFolders;
       });
     } else {
-      setLinks((prevLinks) => {
-        const newLinks = toggleSelection(prevLinks, index);
-        console.log("After global link selection:", newLinks);
-        return newLinks;
-      });
+      if (isFolder) {
+        setExistingLinks((prevLinks) => {
+          const newLinks = toggleSelection(prevLinks, index, true, null);
+          console.log("After global link selection:", newLinks);
+          return newLinks;
+        });
+      } else {
+        setLinks((prevLinks) => {
+          const newLinks = toggleSelection(prevLinks, index);
+          console.log("After global link selection:", newLinks);
+          return newLinks;
+        });
+      }
     }
   };
 
@@ -279,6 +305,7 @@ export const LinkProvider = ({ children }) => {
     updateStorage("Links", update);
   };
   const handleSelectClick = (isSelectClick) => {
+  
     if (isFolderLinks) {
       // Handle selection for links within a specific folder
       const updatedFolders = toggleBulkSelection(
@@ -333,16 +360,19 @@ export const LinkProvider = ({ children }) => {
         });
     }
 
-    const updatedFolders = [...folders];
-    updatedFolders.map((folder) => {
+    const updatedFolders = folders.map((folder) => {
       if (folder.selected) {
         folder.links = [...linksToAdd, ...folder.links];
       }
       return folder;
     });
+
     const updatedLinks = [...links];
     linksToAdd.forEach((link) => {
-      updatedLinks.splice(link, 1);
+      const index = updatedLinks.findIndex((l) => l.url === link.url);
+      if (index !== -1) {
+        updatedLinks.splice(index, 1);
+      }
     });
 
     setShowCheckboxes(false);
@@ -399,6 +429,8 @@ export const LinkProvider = ({ children }) => {
         handleSelectAllLinksInFolder,
         handleSelectClick,
         handleAddLinksToFolder,
+        existingLinks,
+        setExistingLinks,
       }}
     >
       {children}

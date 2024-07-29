@@ -193,7 +193,7 @@ li {
 }
 
 .nav-bg {
-  background: #c0d9ff;
+  background: #2b4cf4;
 }
 .nav-bg.dark {
   background: linear-gradient(
@@ -204,7 +204,11 @@ li {
   );
 }
 .folder-bg {
-  background: #2a4ff6;
+  background: linear-gradient(45deg, #5ce4e4, #40e8f0);
+  transition: background 0.3s ease-in-out;
+}
+.folder-bg:hover {
+  background:linear-gradient(45deg, #32c4da, #32c4da) ;
 }
 .folder-bg.dark {
   background: linear-gradient(
@@ -377,4 +381,29 @@ html {
   position: absolute;
   width: 1px;
   height: 1px;
+}
+
+.loading {
+  text-align: center;
+  font-size: 14px;
+}
+
+.error {
+  text-align: center;
+  font-size: 14px;
+}
+
+.link-preview {
+  overflow: hidden;
+  word-wrap: break-word;
+  max-width: 200px;
+  max-height: 280px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.link-preview img {
+  max-width: 100%;
+  border-radius: 4px;
 }

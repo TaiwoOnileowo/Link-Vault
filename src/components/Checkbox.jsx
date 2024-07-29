@@ -7,8 +7,7 @@ const Checkbox = ({ link, originalIndex, isModal }) => {
     isModal: propTypes.bool,
   };
   const { handleSelect } = useLinkContext();
-  console.log(link);
-  console.log(!!link.selected);
+  console.log(originalIndex);
   return (
     <input
       type="checkbox"

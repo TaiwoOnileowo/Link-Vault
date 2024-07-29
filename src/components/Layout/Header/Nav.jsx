@@ -1,21 +1,28 @@
-
 import { AiOutlineClose } from "react-icons/ai";
 import { HiMenuAlt3 } from "react-icons/hi";
 import ToggleModes from "./ToggleModes";
 import { LuHome, LuFolders, LuCrown } from "react-icons/lu";
 import { useAppContext } from "../../../context";
-
+import { Link } from "react-chrome-extension-router";
+import Home from "../../Home";
+import Folder from "../../Folder";
+import { useFolderContext } from "../../../context";
 const Nav = () => {
+  const { setOpenFolder } = useFolderContext();
   const nav = [
-    { title: "Home", icon: <LuHome />, route: "home" },
-    { title: "Folders", icon: <LuFolders />, route: "folders" },
+    { title: "Home", icon: <LuHome />, component: Home, route: "Home" },
+    {
+      title: "Folders",
+      icon: <LuFolders />,
+      component: Folder,
+      route: "Folder",
+    },
     // { title: "Sessions", icon: <CgBrowser />, route: "sessions" },
     // { title: "Settings", icon: <IoSettingsOutline />, route: "settings" },
-    { title: "Premium", icon: <LuCrown />, route: "premium" },
+    // { title: "Premium", icon: <LuCrown />, route: "premium" },
   ];
 
   const {
-    handleSetRoutes,
     toggle,
     setToggle,
     navRef,
@@ -23,12 +30,14 @@ const Nav = () => {
     active,
     setActive,
     darkMode,
+    setRoute,
   } = useAppContext();
 
   const handleClick = (item) => {
     setActive(item.title);
-    handleSetRoutes(item.route);
     setToggle(false);
+    setRoute(item.route);
+    setOpenFolder(false);
   };
   console.log(toggle);
   return (
@@ -49,23 +58,30 @@ const Nav = () => {
       >
         <ul className="list-none flex justify-end items-start flex-1 flex-col">
           {nav.map((item, index) => (
-            <li
+            <Link
+              component={item.component}
               key={index}
               className={`inline-flex items-center gap-2 font-medium cursor-pointer text-[16px] ${
                 active === item.title
-                  ? "text-black dark:text-white"
-                  : "text-gray-600 dark:text-dimWhite"
+                  ? "text-white"
+                  : "text-lightGray dark:text-dimWhite"
               } mb-4`}
               onClick={() => {
                 item.title === "Home" && setMenu("Unnamed");
                 handleClick(item);
               }}
             >
-              <span className="text-[#122ca3] dark:text-primary text-lg">
+              <span
+                className={`  text-lg ${
+                  active === item.title
+                    ? "text-white dark:text-primary"
+                    : "text-lightGray dark:text-primary"
+                }`}
+              >
                 {item.icon}
               </span>
               {item.title}
-            </li>
+            </Link>
           ))}
           <li>
             <ToggleModes />

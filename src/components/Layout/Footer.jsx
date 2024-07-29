@@ -3,7 +3,7 @@
 const Footer = () => {
   return (
     <>
-      <footer className="absolute bottom-0  flex flex-col w-full py-4 items-center justify-center bg-white dark:bg-dark dark:text-white">
+      <footer className="absolute bottom-0  flex flex-col w-full py-4 items-center justify-center bg-lightGray dark:bg-dark dark:text-white">
         <div className="flex gap-4 text-sm">
           <p className="underline cursor-pointer">
             <a

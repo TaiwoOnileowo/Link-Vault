@@ -1,8 +1,9 @@
-import { useAppContext } from "../context";
+import { useAppContext, useFolderContext } from "../context";
 import toast from "react-hot-toast";
 import { useLinkContext } from "../context";
 import { updateStorage } from "../utils/api";
-import { getInitialLinks } from "../utils/api";
+import { folderIcons } from "../../public/foldericons";
+import useAddLinksToFolder from "./useAddLinksToFolder";
 const useLinksAddedToFolder = () => {
   const {
     setMenu,
@@ -12,24 +13,33 @@ const useLinksAddedToFolder = () => {
     setLinks,
     handleClose,
     modalText,
-    editIndex,
     folderInputs,
   } = useAppContext();
-  const { setShowCheckboxes } = useLinkContext();
+  const { index: folderIndex } = useFolderContext();
+  const { updatedLinks } = useAddLinksToFolder();
+  const { setShowCheckboxes, setExistingLinks } = useLinkContext();
   const handleClick = () => {
     let updatedFolders = [...folders];
-    if (modalText.includes("Add Links To Folder")) {
-      updatedFolders[editIndex].folder_name = folderInputs.folder_name;
-      updatedFolders[editIndex].links = [...folderInputs.links];
+    if (modalText.includes("Save Links To Folder")) {
+      updatedFolders[folderIndex].folder_name = folderInputs.folder_name;
+      updatedFolders[folderIndex].links = [...folderInputs.links];
       setFolders(updatedFolders);
       updateStorage("Folders", updatedFolders);
       toast.success("Links Added successfully!");
     } else {
+      const deselectedLinks = updatedLinks.map((link) => {
+        const newLink = { ...link };
+        delete newLink.selected;
+        return newLink;
+      });
+      setLinks(deselectedLinks);
+      folderInputs.folder_icon = folderIcons[8];
       updatedFolders = [folderInputs, ...folders];
       const sortedUpdatedFolders = updatedFolders.sort(
         (a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0)
       );
       setFolders(sortedUpdatedFolders);
+      updateStorage("Links", deselectedLinks);
       updateStorage("Folders", sortedUpdatedFolders);
     }
     handleClose();
@@ -50,22 +60,15 @@ const useLinksAddedToFolder = () => {
       ...prevFolderInputs,
       links: newFolderInputs,
     }));
-    if (linkToRemove.selected) {
-      setLinks((prevLinks) => {
-        const newLinks = [...prevLinks];
-        newLinks.splice(linkToRemove.originalIndex, 0, {
-          ...linkToRemove,
-          selected: false,
-        });
-        return newLinks;
-      });
-      const updatedLinks = (await getInitialLinks()) || [];
-      updatedLinks.splice(linkToRemove.originalIndex, 0, {
+
+    setExistingLinks((prevLinks) => {
+      const newLinks = [...prevLinks];
+      newLinks.splice(linkToRemove.originalIndex, 0, {
         ...linkToRemove,
         selected: false,
       });
-     updateStorage("Links", updatedLinks);
-    }
+      return newLinks;
+    });
   };
   const AddLinks = () => {
     setMenu("Add Links");

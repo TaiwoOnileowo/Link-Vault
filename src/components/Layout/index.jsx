@@ -4,23 +4,22 @@ import NewLink from "./NewLink.jsx";
 import ModalContent from "./Modal/ModalContent.jsx";
 import ContextMenu from "./ContextMenu";
 import { Toaster } from "react-hot-toast";
-import { useAppContext } from "../../context";
 import propTypes from "prop-types";
 const Layout = ({ children }) => {
   Layout.propTypes = {
     children: propTypes.node.isRequired,
   };
-  const { darkMode } = useAppContext();
+ 
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col scrollbar overflow-x-hidden">
+    <div className="relative w-full bg-white min-h-screen flex flex-col scrollbar overflow-x-hidden">
       <Header />
       <ContextMenu />
       <Toaster
         toastOptions={{
           style: {
-            background: darkMode ? "#2a4ff6" : "#eaf6ff",
-            color: darkMode ? "#fff" : "#2a4ff6",
+            background:  "#2a4ff6",
+            color:"#fff",
             fontSize: "16px",
             fontFamily: "Poppins",
           },

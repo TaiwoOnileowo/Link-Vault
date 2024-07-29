@@ -6,7 +6,7 @@ const DisplayedLinks = ({ display, isSearchResults, isExistingLinks }) => {
   DisplayedLinks.propTypes = {
     display: propTypes.array.isRequired,
     isSearchResults: propTypes.bool,
-    isExistingLinks: propTypes,
+    isExistingLinks: propTypes.bool,
   };
   return (
     <>
@@ -16,7 +16,7 @@ const DisplayedLinks = ({ display, isSearchResults, isExistingLinks }) => {
         isExistingLinks={isExistingLinks}
       />
       {!display.length && isExistingLinks && (
-        <p className="flex justify-center text-[11px]  text-dimWhite">
+        <p className="flex justify-center text-[11px]  dark:text-dimWhite">
           Nothing here😐
         </p>
       )}

@@ -53,7 +53,6 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
   chrome.sidePanel
     .setPanelBehavior({ openPanelOnActionClick: true })
     .catch((error) => console.error(error));
-    
 });
 
 // eslint-disable-next-line no-undef
@@ -67,7 +66,9 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       target: { tabId: tab.id },
       func: (linkUrl) => {
         const linkName = prompt("Enter a name for the link:");
-        chrome.runtime.sendMessage({ linkUrl, linkName });
+        if (linkName) {
+          chrome.runtime.sendMessage({ linkUrl, linkName });
+        }
       },
       args: [linkUrl],
     });
@@ -77,10 +78,12 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       target: { tabId: tab.id },
       func: (linkUrl) => {
         const folderName = prompt("Enter a name for the folder:");
-        chrome.runtime.sendMessage({
-          linkUrl,
-          folderName,
-        });
+        if (folderName) {
+          chrome.runtime.sendMessage({
+            linkUrl,
+            folderName,
+          });
+        }
       },
       args: [linkUrl],
     });
@@ -97,6 +100,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
           const folderName = prompt(
             `Existing Folders: ${folderNames}\nChoose a Folder:`
           );
+
           if (folderName) {
             chrome.runtime.sendMessage({ linkUrl, folderName });
           }
@@ -115,43 +119,71 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 function saveFolderToVault(linkUrl, folderName) {
-  chrome.storage.local.get(["Folders"], (result) => {
-    let folders = result.Folders || [];
-    let folder = folders.find((f) => f.folder_name === folderName);
-    if (!folder) {
-      folder = { folder_name: folderName, links: [] };
-      folders.unshift(folder);
-      folder.links.unshift({ url: linkUrl, url_name: "", tags: "" });
-    } else {
-      folder.links.unshift({ url: linkUrl, url_name: "", tags: "" });
-    }
-    chrome.storage.local.set({ Folders: folders }, () => {
-      if (!folder) {
-        showNotification(
-          "Link Saved",
-          `New folder added to vault with the link: ${linkUrl}`
-        );
+  if (folderName) {
+    chrome.storage.local.get(["Folders"], (result) => {
+      let folders = result.Folders || [];
+      const alreadyExists = folders.some(
+        (folder) => folder.folder_name === folderName
+      );
+      if (!alreadyExists) {
+        let folder = folders.find((f) => f.folder_name === folderName);
+        if (!folder) {
+          folder = {
+            folder_name: folderName,
+            links: [],
+            folder_icon: "folderbrowse.png",
+          };
+          folders.unshift(folder);
+          folder.links.unshift({ url: linkUrl, url_name: "", tags: "" });
+        } else {
+          folder.links.unshift({ url: linkUrl, url_name: "", tags: "" });
+        }
+        chrome.storage.local.set({ Folders: folders }, () => {
+          if (!folder) {
+            showNotification(
+              "Link Saved",
+              `New folder added to vault with the link: ${linkUrl}`
+            );
+          } else {
+            showNotification(
+              "Link Saved",
+              `Your link has been saved to the new folder: ${folderName}`
+            );
+          }
+
+          // updateBadge();
+        });
       } else {
         showNotification(
-          "Link Saved",
-          `Your link has been saved to the new folder: ${folderName}`
+          "Folder Exists",
+          `A folder with the name ${folderName} already exists.`
         );
       }
-
-      updateBadge();
     });
-  });
+  } else {
+    return;
+  }
 }
 
 function saveLinkToVault(linkUrl, linkName) {
   chrome.storage.local.get(["Links"], (result) => {
     let links = result.Links || [];
-    links.unshift({ url: linkUrl, url_name: linkName, tags: "" });
-    chrome.storage.local.set({ Links: links }, () => {
-      chrome.runtime.sendMessage({ action: "namedLinkAdded" });
-      showNotification("Link Saved", "New link added to your vault.");
-      updateBadge();
-    });
+    const alreadyExists = links.some((link) => link.url === linkUrl);
+    if (!alreadyExists) {
+      links.unshift({ url: linkUrl, url_name: linkName, tags: "" });
+      if (linkUrl) {
+        chrome.storage.local.set({ Links: links }, () => {
+          if (linkName) {
+            chrome.runtime.sendMessage({ action: "namedLinkAdded" });
+          } else {
+            chrome.runtime.sendMessage({ action: "unamedLinkAdded" });
+          }
+          showNotification("Link Saved", "New link added to your vault.");
+        });
+      }
+    } else {
+      showNotification("Link Exists", "This link already exists in your vault");
+    }
   });
 }
 

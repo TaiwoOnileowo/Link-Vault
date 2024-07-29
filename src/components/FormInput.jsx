@@ -54,7 +54,7 @@ const FormInput = ({
         className={styles.input}
         onChange={onChange}
       />
-      {error && <p className="text-xs text-red-500">Url is required</p>}
+      {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
 };

@@ -7,10 +7,14 @@ const useProceedToAddLinks = () => {
   const { AddLinks } = useLinksAddedToFolder();
   const { index: folderIndex, setOpenFolder } = useFolderContext();
   const defaultDetails = {
-    folder_name: folderIndex && folders[folderIndex].folder_name,
+    folder_name:  folders[folderIndex]?.folder_name,
     links: [],
   };
+  
+
   const handleClick = (showModal, details) => {
+    console.log(details);
+    console.log(defaultDetails)
     if (showModal) {
       openModal(
         "Save Links To Folder",

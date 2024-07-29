@@ -5,6 +5,7 @@ import { MdOutlineCheckBox } from "react-icons/md";
 import { GrPin } from "react-icons/gr";
 import { RiUnpinLine } from "react-icons/ri";
 import { MdAddLink } from "react-icons/md";
+import { TfiThemifyFavicon } from "react-icons/tfi";
 import { useLinkContext } from "../../../context";
 import { useAppContext } from "../../../context";
 import { useFolderContext } from "../../../context";
@@ -15,7 +16,7 @@ import { copyToClipboard } from "../../../utils/clipboardUtils.js";
 import propTypes from "prop-types";
 const ContextMenu = ({ items }) => {
   ContextMenu.propTypes = {
-    items: propTypes.array.isRequired,
+    items: propTypes.array,
   };
   const menuRef = useRef(null);
   const {
@@ -23,7 +24,6 @@ const ContextMenu = ({ items }) => {
     handleDelete,
     handlePinClick,
     handleSelectClick,
-    isFolder,
     isFolderLinks,
     handleCopyFolder,
   } = useLinkContext();
@@ -39,11 +39,12 @@ const ContextMenu = ({ items }) => {
     contextMenu,
     handleHideContextMenu,
     setMenu,
+    route,
   } = useAppContext();
   const { x, y, visible, linkIndex } = contextMenu;
-
+  const isFolder = route === "Folder" && !isFolderLinks;
   useContextMenuPosition(x, y, visible, menuRef);
-
+  console.log(isFolder);
   if (
     !visible ||
     !items ||
@@ -61,16 +62,17 @@ const ContextMenu = ({ items }) => {
         position: "absolute",
         zIndex: 1000,
       }}
-      className="py-2 bg-[#333] animate-slide-down overflow-hidden text-white max-w-[170px] shadow-lg rounded-md"
+      className="py-2 bg-lightGray dark:bg-[#333] animate-slide-down overflow-hidden text-darkGray dark:text-white min-w-[180px] shadow-lg rounded-md"
       onClick={(e) => e.stopPropagation()}
     >
-      <ul className="flex flex-col w-full">
+      <ul className="flex flex-col items-center w-full">
         <ContextMenuItem
           onClick={() => {
             const details = isFolder
               ? {
                   folder_name: items[linkIndex].folder_name,
                   links: items[linkIndex].links,
+                  folder_icon: items[linkIndex].folder_icon,
                 }
               : {
                   url: items[linkIndex].url,
@@ -99,7 +101,9 @@ const ContextMenu = ({ items }) => {
               const details = {
                 folder_name: items[linkIndex].folder_name,
                 links: items[linkIndex].links,
+                folder_icon: items[linkIndex].folder_icon,
               };
+              setFolderIndex(linkIndex);
               handleClick(true, details);
               handleHideContextMenu();
             }}
@@ -135,6 +139,27 @@ const ContextMenu = ({ items }) => {
           icon={<FaRegCopy />}
           text={`Copy ${isFolder ? "Folder " : ""}`}
         />
+
+        {isFolder && (
+          <>
+            <hr className="w-full border-light border-opacity-10" />
+            <ContextMenuItem
+              onClick={() => {
+                const details = {
+                  folder_name: items[linkIndex].folder_name,
+                  links: items[linkIndex].links,
+                  folder_icon: items[linkIndex].folder_icon,
+                };
+                openModal("Choose an Icon", details, linkIndex, true);
+                setFolderIndex(linkIndex);
+                handleHideContextMenu();
+              }}
+              icon={<TfiThemifyFavicon />}
+              text="Change Icon"
+            />
+          </>
+        )}
+
         <hr className="w-full border-light border-opacity-10" />
         <ContextMenuItem
           onClick={() => {

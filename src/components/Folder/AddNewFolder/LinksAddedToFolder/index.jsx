@@ -1,4 +1,3 @@
-
 import { useAppContext } from "../../../../context";
 import { styles } from "../../../../styles";
 import LinkAddedList from "./LinkAddedList";
@@ -17,7 +16,7 @@ const LinksAddedToFolder = () => {
       )}
       <div className="w-full flex justify-end mt-4">
         <button className={styles.button1} onClick={handleClick}>
-          {modalText.includes("Add Links To Folder")
+          {modalText.includes("Save Links To Folder")
             ? "Done"
             : folderInputs.links.length
             ? "Create Folder"

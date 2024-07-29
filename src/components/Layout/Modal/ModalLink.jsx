@@ -29,23 +29,18 @@ const ModalLink = () => {
         onChange={handleChange}
         error={error}
       />
+      <div className="mt-2">
+        <FormInput
+          label="Custom Name (Optional)"
+          type="text"
+          name="url_name"
+          value={inputs.url_name}
+          onChange={handleChange}
+        />
+      </div>
 
-      <FormInput
-        label="Custom Name (Optional)"
-        type="text"
-        name="url_name"
-        value={inputs.url_name}
-        onChange={handleChange}
-      />
-      <FormInput
-        label="Tags (separated by comma, Optional)"
-        type="text"
-        name="tags"
-        value={inputs.tags}
-        onChange={handleChange}
-      />
-      {modalText.includes("Add New Folder") ||
-      modalText.includes("Add Links To Folder") ? (
+      {modalText.includes("Create New Folder") ||
+      modalText.includes("Save Links To Folder") ? (
         <div className="flex justify-end gap-2">
           <button
             className={styles.button2}
@@ -64,7 +59,7 @@ const ModalLink = () => {
         </div>
       ) : (
         <div className="flex justify-between items-end h-fit">
-          <div className="flex justify-start gap-2">
+          <div className="flex justify-start">
             <button className={styles.button1} type="submit">
               Save
             </button>
@@ -76,12 +71,14 @@ const ModalLink = () => {
               Cancel
             </button>
           </div>
-          <p
-            className="text-xs my-[10px] text-primary underline cursor-pointer"
-            onClick={handleSaveToFolder}
-          >
-            Save to folder
-          </p>
+          {!modalText.includes("Edit Link") && (
+            <p
+              className="text-xs my-[10px] text-primary underline cursor-pointer"
+              onClick={handleSaveToFolder}
+            >
+              Save to folder
+            </p>
+          )}
         </div>
       )}
     </form>

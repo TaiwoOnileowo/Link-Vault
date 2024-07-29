@@ -1,5 +1,6 @@
 import { useState, createContext } from "react";
 import PropTypes from "prop-types";
+
 // Create the context
 export const FolderContext = createContext();
 

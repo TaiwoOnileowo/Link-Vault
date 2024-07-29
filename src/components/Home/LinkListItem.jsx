@@ -5,6 +5,7 @@ import { GoDotFill } from "react-icons/go";
 import Checkbox from "../Checkbox";
 import Link from "./Link";
 import propTypes from "prop-types";
+
 const LinkListItem = ({ link, index, isSearchResults, isExistingLinks }) => {
   LinkListItem.propTypes = {
     link: propTypes.object.isRequired,
@@ -12,8 +13,7 @@ const LinkListItem = ({ link, index, isSearchResults, isExistingLinks }) => {
     isSearchResults: propTypes.bool,
     isExistingLinks: propTypes.bool,
   };
-  const { setIsFolder, setIsFolderLinks, showCheckboxes, isFolder } =
-    useLinkContext();
+  const { setIsFolder, setIsFolderLinks, showCheckboxes } = useLinkContext();
   const { openFolder } = useFolderContext();
   const { handleContextMenu } = useAppContext();
 
@@ -32,10 +32,11 @@ const LinkListItem = ({ link, index, isSearchResults, isExistingLinks }) => {
       }}
     >
       {showCheckboxes ? (
-        <Checkbox link={link} originalIndex={index} isFolder={isFolder} />
+        <Checkbox link={link} originalIndex={index} isExistingLinks={isExistingLinks} />
       ) : (
         <GoDotFill className="dark:text-white text-black text-xs mt-2" />
       )}
+
       <Link isExistingLinks={isExistingLinks} link={link} index={index} />
     </li>
   );

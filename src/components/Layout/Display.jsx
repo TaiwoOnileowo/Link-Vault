@@ -5,6 +5,7 @@ import { useLinkContext } from "../../context";
 import { useFolderContext } from "../../context";
 import SelectOptions from "../SelectOptions";
 import propTypes from "prop-types";
+import LinkPreview from "../LinkPreview";
 const Display = ({ children, display, isSearchResults }) => {
   Display.propTypes = {
     children: propTypes.node.isRequired,
@@ -13,7 +14,9 @@ const Display = ({ children, display, isSearchResults }) => {
   };
   const { showCheckboxes } = useLinkContext();
   const { showFolderCheckboxes } = useFolderContext();
-  const { contextMenu, contextMenuRef, links } = useAppContext();
+  const { contextMenu, contextMenuRef, links, previewLink, previewLinkRef } =
+    useAppContext();
+  const { linkIndex } = previewLink;
 
   return (
     <>
@@ -22,19 +25,22 @@ const Display = ({ children, display, isSearchResults }) => {
           <ContextMenu items={links} />
         </div>
       )}
+      {previewLink.visible && (
+        <div ref={previewLinkRef}>
+          <LinkPreview url={links[linkIndex].url} />
+        </div>
+      )}
       {display.length > 0 ? (
         <>
-          {(showCheckboxes || showFolderCheckboxes) && (
-            <SelectOptions display={links} />
-          )}
+          {showCheckboxes && <SelectOptions display={links} />}
           {children}
         </>
       ) : (
         <div
-          className={`bg-white dark:bg-darkAlt h-[50%] bg-opacity-50 flex flex-col items-center justify-center py-4 mt-4 shadow-xl`}
+          className={`bg-lightGray dark:bg-darkAlt h-[50%] bg-opacity-50 flex flex-col items-center justify-center py-4 mt-4 shadow-xl`}
         >
           <FaBeerMugEmpty className="w-24 h-24 dark:text-[#d5ebff] text-[#2a4ff6]" />
-          <h2 className="dark:text-white text-black text-[28px] font-semibold pb-4">
+          <h2 className="dark:text-white text-darkGray  text-[28px] font-semibold py-4">
             Nothing {isSearchResults ? "Found" : "Here"} 😐...
           </h2>
         </div>

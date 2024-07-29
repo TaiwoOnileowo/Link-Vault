@@ -4,6 +4,7 @@ import ModalDeleteAll from "./ModalDeleteAll";
 import { useAppContext } from "../../../context";
 import ModalFolder from "./ModalFolder";
 import ModalAddLinksToFolder from "./ModalAddLinksToFolder.jsx";
+import ModalIcon from "./ModalIcon.jsx";
 
 const ModalContent = () => {
   const { modalText } = useAppContext();
@@ -19,6 +20,8 @@ const ModalContent = () => {
           <ModalFolder />
         ) : modalText.includes("Save to Folder") ? (
           <ModalAddLinksToFolder />
+        ) : modalText.includes("Choose an Icon") ? (
+          <ModalIcon />
         ) : (
           <ModalLink />
         )}

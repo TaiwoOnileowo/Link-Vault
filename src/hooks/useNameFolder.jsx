@@ -1,6 +1,8 @@
 import { useLinkContext } from "../context";
 import { useAppContext } from "../context";
 import { updateStorage } from "../utils/api";
+
+import { useState } from "react";
 const useNameFolder = () => {
   const {
     folderInputs,
@@ -11,12 +13,14 @@ const useNameFolder = () => {
     folders,
     setFolders,
     editIndex,
+    setInputError
   } = useAppContext();
-
+  const [error, setError] = useState(null);
   const { setShowCheckboxes } = useLinkContext();
   let updatedFolders = [...folders];
+
   const handleClick = () => {
-    if (folderInputs.folder_name) {
+    if (folderInputs.folder_name && !error) {
       if (modalText.includes("Rename Folder")) {
         setFolders(updatedFolders);
         updateStorage("Folders", updatedFolders);
@@ -32,10 +36,12 @@ const useNameFolder = () => {
       }
     }
   };
+
   const renameFolder = (newFolderInputs) => {
     updatedFolders = [...folders];
     updatedFolders[editIndex].folder_name = newFolderInputs.folder_name;
   };
+
   const handleChange = (e) => {
     const newFolderInputs = {
       ...folderInputs,
@@ -43,11 +49,24 @@ const useNameFolder = () => {
     };
     setFolderInputs(newFolderInputs);
 
-    if (modalText.includes("Rename Folder")) {
-      renameFolder(newFolderInputs);
+    const alreadyExists = folders.some(
+      (folder) => folder.folder_name === e.target.value
+    );
+  
+
+    if (alreadyExists) {
+      setError("Folder name already exists");
+      setInputError(true);
+    } else {
+      setError(null);
+      setInputError(false);
+      if (modalText.includes("Rename Folder")) {
+        renameFolder(newFolderInputs);
+      }
     }
   };
-  return { handleClick, handleChange };
+
+  return { handleClick, handleChange, error };
 };
 
 export default useNameFolder;

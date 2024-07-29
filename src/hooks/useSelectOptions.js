@@ -1,15 +1,14 @@
+import { useLinkContext } from "../context";
+import { useAppContext } from "../context";
+import { useFolderContext } from "../context";
 
-import { useLinkContext } from '../context';
-import { useAppContext } from '../context';
-import { useFolderContext } from '../context';
-
-
+import useSortedLinks from "./useSortedLinks";
 const useSelectOptions = () => {
-  const { menu, setFolders, setLinks , openModal} = useAppContext();
+  const { menu, setFolders, setLinks, openModal, route } = useAppContext();
   const {
     handleBulkCopy,
     handleBulkDelete,
-    isFolder,
+
     handleBulkCopyFolder,
     handleBulkDeleteFolder,
     handleSelectAllFolders,
@@ -21,20 +20,20 @@ const useSelectOptions = () => {
     setShowCheckboxes,
     handleSelectAllLinks,
   } = useLinkContext();
-
+  const { sortedNamedLinks, sortedUnnamedLinks } = useSortedLinks();
   const { setShowFolderCheckboxes } = useFolderContext();
-
+  const isFolder = route === " Folder";
   const handleDelete = (isModal) => {
     console.log(isFolder, isFolderLinks); // Debug log
-    console.log('Delete triggered with isModal:', isModal); // Debug log
+    console.log("Delete triggered with isModal:", isModal); // Debug log
     if (isFolder) {
-      console.log('delete all folders');
+      console.log("delete all folders");
       handleBulkDeleteFolder(isModal);
     } else if (isFolderLinks) {
-      console.log('delete all links in folder');
+      console.log("delete all links in folder");
       handleDeleteLinkInFolder(isModal);
     } else {
-      console.log('delete all links');
+      console.log("delete all links");
       handleBulkDelete(isModal);
     }
   };
@@ -100,8 +99,23 @@ const useSelectOptions = () => {
   const handleShowAddFolder = (linksAdded) => {
     openModal("Save to Folder", linksAdded ? linksAdded : null, null, null);
   };
+  let activeItems;
+  if (route === "Home") {
+    if (menu === "Unnamed") {
+      activeItems = sortedUnnamedLinks;
+    } else if (menu == "Named") {
+      activeItems = sortedNamedLinks;
+    }
+  }
 
-  return { handleShowAddFolder,handleDelete, handleCopy, handleClickSelectAll, handleCancelSelect };
+  return {
+    handleShowAddFolder,
+    handleDelete,
+    handleCopy,
+    handleClickSelectAll,
+    handleCancelSelect,
+    activeItems,
+  };
 };
 
 export default useSelectOptions;

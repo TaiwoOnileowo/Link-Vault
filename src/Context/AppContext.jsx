@@ -1,15 +1,16 @@
 /* eslint-disable no-undef */
-import { useState, useEffect, createContext, useCallback } from "react";
-import { initialRoutes } from "../constants/initialStates";
+import { useState, useEffect, createContext } from "react";
+import { goTo, goBack } from "react-chrome-extension-router";
 import useContextMenu from "../hooks/useContextMenu";
 import { useModalContext } from ".";
 import { useThemeContext } from ".";
 import useNav from "../hooks/useNav";
 import { getInitialLinks, getInitialFolders } from "../utils/api";
-
-export const AppContext = createContext();
-
+import usePreviewLink from "../hooks/usePreviewLink";
 import PropTypes from "prop-types";
+import SearchResults from "../components/SearchResults";
+import Folder from "../components/Folder";
+export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   AppProvider.propTypes = {
@@ -20,8 +21,10 @@ export const AppProvider = ({ children }) => {
   const [active, setActive] = useState("Home");
   const [searchInput, setSearchInput] = useState("");
   const [menu, setMenu] = useState("Unnamed");
-  const [routes, setRoutes] = useState(initialRoutes);
+  const [route, setRoute] = useState("Home");
   const { toggle, setToggle, navRef } = useNav();
+  const [hoveredLink, setHoveredLink] = useState(null);
+  const [inputError, setInputError] = useState(false);
   const {
     contextMenu,
     setContextMenu,
@@ -29,7 +32,9 @@ export const AppProvider = ({ children }) => {
     handleContextMenu,
     handleHideContextMenu,
   } = useContextMenu();
-
+console.log(menu)
+  const { previewLink, previewLinkRef, handleHover, handleHidePreviewLink } =
+    usePreviewLink();
   const {
     isOpen,
     setIsOpen,
@@ -47,23 +52,13 @@ export const AppProvider = ({ children }) => {
 
   const { darkMode, setDarkMode } = useThemeContext();
 
-  const handleSetRoutes = useCallback(
-    (value) => {
-      const updatedRoutes = Object.keys(routes).reduce((acc, key) => {
-        acc[key] = key === value;
-        return acc;
-      }, {});
-
-      setRoutes(updatedRoutes);
-    },
-    [routes]
-  );
-
   useEffect(() => {
-    if (searchInput) {
-      handleSetRoutes("search");
+    if (searchInput.length > 0) {
+      goTo(SearchResults);
+    } else {
+      goBack();
     }
-  }, [searchInput, handleSetRoutes]);
+  }, [searchInput]);
 
   const handleSearchInputChange = (e) => {
     setSearchInput(e.target.value);
@@ -84,34 +79,47 @@ export const AppProvider = ({ children }) => {
     const messageListener = (message) => {
       if (message.action === "updateLinks") {
         initializeLinks();
+        // goTo(Home);
+        // setRoute("Home");
+        // setActive("Home");
+        console.log("home route set");
       }
       if (message.action === "updateFolders") {
         initializeFolders();
-        handleSetRoutes("folders");
+        goTo(Folder);
+        setRoute("Folder");
+        setActive("Folders");
       }
       if (message.action === "namedLinkAdded") {
         setMenu("Named");
       }
     };
 
-    chrome.runtime.onMessage.addListener(messageListener);
+    // chrome.runtime.onMessage.addListener(messageListener);
 
     return () => {
-      chrome.runtime.onMessage.removeListener(messageListener);
+      // chrome.runtime.onMessage.removeListener(messageListener);
     };
-  }, [handleSetRoutes]);
+  }, []);
 
   return (
     <AppContext.Provider
       value={{
+        hoveredLink,
+        setHoveredLink,
         folderDetails,
+        previewLink,
+        previewLinkRef,
+        handleHover,
+        handleHidePreviewLink,
+        inputError,
+        setInputError,
         contextMenu,
         setContextMenu,
         contextMenuRef,
         handleContextMenu,
         handleHideContextMenu,
-        routes,
-        setRoutes,
+        route,
         folderInputs,
         setFolderInputs,
         inputs,
@@ -131,7 +139,7 @@ export const AppProvider = ({ children }) => {
         searchInput,
         darkMode,
         setDarkMode,
-        handleSetRoutes,
+        setRoute,
         setToggle,
         toggle,
         folders,

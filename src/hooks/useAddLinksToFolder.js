@@ -1,52 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppContext } from "../context";
 import { useLinkContext } from "../context";
-import { updateStorage } from "../utils/api";
-const useAddLinksToFolder = () => {
-  const [showLinks, setShowLinks] = useState(false);
-  const { links, setLinks, folderInputs, setFolderInputs } = useAppContext();
-  const { sortedNamedLinks, sortedUnnamedLinks, setShowCheckboxes } =
-    useLinkContext();
-  const existingLinks = [...sortedNamedLinks, ...sortedUnnamedLinks];
-  const linksSelected = links.filter((link) => link.selected);
-  const handleClick = () => {
-    // Filter selected links and add the original index to each link
-    const selectedWithIndex = linksSelected.map((link) => ({
-      ...link,
-      originalIndex: links.indexOf(link),
-    }));
 
-    // Add the selected links to the folderInputs.links array
+const useAddLinksToFolder = () => {
+  const { existingLinks, setExistingLinks, setShowCheckboxes } =
+    useLinkContext();
+  const [showLinks, setShowLinks] = useState(false);
+  const [updatedLinks, setUpdatedLinks] = useState([]);
+  const { folderInputs, setFolderInputs } = useAppContext();
+
+  const linksSelected = existingLinks.filter((link) => link.selected);
+  useEffect(() => {
+    const updatedLinks = existingLinks.filter((link) => !link.selected);
+    setUpdatedLinks(updatedLinks);
+  }, [existingLinks]);
+
+  const handleClick = () => {
     setFolderInputs({
       ...folderInputs,
-      links: [...selectedWithIndex, ...folderInputs.links],
+      links: [...linksSelected, ...folderInputs.links],
     });
 
-    // Remove selected links from the links array and update the state
-    const updatedLinks = links.filter((link) => !link.selected);
-
-    // Deselect the remaining links and update the state
-    const deselectedLinks = updatedLinks.map((link) => {
-      const newLink = { ...link };
-      delete newLink.selected;
-      return newLink;
-    });
-
-    // setOpenFolder(true);
-    // Update the links state with the new links array
-    setLinks(deselectedLinks);
-
-    updateStorage("Links", deselectedLinks);
+    setExistingLinks(updatedLinks);
   };
-
   const handleChooseFromExistingLinks = () => {
     setShowCheckboxes(true);
     setShowLinks(true);
   };
+
   return {
     handleClick,
-    existingLinks,
     linksSelected,
+    updatedLinks,
     handleChooseFromExistingLinks,
     showLinks,
   };

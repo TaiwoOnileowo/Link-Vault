@@ -3,6 +3,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useSelectOptions } from "../hooks";
 import { HiOutlineFolderAdd } from "react-icons/hi";
 import proptypes from "prop-types";
+import { useAppContext } from "../context";
 const SelectOptions = ({ display }) => {
   SelectOptions.propTypes = {
     display: proptypes.array.isRequired,
@@ -14,13 +15,20 @@ const SelectOptions = ({ display }) => {
     handleClickSelectAll,
     handleCancelSelect,
     handleShowAddFolder,
+    activeItems,
   } = useSelectOptions();
-
+  const { route } = useAppContext();
+  let selectCondition;
+  if (route === "Home") {
+    selectCondition = selected.length === activeItems.length;
+  } else {
+    selectCondition = selected.length === display.length;
+  }
   return (
-    <div className="flex justify-between w-full mt-2 text-xs dark:text-white">
+    <div className="flex justify-between w-full mt-2 text-xs text-black dark:text-white">
       <p>{selected.length} selected</p>
-      <div className="flex gap-2">
-        {selected.length > 0 && (
+      <div className="flex gap-3">
+        {selected.length > 0 && route === "Home" && (
           <button onClick={() => handleShowAddFolder()}>
             <HiOutlineFolderAdd size={16} title="Add to folder" />
           </button>
@@ -32,11 +40,11 @@ const SelectOptions = ({ display }) => {
           <RiDeleteBin6Line size={16} />
         </button>
         <button onClick={() => handleClickSelectAll()}>
-          {selected.length === display.length ? "Unselect all" : "Select all"}
+          {selectCondition ? "Unselect all" : "Select all"}
         </button>
         <button
           onClick={() => handleCancelSelect()}
-          className="border border-white px-2 rounded-md"
+          className="border border-darkGray  dark:border-white px-2 rounded-md"
         >
           Cancel
         </button>

@@ -16,7 +16,7 @@ const NewLink = () => {
       title="Add New Link"
       className={`${
         bounce ? "animate-bounce" : null
-      } bg-primary w-[35px] h-[35px] rounded-l-2xl fixed right-0 bottom-[15%] cursor-pointer hover:bg-[#3a61e2] flex items-center justify-center text-white`}
+      } bg-primary-2 w-[35px] h-[35px] rounded-l-2xl fixed right-0 bottom-[15%] cursor-pointer hover:bg-[#3a61e2] flex items-center justify-center text-white`}
     >
       <FaPlus />
     </div>

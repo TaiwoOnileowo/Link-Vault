@@ -6,10 +6,10 @@ const ProceedToAddLinks = ({ showModal }) => {
   };
   const { handleClick } = useProceedToAddLinks();
   return (
-    <h1 className="text-dimWhite font-medium text-xs my-2">
+    <h1 className="dark:text-dimWhite text-black font-medium text-xs my-2">
       Empty folder, proceed to{" "}
       <span
-        className="underline text-primary cursor-pointer"
+        className="underline text-primary-2 cursor-pointer"
         onClick={() => handleClick(showModal, null)}
       >
         add links
