@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
  
 
   return (
-    <div className="relative w-full bg-white min-h-screen flex flex-col scrollbar overflow-x-hidden">
+    <div className="relative w-full bg-white dark:bg-d-darkGray min-h-screen flex flex-col scrollbar overflow-x-hidden">
       <Header />
       <ContextMenu />
       <Toaster

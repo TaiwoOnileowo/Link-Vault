@@ -32,7 +32,7 @@ export const AppProvider = ({ children }) => {
     handleContextMenu,
     handleHideContextMenu,
   } = useContextMenu();
-console.log(menu)
+
   const { previewLink, previewLinkRef, handleHover, handleHidePreviewLink } =
     usePreviewLink();
   const {
@@ -95,10 +95,10 @@ console.log(menu)
       }
     };
 
-    // chrome.runtime.onMessage.addListener(messageListener);
+    chrome.runtime.onMessage.addListener(messageListener);
 
     return () => {
-      // chrome.runtime.onMessage.removeListener(messageListener);
+      chrome.runtime.onMessage.removeListener(messageListener);
     };
   }, []);
 

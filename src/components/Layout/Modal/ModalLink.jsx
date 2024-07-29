@@ -73,8 +73,10 @@ const ModalLink = () => {
           </div>
           {!modalText.includes("Edit Link") && (
             <p
-              className="text-xs my-[10px] text-primary underline cursor-pointer"
-              onClick={handleSaveToFolder}
+              className="text-xs my-[10px] text-black dark:text-white underline cursor-pointer"
+              onClick={() => {
+                inputs.url && handleSaveToFolder();
+              }}
             >
               Save to folder
             </p>

@@ -193,7 +193,8 @@ li {
 }
 
 .nav-bg {
-  background: #2b4cf4;
+  background: linear-gradient(45deg, #2B4CF4, #40E8F0);
+  transition: background 0.3s ease-in-out;
 }
 .nav-bg.dark {
   background: linear-gradient(
@@ -211,12 +212,10 @@ li {
   background:linear-gradient(45deg, #32c4da, #32c4da) ;
 }
 .folder-bg.dark {
-  background: linear-gradient(
-    144.39deg,
-    #ffffff -278.56%,
-    #6d6d6d -78.47%,
-    #11101d 91.61%
-  );
+  background: #2B4CF4;
+}
+.folder-bg.dark:hover{
+  background: #1A3A8A;
 }
 .sidebar {
   -webkit-animation: slide-top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;

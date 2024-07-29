@@ -1,31 +1,31 @@
 /* eslint-disable no-undef */
 export const getInitialLinks = () => {
-  // return new Promise((resolve) => {
-  //   chrome.storage.local.get(["Links"], (result) => {
-  //     let links = result.Links || [];
-  //     resolve(links);
-  //   });
-  // });
-  return JSON.parse(localStorage.getItem("Links"));
+  return new Promise((resolve) => {
+    chrome.storage.local.get(["Links"], (result) => {
+      let links = result.Links || [];
+      resolve(links);
+    });
+  });
+  // return JSON.parse(localStorage.getItem("Links"));
 };
 
 export const getInitialFolders = () => {
-  // return new Promise((resolve) => {
-  //   chrome.storage.local.get(["Folders"], (result) => {
-  //     let folders = result.Folders || [];
-  //     resolve(folders);
-  //   });
-  // });
-  return JSON.parse(localStorage.getItem("Folders"));
+  return new Promise((resolve) => {
+    chrome.storage.local.get(["Folders"], (result) => {
+      let folders = result.Folders || [];
+      resolve(folders);
+    });
+  });
+  // return JSON.parse(localStorage.getItem("Folders"));
 };
 
 export const updateStorage = (key, value) => {
-  // return new Promise((resolve) => {
-  //   chrome.storage.local.set({ [key]: value }, () => {
-  //     resolve();
-  //   });
-  // });
-  localStorage.setItem(key, JSON.stringify(value));
+  return new Promise((resolve) => {
+    chrome.storage.local.set({ [key]: value }, () => {
+      resolve();
+    });
+  });
+  // localStorage.setItem(key, JSON.stringify(value));
 };
 // or
 // export const updateStorage = (key, value) => {

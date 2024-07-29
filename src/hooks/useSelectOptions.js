@@ -22,7 +22,7 @@ const useSelectOptions = () => {
   } = useLinkContext();
   const { sortedNamedLinks, sortedUnnamedLinks } = useSortedLinks();
   const { setShowFolderCheckboxes } = useFolderContext();
-  const isFolder = route === " Folder";
+  const isFolder = route === "Folder";
   const handleDelete = (isModal) => {
     console.log(isFolder, isFolderLinks); // Debug log
     console.log("Delete triggered with isModal:", isModal); // Debug log

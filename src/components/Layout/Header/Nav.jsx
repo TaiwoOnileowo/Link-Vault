@@ -1,7 +1,7 @@
 import { AiOutlineClose } from "react-icons/ai";
 import { HiMenuAlt3 } from "react-icons/hi";
 import ToggleModes from "./ToggleModes";
-import { LuHome, LuFolders, LuCrown } from "react-icons/lu";
+import { LuHome, LuFolders } from "react-icons/lu";
 import { useAppContext } from "../../../context";
 import { Link } from "react-chrome-extension-router";
 import Home from "../../Home";
@@ -39,7 +39,7 @@ const Nav = () => {
     setRoute(item.route);
     setOpenFolder(false);
   };
-  console.log(toggle);
+ 
   return (
     <div className="flex flex-1 justify-end items-center" ref={navRef}>
       <span

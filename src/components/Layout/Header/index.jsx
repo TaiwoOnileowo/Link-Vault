@@ -17,10 +17,10 @@ const Header = () => {
           <img src={icon} className="w-6 object-contain h-6" alt="Link Vault" />
         </div>
         <div
-          className={`relative w-full flex text-black items-center justify-center bg-white hover:bg-hoverInputBg rounded-md dark:bg-darkAlt dark:hover:bg-[#2d2f36] px-2`}
+          className={`relative w-full flex text-black items-center justify-center bg-white hover:bg-hoverInputBg rounded-md dark:bg-d-darkGray dark:hover:bg-darkGray px-2`}
         >
           <IoSearch
-            className="cursor-pointer text-black font-bold"
+            className="cursor-pointer text-black dark:text-white font-bold"
             title={`${
               folderRoute ? "Search Folder Links" : " Search Links..."
             }`}

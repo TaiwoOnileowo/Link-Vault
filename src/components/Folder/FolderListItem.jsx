@@ -4,33 +4,28 @@ import Checkbox from "../Checkbox";
 import FolderListItemLinks from "./FolderListItemLinks";
 import { useFolderContext } from "../../context";
 import { TbPinFilled } from "react-icons/tb";
-import propTypes from "prop-types";
+import PropTypes from "prop-types";
 
 const FolderListItem = ({ folder, index, isModal }) => {
   FolderListItem.propTypes = {
-    folder: propTypes.object.isRequired,
-    index: propTypes.number.isRequired,
-    isModal: propTypes.bool,
+    folder: PropTypes.object.isRequired,
+    index: PropTypes.number.isRequired,
+    isModal: PropTypes.bool,
   };
+  
   const { handleContextMenu, darkMode } = useAppContext();
-  const { handleSelect, setIsFolder, setIsFolderLinks, setShowCheckboxes } =
-    useLinkContext();
-  const {
-    showFolderCheckboxes,
-    openFolder,
-    setOpenFolder,
-    index: folderIndex,
-    setIndex,
-  } = useFolderContext();
+  const { handleSelect, setIsFolder, setIsFolderLinks, setShowCheckboxes } = useLinkContext();
+  const { showFolderCheckboxes, openFolderIndex, toggleFolder } = useFolderContext();
+
   return (
     <div key={index} className="select-none flex flex-col">
       <div
-        className="flex gap-2 items-center  w-fit h-fit"
+        className="flex gap-2 items-center w-fit h-fit"
         onContextMenu={(e) => {
           setIsFolder(true);
           setIsFolderLinks(false);
           handleContextMenu(e, index);
-          setIndex(index);
+          toggleFolder(index); // Toggle folder on right-click as well
         }}
       >
         {(showFolderCheckboxes || isModal) && (
@@ -42,8 +37,7 @@ const FolderListItem = ({ folder, index, isModal }) => {
             if (showFolderCheckboxes) {
               handleSelect(index, true);
             } else {
-              setIndex(index);
-              setOpenFolder((prev) => !prev);
+              toggleFolder(index);
               setShowCheckboxes(false);
             }
           }}
@@ -53,7 +47,7 @@ const FolderListItem = ({ folder, index, isModal }) => {
               darkMode ? "dark" : null
             } folder-bg rounded-md cursor-pointer p-1 px-2 gap-2 min-w-[120px]`}
           >
-            <span className="">
+            <span>
               <img
                 src={folder.folder_icon}
                 alt="Folder Icon"
@@ -62,22 +56,18 @@ const FolderListItem = ({ folder, index, isModal }) => {
             </span>
             <span
               className={`${
-                openFolder && index === folderIndex
-                  ? "text-lightGray"
-                  : "text-white"
+                openFolderIndex === index ? "text-lightGray" : "text-white"
               } ${isModal ? "text-sm" : "text-base"}`}
             >
               {folder.folder_name}
             </span>
           </span>
-          {folder.pinned &&!isModal && (
+          {folder.pinned && !isModal && (
             <TbPinFilled className="dark:text-[#4c4c74] text-[#122ca3]" />
           )}
         </li>
       </div>
-      {openFolder && folderIndex === index && (
-        <FolderListItemLinks folder={folder} />
-      )}
+      {openFolderIndex === index && <FolderListItemLinks folder={folder} />}
     </div>
   );
 };

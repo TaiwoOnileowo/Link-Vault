@@ -1,10 +1,14 @@
 
-
+import icon from "/icon.png";
 const Footer = () => {
   return (
     <>
-      <footer className="absolute bottom-0  flex flex-col w-full py-4 items-center justify-center bg-lightGray dark:bg-dark dark:text-white">
-        <div className="flex gap-4 text-sm">
+      <footer className="absolute bottom-0  flex flex-col w-full pt-4 items-center justify-center bg-lightGray dark:bg-dark dark:text-white">
+        <div className="flex gap-2 mb-2 items-center">
+          <img src={icon} alt="" className="w-6 h-6"/>
+          <h1 className="font-bold text-darkGray dark:text-white text-sm">Link Vault</h1>
+        </div>
+        <div className="flex gap-4 text-xs">
           <p className="underline cursor-pointer">
             <a
               href="mailto:taiwoonileowo17@gmail.com"
@@ -24,8 +28,9 @@ const Footer = () => {
             </a>
           </p>
         </div>
-        <h1 className="text-xs mt-2">
-          Powered By{" "}
+        <div className="w-full text-[10px] pb-1 mt-4 flex justify-between items-center px-4">
+        <h1 >
+          Meet the developer:{" "}
           <span className="underline">
             <a
               href="https://taiwo-personal-portfolio.netlify.app/"
@@ -36,6 +41,9 @@ const Footer = () => {
             </a>
           </span>
         </h1>
+          <p className="underline">Privacy Policy</p>
+        </div>
+        
       </footer>
     </>
   );

@@ -11,7 +11,7 @@ const ModalIcon = () => {
             <div
               key={i}
               className={`${
-                index === i && "dark:bg-white bg-primary-1 bg-opacity-40"
+                index === i && "dark:bg-lightGray bg-primary-1 bg-opacity-40"
               } p-2 flex items-center justify-center cursor-pointer rounded-lg`}
               onClick={() => {
                 handleClick(icon, i);

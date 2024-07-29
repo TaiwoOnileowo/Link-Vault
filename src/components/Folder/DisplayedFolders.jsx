@@ -35,7 +35,7 @@ const DisplayedFolders = () => {
         <FolderList />
       ) : (
         <div
-          className={`bg-white dark:bg-dark h-[50%] bg-opacity-50 flex flex-col items-center justify-center py-4 mt-4 shadow-xl`}
+          className={`bg-lightGray dark:bg-d-mediumGray flex flex-col items-center justify-center py-4 mt-4 shadow-xl`}
         >
           <FaBeerMugEmpty className="w-24 h-24 dark:text-[#d5ebff] text-[#2a4ff6]" />
           <h2 className="dark:text-white text-black text-[28px] font-semibold pb-4">

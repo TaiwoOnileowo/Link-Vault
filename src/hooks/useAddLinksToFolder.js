@@ -3,7 +3,7 @@ import { useAppContext } from "../context";
 import { useLinkContext } from "../context";
 
 const useAddLinksToFolder = () => {
-  const { existingLinks, setExistingLinks, setShowCheckboxes } =
+  const { existingLinks, setExistingLinks, setShowCheckboxes,  handleSelectClick  } =
     useLinkContext();
   const [showLinks, setShowLinks] = useState(false);
   const [updatedLinks, setUpdatedLinks] = useState([]);
@@ -24,6 +24,12 @@ const useAddLinksToFolder = () => {
     setExistingLinks(updatedLinks);
   };
   const handleChooseFromExistingLinks = () => {
+    const deselectedLinks = existingLinks.map((link) => {
+      const newLink = { ...link };
+      delete newLink.selected;
+      return newLink;
+    });
+    setExistingLinks(deselectedLinks);
     setShowCheckboxes(true);
     setShowLinks(true);
   };

@@ -8,8 +8,8 @@ const usePreviewLink = () => {
   const handleHover = (e, index) => {
     e.preventDefault();
     const offset = 20;
-    const previewWidth = 200; // Adjust as per your preview's actual width
-    const previewHeight = 280; // Adjust as per your preview's actual height
+    const previewWidth = 200;
+    const previewHeight = 280;
 
     let x = e.clientX + offset;
     let y = e.clientY + offset;
@@ -18,10 +18,16 @@ const usePreviewLink = () => {
     const windowHeight = window.innerHeight;
 
     if (x + previewWidth > windowWidth) {
-      x = e.clientX - previewWidth - offset;
+      x = windowWidth - previewWidth - offset;
+    }
+    if (x < 0) {
+      x = offset;
     }
     if (y + previewHeight > windowHeight) {
-      y = e.clientY - previewHeight - offset;
+      y = windowHeight - previewHeight - offset;
+    }
+    if (y < 0) {
+      y = offset;
     }
 
     setPreviewLink({

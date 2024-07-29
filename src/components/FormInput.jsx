@@ -35,7 +35,7 @@ const FormInput = ({
         {label}
         {showSaveTab && (
           <button
-            className={`text-xs text-white bg-primary px-2 rounded-md hover:bg-hoverPrimary ${
+            className={`text-xs text-white bg-primary-2 px-2 rounded-md hover:bg-hoverPrimary ${
               bounce ? "animate-bounce" : null
             }`}
             onClick={handleSaveTabClick}

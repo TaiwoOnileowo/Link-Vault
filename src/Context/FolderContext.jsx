@@ -6,26 +6,23 @@ export const FolderContext = createContext();
 
 // Context Provider component
 export const FolderProvider = ({ children }) => {
-  // Component logic here
-
   FolderProvider.propTypes = {
     children: PropTypes.node.isRequired,
   };
-  // State variables
   const [showFolderCheckboxes, setShowFolderCheckboxes] = useState(false);
-  const [index, setIndex] = useState(null);
-  const [openFolder, setOpenFolder] = useState(false);
+  const [openFolderIndex, setOpenFolderIndex] = useState(null);
 
-  // Return the context provider
+  const toggleFolder = (index) => {
+    setOpenFolderIndex((prevIndex) => (prevIndex === index ? null : index));
+  };
+
   return (
     <FolderContext.Provider
       value={{
         showFolderCheckboxes,
         setShowFolderCheckboxes,
-        index,
-        setIndex,
-        openFolder,
-        setOpenFolder,
+        openFolderIndex,
+        toggleFolder,
       }}
     >
       {children}

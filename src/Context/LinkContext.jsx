@@ -283,6 +283,7 @@ export const LinkProvider = ({ children }) => {
       null
     );
     setFolders(updatedFolders);
+    console.log("Updated folders:", updatedFolders);
     updateStorage("Folders", updatedFolders);
   };
 

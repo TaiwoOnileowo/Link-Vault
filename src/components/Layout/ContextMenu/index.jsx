@@ -142,7 +142,7 @@ const ContextMenu = ({ items }) => {
 
         {isFolder && (
           <>
-            <hr className="w-full border-light border-opacity-10" />
+            <hr className="w-full border-gray-100 my-1 opacity-10" />
             <ContextMenuItem
               onClick={() => {
                 const details = {
@@ -160,7 +160,7 @@ const ContextMenu = ({ items }) => {
           </>
         )}
 
-        <hr className="w-full border-light border-opacity-10" />
+        <hr className="w-full border-gray-100 my-1 opacity-10" />
         <ContextMenuItem
           onClick={() => {
             if (isFolder) {

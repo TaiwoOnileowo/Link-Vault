@@ -1,3 +1,5 @@
+import { list } from 'postcss';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "class", // Enable dark mode with class strategy
@@ -17,6 +19,12 @@ export default {
         inputBg: "#CED4DA",
         hoverInputBg: "rgba(206, 212, 218, 0.5)",
         darkGray: "#212529",
+        dark: "#12073d",
+        d: {
+          lightGray: "#E0E0E0",
+          mediumGray: "#121212",
+          darkGray: "#1E1E1E",
+        },
       },
       backgroundImage: (theme) => ({
         "gradient-radial": `radial-gradient(ellipse at center, ${theme(

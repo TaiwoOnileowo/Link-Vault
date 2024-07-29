@@ -25,14 +25,14 @@ const Modal = (props) => {
 
   return createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50 w-full h-full">
-      <div className="relative bg-white dark:bg-darkAlt px-3 p-4 rounded-lg shadow-lg text-black max-w-[88%] max-h-[70%] scrollbar">
+      <div className="relative bg-white dark:bg-d-darkGray px-3 p-4 rounded-lg shadow-lg text-black max-w-[88%] max-h-[70%] scrollbar">
         <span
           className="text-primary-2 hover:text-hoverBlue dark:text-dimWhite absolute top-0 right-0 cursor-pointer dark:hover:text-white"
           onClick={handleModalClose}
         >
           <MdOutlineCancel />
         </span>
-        <h1 className="text-xl font-bold text-primary-2 dark:text-white text-center mb-3">
+        <h1 className="text-xl font-bold text-primary-2 dark:text-d-lightGray text-center mb-3">
           {modalText}
         </h1>
         {children}

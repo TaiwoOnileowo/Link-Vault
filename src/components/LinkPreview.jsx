@@ -10,9 +10,7 @@ import {
 
 async function fetchLinkMetadata(url) {
   try {
-    const proxyUrl = `http://localhost:3000/fetch-metadata?url=${encodeURIComponent(
-      url
-    )}`;
+    const proxyUrl = `https://link-vault-proxy-1.onrender.com/fetch-metadata?url=${encodeURIComponent(url)}`;
     const response = await fetch(proxyUrl);
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -27,8 +25,6 @@ async function fetchLinkMetadata(url) {
 
 const LinkPreview = ({ url }) => {
   const [metadata, setMetadata] = useState(null);
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(null);
   const { previewLink, contextMenu } = useAppContext();
   const { showCheckboxes } = useLinkContext();
   const previewRef = useRef();
@@ -39,15 +35,11 @@ const LinkPreview = ({ url }) => {
       if (contextMenu.visible || showCheckboxes) {
         return;
       } else {
-        // setLoading(true);
-        // setError(null);
         try {
           const meta = await fetchLinkMetadata(url);
           setMetadata(meta);
         } catch (err) {
-          // setError("Something went wrong 🫠");
-        } finally {
-          // setLoading(false);
+          console.error(err);
         }
       }
     }
