@@ -1,16 +1,16 @@
-import adobe from "/folderIcons/adobe.png";
-import ai from "/folderIcons/ai.png";
-import code from "/folderIcons/code.png";
-import music from "/folderIcons/music.png";
-import pictures from "/folderIcons/pictures.png";
-import spotify from "/folderIcons/spotify.png";
-import technical from "/folderIcons/technical.png";
-import videos from "/folderIcons/videos.png";
-import folderbrowse from "/folderIcons/folderbrowse.png";
-import foldereyes from "/folderIcons/foldereyes.png";
-import folderlove from "/folderIcons/folderlove.png";
-import folderskull from "/folderIcons/folderskull.png";
-import folderstar from "/folderIcons/folderstar.png";
+import adobe from "/foldericons/adobe.png";
+import ai from "/foldericons/ai.png";
+import code from "/foldericons/code.png";
+import music from "/foldericons/music.png";
+import pictures from "/foldericons/pictures.png";
+import spotify from "/foldericons/spotify.png";
+import technical from "/foldericons/technical.png";
+import videos from "/foldericons/videos.png";
+import folderbrowse from "/foldericons/folderbrowse.png";
+import foldereyes from "/foldericons/foldereyes.png";
+import folderlove from "/foldericons/folderlove.png";
+import folderskull from "/foldericons/folderskull.png";
+import folderstar from "/foldericons/folderstar.png";
 
 export const folderIcons = [
   adobe,
