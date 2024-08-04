@@ -6,14 +6,14 @@ const useModalDeleteAll = () => {
   const { setShowCheckboxes, setIsFolderLinks } = useLinkContext();
 
   const handleCancel = () => {
-    setLinks((prevLinks) =>
+    setLinks((prevLinks:Array<any>) =>
       prevLinks.map((link) => {
         const newLink = { ...link };
         delete newLink.selected;
         return newLink;
       })
     );
-    setFolders((prevFolders) =>
+    setFolders((prevFolders:Array<any>) =>
       prevFolders.map((folder) => {
         const newFolder = { ...folder };
         delete newFolder.selected;

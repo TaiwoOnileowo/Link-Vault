@@ -31,13 +31,12 @@ export const updateStorage = (key: string, value: any) => {
   // });
   localStorage.setItem(key, JSON.stringify(value));
 };
-// or
-// export const updateStorage = (key, value) => {
-//   chrome.storage.local.set({ [key]: value }, () => {
-//     console.log('Storage updated successfully');
-//   });
-// };
-//which is better and why?
-//I think the first one is better because it returns a promise that can be used to handle the success or failure of the operation.
-//I dont want to wait for the setting to storage to be done, I just want to set it and forget it, so which do I use
-//I think the second one is better because it is more concise and easier to read. It also does not require the use of a promise, which can be confusing for some developers.
+
+export const deleteStorage = (key: string) => {
+  // return new Promise((resolve) => {
+  //   chrome.storage.local.remove(key, () => {
+  //     resolve();
+  //   });
+  // });
+  localStorage.setItem(key, JSON.stringify([]));
+};

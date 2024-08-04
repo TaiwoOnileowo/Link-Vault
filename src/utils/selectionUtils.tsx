@@ -50,7 +50,7 @@ export const toggleSelection = (
  * @returns {Array} - The updated array of items with the toggled selection.
  */
 export const toggleBulkSelection = (
-  items:any[],
+  items: any[],
   isSelectClick = false,
   menu = null,
   isFolder = false,
@@ -64,8 +64,8 @@ export const toggleBulkSelection = (
     const folder = { ...updatedItems[openFolderIndex] };
     const allSelected = isSelectClick
       ? true
-      : folder.links.every((link) => link.selected);
-    folder.links = folder.links.map((link) => ({
+      : folder.links.every((link: { selected: boolean }) => link.selected);
+    folder.links = folder.links.map((link: { selected: boolean }) => ({
       ...link,
       selected: !allSelected,
     }));

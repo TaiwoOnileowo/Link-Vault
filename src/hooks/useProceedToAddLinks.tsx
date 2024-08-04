@@ -11,7 +11,14 @@ const useProceedToAddLinks = () => {
     links: [],
   };
 
-  const handleClick = (showModal, details, index) => {
+  const handleClick = (
+    showModal: boolean,
+    details: {
+      folder_name: string;
+      links: Array<any>;
+    },
+    index: number
+  ) => {
     if (showModal) {
       openModal(
         "Save Links To Folder",

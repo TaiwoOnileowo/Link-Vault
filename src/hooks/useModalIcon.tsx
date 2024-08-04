@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppContext } from "../context";
-import { updateStorage } from "../utils/api";
+import {} from "../utils/api";
 import { folderIcons } from "../../public/foldericons";
 import toast from "react-hot-toast";
 const useModalIcon = () => {
@@ -16,7 +16,6 @@ const useModalIcon = () => {
     setFolders(updatedFolders);
   };
   const handleClickDone = () => {
-    updateStorage("Folders", folders);
     handleClose();
     toast.success("Icon Changed");
   };

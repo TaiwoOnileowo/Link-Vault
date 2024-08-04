@@ -20,7 +20,10 @@ const useContextMenu = () => {
     };
   }, []);
 
-  const handleContextMenu = (e, index) => {
+  const handleContextMenu = (
+    e: React.MouseEvent<HTMLDivElement>,
+    index: number
+  ) => {
     e.preventDefault();
     setContextMenu({
       visible: true,

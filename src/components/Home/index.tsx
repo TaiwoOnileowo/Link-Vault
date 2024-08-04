@@ -4,20 +4,18 @@ import { useAppContext } from "../../context";
 import { useLinkContext } from "../../context";
 // import Tags from "./Tags";
 import Display from "../Layout/Display";
-
+import { getFromLocalStorage } from "../../utils/storage";
 const Home = () => {
-  const { menu, links } = useAppContext();
+  const { menu, links , sessionid} = useAppContext();
   const { namedLinks, unnamedLinks } = useLinkContext();
-  // const unnamedLinks = links.filter((link) => !link.url_name);
-  // const namedLinks = links.filter((link) => link.url_name);
+
+  console.log("sessionId", sessionid);
   const displayedLinks = menu === "Named" ? namedLinks : unnamedLinks;
   // menu === "Named" ? sortedNamedLinks : sortedUnnamedLinks;
   return (
     <div className="p-2 w-full mb-20">
       <Menu text="Unnamed, Named" />
-      {/* {menu === "Tags" ? (
-        <Tags />
-      ) : ( */}
+      {sessionid ? <p className="text-white text-2xl font-bold">Logged Innnnnn</p> : <p className="text-white text-2xl font-bold">Logged Outttttt</p>}
       <>
         <Display display={displayedLinks}>
           <DisplayedLinks display={displayedLinks} />

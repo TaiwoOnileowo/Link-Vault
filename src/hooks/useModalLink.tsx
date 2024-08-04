@@ -5,7 +5,7 @@ import { useFolderContext } from "../context";
 import toast from "react-hot-toast";
 import { getCurrentTab } from "../utils/chromeUtilis";
 import useSelectOptions from "./useSelectOptions";
-import { updateStorage } from "../utils/api";
+import {} from "../utils/api";
 
 const useModalLink = () => {
   const {
@@ -20,14 +20,14 @@ const useModalLink = () => {
     setFolderInputs,
     folderInputs,
     setFolders,
-    route
+    route,
   } = useAppContext();
   const { isFolderLinks, setShowCheckboxes } = useLinkContext();
   const { openFolderIndex } = useFolderContext();
   const [bounce, setBounce] = useState(false);
   const [error, setError] = useState(null);
   const { handleShowAddFolder } = useSelectOptions();
-const folderRoute = route==="Folder";
+  const folderRoute = route === "Folder";
   const handleSaveTab = () => {
     getCurrentTab().then((tab) => {
       setInputs({ ...inputs, url: tab.url });
@@ -45,7 +45,6 @@ const folderRoute = route==="Folder";
       }
     }
 
- 
     setInputs((prevInputs) => ({
       ...prevInputs,
       [name]: value,
@@ -88,7 +87,7 @@ const folderRoute = route==="Folder";
         } else {
           updatedLinks[editIndex] = { ...inputs };
           setLinks(updatedLinks);
-          updateStorage("Links", updatedLinks);
+
           toast.success("Edited successfully!");
         }
         setInputs({
@@ -109,7 +108,7 @@ const folderRoute = route==="Folder";
           (a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0)
         );
         setLinks(sortedUpdatedLinks);
-        updateStorage("Links", sortedUpdatedLinks);
+       
         toast.success("Saved successfully!");
         inputs.url_name ? setMenu("Named") : setMenu("Unnamed");
         handleClose();
@@ -120,8 +119,8 @@ const folderRoute = route==="Folder";
         url_name: "",
         tags: "",
       });
-    }else if (!inputs.url) {
-      setError("Url is required");  
+    } else if (!inputs.url) {
+      setError("Url is required");
     }
   };
 
@@ -145,7 +144,6 @@ const folderRoute = route==="Folder";
     handleCancel,
     handleSaveToFolder,
     error,
-  
   };
 };
 

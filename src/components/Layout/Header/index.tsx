@@ -1,17 +1,22 @@
 import icon from "/icon.png";
 import { useAppContext } from "../../../context";
 import { IoSearch } from "react-icons/io5";
-
+import { getFromLocalStorage } from "../../../utils/storage";
 import Nav from "./Nav";
-
 const Header = () => {
-  const { handleSearchInputChange, searchInput, route } = useAppContext();
+  const { handleSearchInputChange, searchInput, route, sessionid } =
+    useAppContext();
 
   const folderRoute = route === "Folder";
   return (
     <header
       className={`w-full py-4 flex items-center px-3 justify-between dark:bg-dark bg-lightGray dark:text-white  `}
     >
+      {sessionid ? (
+        <p className="text-white text-2xl font-bold">Logged Innnnnn</p>
+      ) : (
+        <p className="text-white text-2xl font-bold">Logged Outttttt</p>
+      )}
       <div className="flex items-center gap-4 h-full w-[90%]">
         <div className="flex items-center">
           <img src={icon} className="w-6 object-contain h-6" alt="Link Vault" />

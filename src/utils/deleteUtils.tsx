@@ -3,31 +3,29 @@ import toast from "react-hot-toast";
 const handleDeleteItems = (
   items: any[],
   setItems,
-  itemType: string,
-  index = null,
-  updateStorage:(key: string, value: any) => void,
-  storageKey: string
+  index: number | null = null
 ) => {
   if (index !== null) {
     const updatedItems = [...items];
     updatedItems.splice(index, 1);
-    updateStorage(storageKey, updatedItems);
+
     setItems(updatedItems);
   } else {
-    updateStorage(storageKey, []);
     setItems([]);
   }
 };
 
 const handleBulkDeleteItems = (
   items: any[],
-  allItems = null,
+  allItems: Array<any> | null,
   setItems,
-  updateStorage:(key: string, value: any) => void,
-  storageKey: string,
-  filterCriteria,
-  showModal,
-  whatToRetainFilterCriteria = null,
+  filterCriteria: (link: {
+    url_name?: string;
+    url?: string;
+    selected?: boolean;
+  }) => boolean,
+  openModal: any,
+  menu,
   shouldShowModal = false
 ) => {
   console.log("Items:", items);
@@ -38,19 +36,21 @@ const handleBulkDeleteItems = (
 
   if (itemsToDelete.length > 0) {
     if (itemsToDelete.length === items.length && !shouldShowModal) {
-      showModal(`Delete All Items`, null, null);
+      openModal(`Delete All Items`, null, null);
     } else {
       const itemsToKeep = items.filter((item) => !filterCriteria(item));
-      let updatedItems = [];
+      let updatedItems: Array<any> = [];
       if (allItems) {
         updatedItems = [
           ...itemsToKeep,
-          ...allItems.filter((item) => whatToRetainFilterCriteria(item)),
+          ...allItems.filter((item) =>
+            menu === "Unnamed" ? item.url_name : !item.url_name
+          ),
         ];
       } else {
         updatedItems = itemsToKeep;
       }
-      updateStorage(storageKey, updatedItems);
+
       setItems(updatedItems);
       toast.success("Deleted");
     }

@@ -7,6 +7,8 @@ import { Link } from "react-chrome-extension-router";
 import Home from "../../Home";
 import Folder from "../../Folder";
 import { useFolderContext } from "../../../context";
+import { IoSettingsOutline } from "react-icons/io5";
+import Settings from "../../Settings";
 const Nav = () => {
   const { setOpenFolderIndex } = useFolderContext();
   const nav = [
@@ -18,7 +20,12 @@ const Nav = () => {
       route: "Folder",
     },
     // { title: "Sessions", icon: <CgBrowser />, route: "sessions" },
-    // { title: "Settings", icon: <IoSettingsOutline />, route: "settings" },
+    {
+      title: "Settings",
+      icon: <IoSettingsOutline />,
+      component: Settings,
+      route: "settings",
+    },
     // { title: "Premium", icon: <LuCrown />, route: "premium" },
   ];
 
@@ -39,7 +46,7 @@ const Nav = () => {
     setRoute(item.route);
     setOpenFolderIndex(null);
   };
- 
+
   return (
     <div className="flex flex-1 justify-end items-center" ref={navRef}>
       <span

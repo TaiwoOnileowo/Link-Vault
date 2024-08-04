@@ -61,7 +61,7 @@ const useSelectOptions = () => {
   const handleCancelSelect = () => {
     if (isFolder) {
       setShowFolderCheckboxes(false);
-      setFolders((prevFolders) =>
+      setFolders((prevFolders: Array<any>) =>
         prevFolders.map((folder) => {
           const newFolder = { ...folder };
           delete newFolder.selected;
@@ -73,10 +73,10 @@ const useSelectOptions = () => {
     } else {
       setShowCheckboxes(false);
       if (isFolderLinks) {
-        setFolders((prevFolders) =>
+        setFolders((prevFolders: Array<any>) =>
           prevFolders.map((folder) => {
             const newFolder = { ...folder };
-            newFolder.links = newFolder.links.map((link) => {
+            newFolder.links = newFolder.links.map((link: any) => {
               const newLink = { ...link };
               delete newLink.selected;
               return newLink;
@@ -87,7 +87,7 @@ const useSelectOptions = () => {
         setIsFolder(false);
         setIsFolderLinks(false);
       } else {
-        setLinks((prevLinks) =>
+        setLinks((prevLinks: Array<any>) =>
           prevLinks.map((link) => {
             const newLink = { ...link };
             delete newLink.selected;
@@ -100,7 +100,7 @@ const useSelectOptions = () => {
   const handleShowAddFolder = (linksAdded) => {
     openModal("Save to Folder", linksAdded ? linksAdded : null, null, null);
   };
-  let activeItems;
+  let activeItems: Array<any> = [];
   if (route === "Home") {
     if (menu === "Unnamed") {
       activeItems = sortedUnnamedLinks;
