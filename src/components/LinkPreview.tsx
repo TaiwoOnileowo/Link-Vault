@@ -10,8 +10,17 @@ import {
 
 async function fetchLinkMetadata(url) {
   try {
-    const proxyUrl = `https://link-vault-proxy-1.onrender.com/fetch-metadata?url=${encodeURIComponent(url)}`;
-    const response = await fetch(proxyUrl);
+    const proxyUrl = `http://localhost:3000/api/linkmeta?url=${encodeURIComponent(
+      url
+    )}`;
+    const response = await fetch(proxyUrl, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Extension-ID": "bbgippochabbclmbgkkbbofljdfnbdop",
+      },
+    });
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }

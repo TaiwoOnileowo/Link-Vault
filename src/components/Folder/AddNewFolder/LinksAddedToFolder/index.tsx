@@ -1,10 +1,12 @@
+import React from "react";
 import { useAppContext } from "../../../../context";
 import { styles } from "../../../../styles";
 import LinkAddedList from "./LinkAddedList";
 import useLinksAddedToFolder from "../../../../hooks/useLinksAddedToFolder";
 import ProceedToAddLinks from "./ProceedToAddLinks";
+import { AppContextType } from "../../../../types";
 const LinksAddedToFolder = () => {
-  const { folderInputs, modalText } = useAppContext();
+  const { folderInputs, modalText } = useAppContext() as AppContextType;
 
   const { handleClick } = useLinksAddedToFolder();
   return (

@@ -1,7 +1,9 @@
+import React from "react";
 import { useModalLink } from "../../../hooks";
 import FormInput from "../../FormInput";
 import { styles } from "../../../styles";
 import { useAppContext } from "../../../context";
+import { AppContextType } from "../../../types";
 
 const ModalLink = () => {
   const {
@@ -11,7 +13,7 @@ const ModalLink = () => {
     error,
     handleSaveToFolder,
   } = useModalLink();
-  const { inputs, modalText, setMenu } = useAppContext();
+  const { inputs, modalText, setMenu } = useAppContext() as AppContextType;
 
   return (
     <form
@@ -43,32 +45,25 @@ const ModalLink = () => {
       modalText.includes("Save Links To Folder") ? (
         <div className="flex justify-end gap-2">
           <button
-            className={styles.button2}
+            className={styles.button1}
             type="submit"
             // onClick={() => setMenu("View Links")}
           >
             Add
           </button>
-          <button
-            className={styles.button1}
-            type="button"
-            onClick={() => setMenu("View Links")}
-          >
-            Next: View Links
-          </button>
         </div>
       ) : (
-        <div className="flex justify-between items-end h-fit">
+        <div className="flex justify-between items-end h-fit gap-4">
           <div className="flex justify-start">
-            <button className={styles.button1} type="submit">
-              Save
-            </button>
             <button
               className={styles.button2}
               type="button"
               onClick={handleCancel}
             >
               Cancel
+            </button>
+            <button className={styles.button1} type="submit">
+              Save
             </button>
           </div>
           {!modalText.includes("Edit Link") && (

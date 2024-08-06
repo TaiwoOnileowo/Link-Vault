@@ -1,15 +1,17 @@
-import { useImperativeHandle } from "react";
+import React, { useImperativeHandle } from "react";
 import { createPortal } from "react-dom";
 import { useAppContext } from "../../../context";
 import { MdOutlineCancel } from "react-icons/md";
 import { useModal } from "../../../hooks";
 import propTypes from "prop-types";
-const Modal = (props) => {
+import { AppContextType } from "../../../types";
+const Modal: React.FC<{ children: React.ReactNode }> = (props) => {
   const { children } = props;
   Modal.propTypes = {
     children: propTypes.node.isRequired,
   };
-  const { modalRef, isOpen, setIsOpen, modalText } = useAppContext();
+  const { modalRef, isOpen, setIsOpen, modalText } =
+    useAppContext() as AppContextType;
   const { handleModalClose } = useModal();
 
   useImperativeHandle(modalRef, () => ({

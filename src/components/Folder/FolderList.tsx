@@ -1,6 +1,7 @@
+import React from "react"
 import FolderListItem from "./FolderListItem";
 import { useAppContext } from "../../context";
-import propTypes from "prop-types";
+
 const FolderList = ({ isModal }: { isModal?: boolean }) => {
   const { folders } = useAppContext();
   return (

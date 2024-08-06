@@ -1,8 +1,10 @@
+import React from "react";
 import FolderList from "../../Folder/FolderList";
 import { styles } from "../../../styles";
 import { useLinkContext } from "../../../context";
+import { LinkContextProps } from "../../../types";
 const ModalAddLinksToFolder = () => {
-  const { handleAddLinksToFolder } = useLinkContext();
+  const { handleAddLinksToFolder } = useLinkContext() as LinkContextProps;
   return (
     <div>
       <p className="swipe-right text-xs text-black dark:text-white italic opacity-50 ">

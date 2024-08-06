@@ -1,3 +1,4 @@
+import { Links, Folders } from "../types";
 /**
  * Toggles the `selected` state of an individual item (folder or link).
  * @param {Array} items - The array of items (folders or links).
@@ -7,23 +8,24 @@
  * @returns {Array} - The updated array of items with the toggled selection.
  */
 export const toggleSelection = (
-  items: any[],
+  items: Folders[] | Links[],
   index: number,
-  isFolder = false,
-  openFolderIndex = null
+  isFolder: boolean = false,
+  openFolderIndex: number | null = null
 ) => {
-  const updatedItems = [...items];
+  const updatedItems= [...items];
 
   if (isFolder) {
     // Toggle selection for a folder
     const folder = { ...updatedItems[index] };
     folder.selected = !folder.selected;
     updatedItems[index] = folder;
+    console.log(updatedItems[index], "Inside toggleSelection: folder");
     console.log("Inside toggleSelection:", folder.selected);
   } else if (openFolderIndex !== null) {
     // Toggle selection for a link inside a folder
-    const folder = { ...updatedItems[openFolderIndex] };
-    const updatedLinks = [...folder.links];
+    const folder: Folders = { ...updatedItems[openFolderIndex] };
+    const updatedLinks: Links[] = [...folder.links];
     const link = { ...updatedLinks[index] };
     link.selected = !link.selected;
     updatedLinks[index] = link;
@@ -50,18 +52,18 @@ export const toggleSelection = (
  * @returns {Array} - The updated array of items with the toggled selection.
  */
 export const toggleBulkSelection = (
-  items: any[],
+  items: Folders[] | Links[],
   isSelectClick = false,
-  menu = null,
-  isFolder = false,
-  isFolderLinks = false,
-  openFolderIndex = null
+  menu: string | null = null,
+  isFolder: boolean = false,
+  isFolderLinks: boolean = false,
+  openFolderIndex: number | null = null
 ) => {
   const updatedItems = [...items];
   console.log(openFolderIndex, isFolderLinks);
   if (isFolderLinks && openFolderIndex !== null) {
     // Toggle selection for all links inside a specific folder
-    const folder = { ...updatedItems[openFolderIndex] };
+    const folder:Folder = { ...updatedItems[openFolderIndex] };
     const allSelected = isSelectClick
       ? true
       : folder.links.every((link: { selected: boolean }) => link.selected);

@@ -1,29 +1,35 @@
-import { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect, createContext } from "react";
 import { goTo, goBack } from "react-chrome-extension-router";
 import useContextMenu from "../hooks/useContextMenu";
 import { useModalContext } from ".";
 import { useThemeContext } from ".";
 import useNav from "../hooks/useNav";
-import { getInitialLinks, getInitialFolders } from "../utils/api";
 import usePreviewLink from "../hooks/usePreviewLink";
 
 import SearchResults from "../components/SearchResults.tsx";
-
 import Folder from "../components/Folder/index.tsx";
+import Home from "../components/Home/index.tsx";
+import { updateStorage } from "../utils/api";
+export const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const AppContext = createContext();
+import { AppContextType, Links, Folders, Session } from "../types.ts";
+import toast from "react-hot-toast";
 
-export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const [links, setLinks] = useState([]);
-  const [folders, setFolders] = useState([]);
-  const [active, setActive] = useState("Home");
-  const [searchInput, setSearchInput] = useState("");
-  const [menu, setMenu] = useState("Unnamed");
-  const [route, setRoute] = useState("Home");
+export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [links, setLinks] = useState<Links[]>([]);
+  const [folders, setFolders] = useState<Folders[]>([]);
+  const [active, setActive] = useState<string>("Home");
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [menu, setMenu] = useState<string>("Unnamed");
+  const [route, setRoute] = useState<string>("Home");
   const { toggle, setToggle, navRef } = useNav();
   const [hoveredLink, setHoveredLink] = useState(null);
-  const [inputError, setInputError] = useState(false);
-  const [sessionid, setSessionid] = useState<string | null>(null);
+  const [inputError, setInputError] = useState<boolean>(false);
+  const [session, setSession] = useState<Session| null>(null);
+  const [showSignUpModal, setShowSignUpModal] = useState<boolean>(false);
+  const [modalDismissed, setModalDismissed] = useState<boolean>(false);
   const {
     contextMenu,
     setContextMenu,
@@ -39,6 +45,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setIsOpen,
     modalText,
     editIndex,
+    setEditIndex,
     inputs,
     setInputs,
     folderInputs,
@@ -67,108 +74,140 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setSearchInput(e.target.value);
   };
 
-  useEffect(() => {
-    async function fetchSession() {
-      try {
-        const response = await fetch("http://localhost:3000/api/session", {
+  const fetchSession = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/session", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Extension-ID": "bbgippochabbclmbgkkbbofljdfnbdop",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      if (data) {
+        setSession(data);
+        setShowSignUpModal(false);
+        toast.success(
+          `Welcome back! You are logged in as ${data.user.name.split(" ")[0]}`,
+          {
+            duration: 4000,
+            position: "top-right",
+          }
+        );
+        // updateStorage("session", data);
+        return data.user.id;
+      } else if (!modalDismissed) {
+        setSession(null);
+        setShowSignUpModal(true);
+        return null;
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+      if (!modalDismissed) {
+        setShowSignUpModal(true);
+      }
+      return null;
+    }
+  };
+
+  const fetchLinks = async (sessionid: string) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/links?id=${sessionid}`,
+        {
           method: "GET",
-          credentials: "include",
           headers: {
             "Content-Type": "application/json",
             "X-Extension-ID": "bbgippochabbclmbgkkbbofljdfnbdop",
           },
-        });
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+          credentials: "include",
         }
-        const data = await response.json();
-        setSessionid(data.user.id);
-        return data.user.id;
-      } catch (error) {
-        console.error("Fetch error:", error);
-        return null;
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
+      const data = await response.json();
+      return data.links;
+    } catch (error) {
+      console.error("Error fetching links:", error);
+      return [];
     }
+  };
 
-    async function fetchLinks(sessionid: string) {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/links?id=${sessionid}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Extension-ID": "bbgippochabbclmbgkkbbofljdfnbdop",
-            },
-            credentials: "include",
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+  const fetchFolders = async (sessionid: string) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/folders?id=${sessionid}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Extension-ID": "bbgippochabbclmbgkkbbofljdfnbdop",
+          },
+          credentials: "include",
         }
-        const data = await response.json();
-        return data.links;
-      } catch (error) {
-        console.error("Error fetching links:", error);
-        return [];
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    }
+      const data = await response.json();
 
-    async function fetchFolders(sessionid: string) {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/folders?id=${sessionid}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Extension-ID": "bbgippochabbclmbgkkbbofljdfnbdop",
-            },
-            credentials: "include",
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        return data.folders;
-      } catch (error) {
-        console.error("Error fetching folders:", error);
-        return [];
-      }
+      console.log("Folders data", data.folders);
+      const folderName = [
+        data.folders.map((folder: Folders) => {
+          return folder.folder_name;
+        }),
+      ];
+      console.log("Folder name", folderName);
+      // updateStorage("folderNames", folderName);
+      return data.folders;
+    } catch (error) {
+      console.error("Error fetching folders:", error);
+      return [];
     }
+  };
 
-    async function initializeApp() {
-      const id = await fetchSession();
-      if (id) {
-        const [fetchedLinks, fetchedFolders] = await Promise.all([
-          fetchLinks(id),
-          fetchFolders(id),
-        ]);
-        setLinks((prevLinks) =>
-          JSON.stringify(prevLinks) !== JSON.stringify(fetchedLinks)
-            ? fetchedLinks
-            : prevLinks
-        );
-        setFolders((prevFolders) =>
-          JSON.stringify(prevFolders) !== JSON.stringify(fetchedFolders)
-            ? fetchedFolders
-            : prevFolders
-        );
-      }
+  const initializeApp = async () => {
+    const id = await fetchSession();
+    console.log("Session ID", id);
+    if (id) {
+      const [fetchedLinks, fetchedFolders] = await Promise.all([
+        fetchLinks(id),
+        fetchFolders(id),
+      ]);
+      setLinks((prevLinks) =>
+        JSON.stringify(prevLinks) !== JSON.stringify(fetchedLinks)
+          ? fetchedLinks
+          : prevLinks
+      );
+      setFolders((prevFolders) =>
+        JSON.stringify(prevFolders) !== JSON.stringify(fetchedFolders)
+          ? fetchedFolders
+          : prevFolders
+      );
     }
+  };
 
+  useEffect(() => {
     initializeApp();
 
     const messageListener = (message: { action: string }) => {
-      if (
-        message.action === "updateLinks" ||
-        message.action === "updateFolders"
-      ) {
+      if (message.action === "updateLinks") {
+        goTo(Home);
+        setMenu("Unnamed");
         initializeApp();
       }
       if (message.action === "namedLinkAdded") {
         setMenu("Named");
+        initializeApp();
+      }
+      if (message.action === "updateFolders") {
+        goTo(Folder);
+        initializeApp();
       }
     };
 
@@ -180,14 +219,14 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    async function updateLinks(newLinks: any[]) {
-      if (!sessionid) {
+    async function updateLinks(newLinks: Links[]) {
+      if (!session) {
         console.error("No session ID");
         return;
       }
 
       const requestBody = {
-        id: sessionid,
+        id: session.user.id,
         links: newLinks,
       };
 
@@ -218,17 +257,17 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     if (links.length > 0) {
       updateLinks(links);
     }
-  }, [links, sessionid]);
+  }, [links, session]);
 
   useEffect(() => {
-    async function updateFolders(newFolders: any[]) {
-      if (!sessionid) {
+    async function updateFolders(newFolders: Folders[]) {
+      if (!session) {
         console.error("No session ID");
         return;
       }
 
       const requestBody = {
-        id: sessionid,
+        id: session.user.id,
         folders: newFolders,
       };
 
@@ -249,6 +288,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
+
         if (data.error) {
           console.error("Error updating folders:", data.error);
         } else {
@@ -262,15 +302,24 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     if (folders.length > 0) {
       updateFolders(folders);
     }
-  }, [folders, sessionid]);
+  }, [folders, session]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      fetchSession();
+    }, 30000); // Fetch session every 30 seconds
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   console.log("Links in state", links);
   console.log("Folders in state", folders);
+
   return (
     <AppContext.Provider
       value={{
-        sessionid,
-        setSessionid,
+        session,
+        setSession,
         hoveredLink,
         setHoveredLink,
         folderDetails,
@@ -313,6 +362,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         navRef,
         active,
         setActive,
+        setEditIndex,
+        showSignUpModal,
+        setShowSignUpModal,
+        modalDismissed,
+        setModalDismissed,
       }}
     >
       {children}

@@ -1,14 +1,21 @@
 import { useLinkContext } from "../context";
-import { useAppContext } from "../context";
-import { useFolderContext } from "../context";
+import { useAppContext, useFolderContext } from "../context";
+
+import { Links } from "../types";
 
 import useSortedLinks from "./useSortedLinks";
 const useSelectOptions = () => {
-  const { menu, setFolders, setLinks, openModal, route } = useAppContext();
+  const appcontext = useAppContext();
+  const linkcontext = useLinkContext();
+  if (!appcontext || !linkcontext) {
+    throw new Error("useSortedLinks must be used within an AppProvider");
+  }
+
+  const { menu, openModal, route } = appcontext;
+  const { setShowFolderCheckboxes } = useFolderContext();
   const {
     handleBulkCopy,
     handleBulkDelete,
-
     handleBulkCopyFolder,
     handleBulkDeleteFolder,
     handleSelectAllFolders,
@@ -20,9 +27,9 @@ const useSelectOptions = () => {
     setShowCheckboxes,
     handleSelectAllLinks,
     isFolder,
-  } = useLinkContext();
+    handleSelectClick,
+  } = linkcontext;
   const { sortedNamedLinks, sortedUnnamedLinks } = useSortedLinks();
-  const { setShowFolderCheckboxes } = useFolderContext();
 
   const handleDelete = (isModal: boolean) => {
     console.log(isFolder, isFolderLinks); // Debug log
@@ -59,48 +66,16 @@ const useSelectOptions = () => {
   };
 
   const handleCancelSelect = () => {
-    if (isFolder) {
-      setShowFolderCheckboxes(false);
-      setFolders((prevFolders: Array<any>) =>
-        prevFolders.map((folder) => {
-          const newFolder = { ...folder };
-          delete newFolder.selected;
-          return newFolder;
-        })
-      );
-      setIsFolder(false);
-      setIsFolderLinks(false);
-    } else {
-      setShowCheckboxes(false);
-      if (isFolderLinks) {
-        setFolders((prevFolders: Array<any>) =>
-          prevFolders.map((folder) => {
-            const newFolder = { ...folder };
-            newFolder.links = newFolder.links.map((link: any) => {
-              const newLink = { ...link };
-              delete newLink.selected;
-              return newLink;
-            });
-            return newFolder;
-          })
-        );
-        setIsFolder(false);
-        setIsFolderLinks(false);
-      } else {
-        setLinks((prevLinks: Array<any>) =>
-          prevLinks.map((link) => {
-            const newLink = { ...link };
-            delete newLink.selected;
-            return newLink;
-          })
-        );
-      }
-    }
+    setShowCheckboxes(false);
+    setShowFolderCheckboxes(false);
+    handleSelectClick(true);
+    setIsFolder(false);
+    setIsFolderLinks(false);
   };
-  const handleShowAddFolder = (linksAdded) => {
+  const handleShowAddFolder = (linksAdded: Links) => {
     openModal("Save to Folder", linksAdded ? linksAdded : null, null, null);
   };
-  let activeItems: Array<any> = [];
+  let activeItems: Links[] = [];
   if (route === "Home") {
     if (menu === "Unnamed") {
       activeItems = sortedUnnamedLinks;

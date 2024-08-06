@@ -1,12 +1,12 @@
 import toast from "react-hot-toast";
-
+import { Folders, Links } from "../types";
 const handleDeleteItems = (
-  items: any[],
-  setItems,
+  items: (Folders | Links)[],
+  setItems: React.Dispatch<React.SetStateAction<(Folders | Links)[] | null>>,
   index: number | null = null
 ) => {
   if (index !== null) {
-    const updatedItems = [...items];
+    const updatedItems: (Folders | Links)[] = [...items];
     updatedItems.splice(index, 1);
 
     setItems(updatedItems);
@@ -16,21 +16,17 @@ const handleDeleteItems = (
 };
 
 const handleBulkDeleteItems = (
-  items: any[],
-  allItems: Array<any> | null,
-  setItems,
-  filterCriteria: (link: {
-    url_name?: string;
-    url?: string;
-    selected?: boolean;
-  }) => boolean,
+  items: Folders[] | Links[],
+  allItems:Links[] | null,
+  setItems: React.Dispatch<React.SetStateAction<(Folders[] | Links[]) | null>>,
+  filterCriteria: (link: Folders | Links) => boolean,
   openModal: any,
-  menu,
+  menu: string |  null,
   shouldShowModal = false
 ) => {
   console.log("Items:", items);
   console.log(filterCriteria);
-  const itemsToDelete = items.filter(filterCriteria);
+  const itemsToDelete: Folders[] | Links[] = items.filter(filterCriteria);
   console.log("Items to delete:", itemsToDelete);
   console.log("Should show modal:", shouldShowModal);
 
@@ -38,12 +34,14 @@ const handleBulkDeleteItems = (
     if (itemsToDelete.length === items.length && !shouldShowModal) {
       openModal(`Delete All Items`, null, null);
     } else {
-      const itemsToKeep = items.filter((item) => !filterCriteria(item));
-      let updatedItems: Array<any> = [];
+      const itemsToKeep = items.filter(
+        (item: Folders | Links) => !filterCriteria(item)
+      );
+      let updatedItems: Folders[] | Links[] = [];
       if (allItems) {
         updatedItems = [
           ...itemsToKeep,
-          ...allItems.filter((item) =>
+          ...allItems.filter((item: Links) =>
             menu === "Unnamed" ? item.url_name : !item.url_name
           ),
         ];

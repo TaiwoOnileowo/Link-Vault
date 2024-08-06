@@ -24,12 +24,12 @@ export const getInitialFolders = () => {
 };
 
 export const updateStorage = (key: string, value: any) => {
-  // return new Promise((resolve) => {
-  //   chrome.storage.local.set({ [key]: value }, () => {
-  //     resolve();
-  //   });
-  // });
-  localStorage.setItem(key, JSON.stringify(value));
+  return new Promise((resolve) => {
+    chrome.storage.local.set({ [key]: value }, () => {
+      resolve();
+    });
+  });
+  // localStorage.setItem(key, JSON.stringify(value));
 };
 
 export const deleteStorage = (key: string) => {

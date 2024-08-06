@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { FaRegEdit, FaRegCopy } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdOutlineCheckBox } from "react-icons/md";
@@ -14,6 +14,7 @@ import ContextMenuItem from "./ContextMenuItem.tsx";
 import useContextMenuPosition from "../../../hooks/useContextMenuPosition.js";
 import { copyToClipboard } from "../../../utils/clipboardUtils.js";
 import propTypes from "prop-types";
+import { AppContextType, LinkContextProps } from "../../../types.ts";
 const ContextMenu = ({ items }: { items: Array<any> }) => {
   const menuRef = useRef(null);
   const {
@@ -23,7 +24,7 @@ const ContextMenu = ({ items }: { items: Array<any> }) => {
     handleSelectClick,
     isFolderLinks,
     handleCopyFolder,
-  } = useLinkContext();
+  } = useLinkContext() as LinkContextProps;
   const { handleClick } = useProceedToAddLinks();
   const { setShowFolderCheckboxes, setOpenFolderIndex } = useFolderContext();
   const {
@@ -33,7 +34,7 @@ const ContextMenu = ({ items }: { items: Array<any> }) => {
     handleHideContextMenu,
     setMenu,
     route,
-  } = useAppContext();
+  } = useAppContext() as AppContextType;
   const { x, y, visible, linkIndex } = contextMenu;
   const isFolder = route === "Folder" && !isFolderLinks;
   useContextMenuPosition(x, y, visible, menuRef);

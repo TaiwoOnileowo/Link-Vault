@@ -1,3 +1,4 @@
+import React from "react";
 import { folderIcons } from "../../../../public/foldericons";
 import { useModalIcon } from "../../../hooks";
 const ModalIcon = () => {
@@ -5,13 +6,13 @@ const ModalIcon = () => {
 
   return (
     <div className="relative mt-6 px-4">
-      <div className="grid scrollbar  grid-cols-3 gap-2 h-[200px]">
+      <div className="grid scrollbar gap-y-1 grid-cols-3 gap-2 h-[200px]">
         {folderIcons.map((icon, i) => {
           return (
             <div
               key={i}
               className={`${
-                index === i && "dark:bg-lightGray bg-primary-1 bg-opacity-40"
+                index === i && "dark:bg-lightGray bg-primary-1 bg-opacity-40 dark:bg-opacity-30"
               } p-2 flex items-center justify-center cursor-pointer rounded-lg`}
               onClick={() => {
                 handleClick(icon, i);

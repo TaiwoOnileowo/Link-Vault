@@ -1,17 +1,23 @@
 import { sortLinks } from "../utils/sortLinks";
 import { useAppContext } from "../context";
-const useSortedLinks = () => {
-  const { links } = useAppContext();
-  // const unnamedLinks = filterLinks(links,(link) => !link.url_name, (link) => !link.folder_name)
-  const unnamedLinks = links.filter((link:{
-    url_name: string;
-  }) => !link.url_name);
-  const namedLinks = links.filter((link:{
-    url_name: string;
-  }) => link.url_name);
+import { Links } from "../types";
 
-  const sortedUnnamedLinks = sortLinks(unnamedLinks);
-  const sortedNamedLinks = sortLinks(namedLinks);
+const useSortedLinks = () => {
+  const context = useAppContext();
+  
+  if (!context) {
+    // Return default values or throw an error if context is not available
+    throw new Error("useSortedLinks must be used within an AppProvider");
+  }
+
+  const { links } = context;
+
+  const unnamedLinks: Links[] = links.filter((link) => !link.url_name);
+  const namedLinks: Links[] = links.filter((link) => !!link.url_name);
+
+  const sortedUnnamedLinks: Links[] = sortLinks(unnamedLinks);
+  const sortedNamedLinks: Links[] = sortLinks(namedLinks);
+
   return {
     sortedNamedLinks,
     sortedUnnamedLinks,

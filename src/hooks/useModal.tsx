@@ -1,4 +1,5 @@
 import { useAppContext, useLinkContext } from "../context";
+import { AppContextType, LinkContextProps } from "../types";
 
 const useModal = () => {
   const {
@@ -9,8 +10,9 @@ const useModal = () => {
     folders,
     folderDetails,
     setInputError,
-  } = useAppContext();
-  const { setShowCheckboxes, handleSelectClick } = useLinkContext();
+    setEditIndex,
+  } = useAppContext() as AppContextType;
+  const { setShowCheckboxes, handleSelectClick } = useLinkContext() as LinkContextProps;
   const handleModalClose = async () => {
     if (modalText.includes("Rename Folder")) {
       const updatedFolders = [...folders];
@@ -24,6 +26,7 @@ const useModal = () => {
       ...prevFolderInputs,
       links: [],
     }));
+    setEditIndex(null);
     handleSelectClick(true);
     setInputError(false);
     setShowCheckboxes(false);
