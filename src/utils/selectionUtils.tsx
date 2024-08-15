@@ -13,7 +13,7 @@ export const toggleSelection = (
   isFolder: boolean = false,
   openFolderIndex: number | null = null
 ) => {
-  const updatedItems= [...items];
+  const updatedItems = [...items];
 
   if (isFolder) {
     // Toggle selection for a folder
@@ -23,11 +23,14 @@ export const toggleSelection = (
     console.log(updatedItems[index], "Inside toggleSelection: folder");
     console.log("Inside toggleSelection:", folder.selected);
   } else if (openFolderIndex !== null) {
+    // console.log("Inside toggleSelection: link", updatedItems[openFolderIndex].selected);
     // Toggle selection for a link inside a folder
     const folder: Folders = { ...updatedItems[openFolderIndex] };
     const updatedLinks: Links[] = [...folder.links];
     const link = { ...updatedLinks[index] };
+    console.log("Inside toggleSelection: link", link, updatedLinks);
     link.selected = !link.selected;
+    console.log("Inside toggleSelection: link3", link);
     updatedLinks[index] = link;
     folder.links = updatedLinks;
     updatedItems[openFolderIndex] = folder;
@@ -63,7 +66,7 @@ export const toggleBulkSelection = (
   console.log(openFolderIndex, isFolderLinks);
   if (isFolderLinks && openFolderIndex !== null) {
     // Toggle selection for all links inside a specific folder
-    const folder:Folder = { ...updatedItems[openFolderIndex] };
+    const folder: Folder = { ...updatedItems[openFolderIndex] };
     const allSelected = isSelectClick
       ? true
       : folder.links.every((link: { selected: boolean }) => link.selected);

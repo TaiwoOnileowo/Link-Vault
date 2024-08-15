@@ -1,13 +1,14 @@
 import Modal from ".";
 import ModalLink from "./ModalLink";
 import ModalDeleteAll from "./ModalDeleteAll";
-import { useAppContext } from "../../../context";
+import { useAppContext, useModalContext } from "../../../context";
 import ModalFolder from "./ModalFolder";
 import ModalAddLinksToFolder from "./ModalAddLinksToFolder.tsx";
 import ModalIcon from "./ModalIcon.tsx";
-
+import React from "react";
+import { ModalContextType } from "../../../types.ts";
 const ModalContent = () => {
-  const { modalText } = useAppContext();
+  const { modalText } = useModalContext() as ModalContextType;
 
   return (
     <Modal>

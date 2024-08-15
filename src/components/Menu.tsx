@@ -1,10 +1,12 @@
-import { useAppContext } from "../context";
+import { useAppContext, useModalContext } from "../context";
 import { useLinkContext } from "../context";
-
+import React from "react";
+import { AppContextType, LinkContextProps, ModalContextType } from "../types";
 const Menu = ({ text }: { text: string }) => {
-  const { menu, setMenu, folderInputs, inputError, route } = useAppContext();
-  const { setShowCheckboxes } = useLinkContext();
-
+  const { menu, setMenu, inputError, route } =
+    useAppContext() as AppContextType;
+  const { setShowCheckboxes } = useLinkContext() as LinkContextProps;
+  const { folderInputs } = useModalContext() as ModalContextType;
   const menuText = text?.split(", ");
   const isFolder = route === "Folder";
   console.log(folderInputs.folder_name);
@@ -20,7 +22,7 @@ const Menu = ({ text }: { text: string }) => {
             }}
             className="cursor-pointer"
           >
-            {console.log(menu, item)}
+            
             <h2
               className={`text-base font-semibold ${
                 item === menu

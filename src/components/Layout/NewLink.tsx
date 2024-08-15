@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
-import { useAppContext } from "../../context";
+import { useAppContext, useModalContext } from "../../context";
+import React from "react";
+import { AppContextType, ModalContextType } from "../../types";
 const NewLink = () => {
   const [bounce, setBounce] = useState(false);
-  const { openModal } = useAppContext();
+  const { openModal } = useModalContext() as ModalContextType;
+  const { route } = useAppContext() as AppContextType;
+  const isFolder = route === "Folder";
   return (
     <div
       onClick={() => {
@@ -11,7 +15,7 @@ const NewLink = () => {
         setTimeout(() => {
           setBounce(false);
         }, 300);
-        openModal("Save New Link");
+        openModal("Save New Link", null, null, null, isFolder);
       }}
       title="Add New Link"
       className={`${

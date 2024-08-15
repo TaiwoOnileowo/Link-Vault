@@ -1,26 +1,33 @@
 import React from "react";
-import { useAppContext } from "../../context";
+import { useThemeContext } from "../../context";
 import { useLinkContext } from "../../context";
 import Checkbox from "../Checkbox";
 import FolderListItemLinks from "./FolderListItemLinks";
 import { useFolderContext } from "../../context";
 import { TbPinFilled } from "react-icons/tb";
+import {
+  FolderContextType,
+  Folders,
+  LinkContextProps,
+  ThemeContextType,
+} from "../../types";
+import { useContextMenu } from "../../hooks";
 
 const FolderListItem = ({
   folder,
   index,
   isModal,
 }: {
-  folder: object;
+  folder: Folders;
   index: number;
   isModal?: boolean;
 }) => {
-  const { handleContextMenu, darkMode } = useAppContext();
-  const { handleSelect, setIsFolder, setIsFolderLinks, setShowCheckboxes } =
-    useLinkContext();
+  const { darkMode } = useThemeContext() as ThemeContextType;
+  const { handleSelect, setIsFolder, setIsFolderLinks } =
+    useLinkContext() as LinkContextProps;
   const { showFolderCheckboxes, toggleFolder, openFolderIndex } =
-    useFolderContext();
-
+    useFolderContext() as FolderContextType;
+  const { handleContextMenu } = useContextMenu();
   console.log(showFolderCheckboxes, isModal, "dax");
   return (
     <div key={index} className="select-none flex flex-col">
@@ -35,6 +42,7 @@ const FolderListItem = ({
           if (showFolderCheckboxes || isModal) {
             handleSelect(index, true);
           } else {
+            console.log("togleddddddddddddddddd");
             toggleFolder(index);
           }
         }}

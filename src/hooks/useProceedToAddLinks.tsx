@@ -1,31 +1,43 @@
 import useLinksAddedToFolder from "./useLinksAddedToFolder";
-import { useAppContext } from "../context";
+import { useAppContext, useModalContext } from "../context";
 import { useFolderContext } from "../context";
+import {
+  AppContextType,
+  FolderContextType,
+  Folders,
+  ModalContextType,
+} from "../types";
+import { folderIcons } from "../../public/foldericons";
 
 const useProceedToAddLinks = () => {
-  const { openModal, folders, setMenu } = useAppContext();
+  const { folders, setMenu } = useAppContext() as AppContextType;
+  const { openModal } = useModalContext() as ModalContextType;
   const { AddLinks } = useLinksAddedToFolder();
-  const { openFolderIndex, setOpenFolderIndex } = useFolderContext();
+  const { openFolderIndex, setOpenFolderIndex } =
+    useFolderContext() as FolderContextType;
   const defaultDetails = {
-    folder_name: openFolderIndex && folders[openFolderIndex]?.folder_name,
+    folder_name: openFolderIndex ? folders[openFolderIndex]?.folder_name : "",
     links: [],
+    folder_icon: folderIcons[8],
   };
 
   const handleClick = (
     showModal: boolean,
-    details: {
-      folder_name: string;
-      links: Array<any>;
-    },
+    details: Folders | null,
     index: number
   ) => {
     if (showModal) {
-      openModal(
-        "Save Links To Folder",
-        details ? details : defaultDetails,
-        index,
-        true
-      );
+      if (showModal) {
+        const folderDetails = details ? details : defaultDetails;
+        if (details === null) {
+          folderDetails.folder_name = ""; 
+        }
+        openModal("Save Links To Folder", null, folderDetails, index, true);
+        setOpenFolderIndex(null);
+        setMenu("Add Links");
+      } else {
+        AddLinks();
+      }
       setOpenFolderIndex(null);
       setMenu("Add Links");
     } else {

@@ -1,10 +1,11 @@
 import { useLinkContext } from "../../context";
 import { useAppContext } from "../../context";
-
+import React from "react";
 import { GoDotFill } from "react-icons/go";
 import Checkbox from "../Checkbox";
 import Link from "./Link";
-import propTypes from "prop-types";
+import { AppContextType, LinkContextProps, Links } from "../../types";
+import { useContextMenu } from "../../hooks";
 
 const LinkListItem = ({
   link,
@@ -13,25 +14,27 @@ const LinkListItem = ({
   isExistingLinks,
   isFolderLinks,
 }: {
-  link: object;
+  link: Links;
   index: number;
   isSearchResults?: boolean;
   isExistingLinks?: boolean;
   isFolderLinks?: boolean;
 }) => {
   const { setIsFolder, isFolder, setIsFolderLinks, showCheckboxes } =
-    useLinkContext();
+    useLinkContext() as LinkContextProps;
 
-  const { handleContextMenu } = useAppContext();
+  const { route } = useAppContext() as AppContextType;
+  const { handleContextMenu } = useContextMenu();
   console.log(isFolder);
+  console.log(isFolderLinks, "dax");
   return (
-    <li
+    <div
       key={index}
       className={`${
         isSearchResults ? "fade-up" : null
       } flex items-center gap-[2px] `}
       onContextMenu={(e) => {
-        if (isFolderLinks) {
+        if (route === "Folder") {
           setIsFolderLinks(true);
           setIsFolder(false);
         }
@@ -45,7 +48,7 @@ const LinkListItem = ({
       )}
 
       <Link isExistingLinks={isExistingLinks} link={link} index={index} />
-    </li>
+    </div>
   );
 };
 

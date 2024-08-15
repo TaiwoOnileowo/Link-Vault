@@ -1,6 +1,7 @@
 import { useAppContext } from "../../context";
+import { AppContextType } from "../../types";
 import LinkListItem from "./LinkListItem";
-import propTypes from "prop-types";
+import React from "react";
 const LinkList = ({
   display,
   isExistingLinks,
@@ -12,7 +13,7 @@ const LinkList = ({
   isSearchResults?: boolean;
   isFolderLinks?: boolean;
 }) => {
-  const { links } = useAppContext();
+  const { links } = useAppContext() as AppContextType;
 
   return (
     <ul className="list-disc dark:text-white mb-4 text-black list-inside pt-2 h-full">

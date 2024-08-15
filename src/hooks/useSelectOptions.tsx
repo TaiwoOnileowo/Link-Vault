@@ -1,7 +1,7 @@
-import { useLinkContext } from "../context";
+import { useLinkContext, useModalContext } from "../context";
 import { useAppContext, useFolderContext } from "../context";
 
-import { Links } from "../types";
+import { FolderContextType, Links, ModalContextType } from "../types";
 
 import useSortedLinks from "./useSortedLinks";
 const useSelectOptions = () => {
@@ -11,8 +11,9 @@ const useSelectOptions = () => {
     throw new Error("useSortedLinks must be used within an AppProvider");
   }
 
-  const { menu, openModal, route } = appcontext;
-  const { setShowFolderCheckboxes } = useFolderContext();
+  const { menu, route } = appcontext;
+  const { openModal } = useModalContext() as ModalContextType;
+  const { setShowFolderCheckboxes } = useFolderContext() as FolderContextType;
   const {
     handleBulkCopy,
     handleBulkDelete,
@@ -39,7 +40,7 @@ const useSelectOptions = () => {
       handleBulkDeleteFolder(isModal);
     } else if (isFolderLinks) {
       console.log("delete all links in folder");
-      handleDeleteLinkInFolder(isModal);
+      handleDeleteLinkInFolder();
     } else {
       console.log("delete all links");
       handleBulkDelete(isModal);
@@ -61,7 +62,7 @@ const useSelectOptions = () => {
     } else if (isFolderLinks) {
       handleSelectAllLinksInFolder();
     } else {
-      handleSelectAllLinks(menu);
+      handleSelectAllLinks();
     }
   };
 
@@ -72,8 +73,14 @@ const useSelectOptions = () => {
     setIsFolder(false);
     setIsFolderLinks(false);
   };
-  const handleShowAddFolder = (linksAdded: Links) => {
-    openModal("Save to Folder", linksAdded ? linksAdded : null, null, null);
+  const handleShowAddFolder = (linksAdded: Links | null) => {
+    openModal(
+      "Save to Folder",
+      linksAdded ? linksAdded : null,
+      null,
+      null,
+      isFolder
+    );
   };
   let activeItems: Links[] = [];
   if (route === "Home") {

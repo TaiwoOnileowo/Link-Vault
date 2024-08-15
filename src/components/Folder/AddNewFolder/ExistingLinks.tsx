@@ -1,10 +1,12 @@
+import React from "react";
 import { IoCheckmark } from "react-icons/io5";
 import DisplayedLinks from "../../Home/DisplayedLinks";
 import useAddLinksToFolder from "../../../hooks/useAddLinksToFolder";
 import { useLinkContext } from "../../../context";
+import { LinkContextProps } from "../../../types";
 const ExistingLinks = () => {
   const { linksSelected, handleClick } = useAddLinksToFolder();
-  const { existingLinks } = useLinkContext();
+  const { existingLinks } = useLinkContext() as LinkContextProps;
   return (
     <div className="max-h-[300px] max-w-[300px] overflow-x-hidden text-xs mt-4 text-primary scrollbar">
       <div className="flex justify-between items-center px-4">

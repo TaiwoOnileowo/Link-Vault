@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { useAppContext } from "../context";
 import DisplayedLinks from "./Home/DisplayedLinks";
 import Display from "./Layout/Display";
-
+import React from "react";
+import { AppContextType, Links } from "../types";
 const SearchResults = () => {
-  const { links, searchInput, folders , route} = useAppContext();
-  const [filteredLinks, setFilteredLinks] = useState([]);
+  const { links, searchInput, folders, route } =
+    useAppContext() as AppContextType;
+  const [filteredLinks, setFilteredLinks] = useState<Links[] | []>([]);
   const lowerCaseSearchInput = searchInput.toLowerCase();
-  const folderRoute = route==="Folder";
+  const folderRoute = route === "Folder";
   useEffect(() => {
     const newFilteredLinks = links.filter((link) => {
       const linkText = link.url_name || link.url;
@@ -19,7 +21,7 @@ const SearchResults = () => {
       link.url.toLowerCase().includes(lowerCaseSearchInput)
     );
 
-    let searchResults = [];
+    let searchResults: Links[] = [];
     if (folderRoute) {
       searchResults = [...filteredFolderLinks];
     } else {
@@ -30,7 +32,7 @@ const SearchResults = () => {
   }, [searchInput, links, folderRoute, folders, lowerCaseSearchInput]);
   console.log(filteredLinks);
   console.log(folderRoute);
-  console.log(route)
+  console.log(route);
   return (
     <div className="p-2">
       <>

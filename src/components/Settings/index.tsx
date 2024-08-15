@@ -22,7 +22,7 @@ const index = () => {
         <h1>You are not logged in</h1>
       )}
       <a
-        href={`http://localhost:3000/${session ? "logout" : "login"}`}
+        href={`https://linkvaultapp.vercel.app/${session ? "logout" : "login"}`}
         target="_blank"
       >
         <button onClick={handleLogout} className="bg-primary-2 px-4 py-2 mt-4">

@@ -3,19 +3,21 @@ import { MdCheckCircleOutline } from "react-icons/md";
 import { FaRegCopy } from "react-icons/fa";
 import { TbPinFilled } from "react-icons/tb";
 import { getFormattedLink } from "../../utils/stringFormatters";
-
+import React from "react";
+import {LinkContextProps, Links } from "../../types";
+import usePreviewLink from "../../hooks/usePreviewLink";
 const Link = ({
   isExistingLinks,
   link,
   index,
 }: {
   isExistingLinks?: boolean;
-  link: object;
+  link: Links;
   index: number;
 }) => {
   const { showCheckboxes, handleSelect, copiedIndex, handleCopyClick } =
-    useLinkContext();
-  const { handleHover, handleHidePreviewLink } = useAppContext();
+    useLinkContext() as LinkContextProps;
+  const { handleHover, handleHidePreviewLink } = usePreviewLink();
 
   return (
     <div

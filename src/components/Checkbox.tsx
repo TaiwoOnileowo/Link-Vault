@@ -1,12 +1,17 @@
+import React from "react";
 import { useLinkContext } from "../context";
+import { Folders, LinkContextProps, Links } from "../types";
 
-const Checkbox = ({ link, originalIndex, isModal }:{
-  link: { selected: any; };
-  originalIndex: any;
+const Checkbox = ({
+  link,
+  originalIndex,
+  isModal,
+}: {
+  link: Links | Folders;
+  originalIndex: number;
   isModal?: boolean;
 }) => {
-
-  const { handleSelect } = useLinkContext();
+  const { handleSelect, isFolderLinks,  handleSelectLinkInFolder } = useLinkContext() as LinkContextProps;
   console.log(link);
   return (
     <input
@@ -15,7 +20,13 @@ const Checkbox = ({ link, originalIndex, isModal }:{
       id="checkbox"
       className="mt-2"
       checked={!!link.selected}
-      onChange={() => handleSelect(originalIndex, isModal)}
+      onChange={() => {
+        if (isFolderLinks) {
+          handleSelectLinkInFolder(originalIndex);
+        } else {
+          handleSelect(originalIndex, isModal);
+        }
+      }}
     />
   );
 };

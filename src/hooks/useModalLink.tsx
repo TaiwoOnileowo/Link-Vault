@@ -1,35 +1,46 @@
 import { useState } from "react";
-import { useAppContext } from "../context";
+import { useAppContext, useModalContext } from "../context";
 import { useLinkContext } from "../context";
 import { useFolderContext } from "../context";
 import toast from "react-hot-toast";
 import { getCurrentTab } from "../utils/chromeUtilis";
 import useSelectOptions from "./useSelectOptions";
 import {} from "../utils/api";
+import {
+  AppContextType,
+  FolderContextType,
+  LinkContextProps,
+  Links,
+  ModalContextType,
+} from "../types";
 
 const useModalLink = () => {
   const {
-    handleClose,
     setLinks,
     links,
     setMenu,
+
+    setFolders,
+    route,
+  } = useAppContext() as AppContextType;
+  const {
     inputs,
     setInputs,
     modalText,
     editIndex,
     setFolderInputs,
     folderInputs,
-    setFolders,
-    route,
-  } = useAppContext();
-  const { isFolderLinks, setShowCheckboxes } = useLinkContext();
-  const { openFolderIndex } = useFolderContext();
+    handleClose,
+  } = useModalContext() as ModalContextType;
+  const { isFolderLinks, setShowCheckboxes } =
+    useLinkContext() as LinkContextProps;
+  const { openFolderIndex } = useFolderContext() as FolderContextType;
   const [bounce, setBounce] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const { handleShowAddFolder } = useSelectOptions();
   const folderRoute = route === "Folder";
   const handleSaveTab = () => {
-    getCurrentTab().then((tab) => {
+    getCurrentTab().then((tab: Links) => {
       setInputs({ ...inputs, url: tab.url });
     });
   };
@@ -85,6 +96,7 @@ const useModalLink = () => {
           );
           toast.success("Edited successfully!");
         } else {
+          if (editIndex === null) return;
           updatedLinks[editIndex] = { ...inputs };
           setLinks(updatedLinks);
 
@@ -93,13 +105,13 @@ const useModalLink = () => {
         setInputs({
           url: "",
           url_name: "",
-          tags: "",
         });
         handleClose();
       } else if (modalText.includes("Folder")) {
         setFolderInputs({
           ...folderInputs,
           links: [inputs, ...folderInputs.links],
+          folder_icon: folderInputs.folder_icon,
         });
         toast.success("Added to folder");
       } else {
@@ -108,7 +120,7 @@ const useModalLink = () => {
           (a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0)
         );
         setLinks(sortedUpdatedLinks);
-       
+
         toast.success("Saved successfully!");
         inputs.url_name ? setMenu("Named") : setMenu("Unnamed");
         handleClose();
@@ -117,7 +129,6 @@ const useModalLink = () => {
       setInputs({
         url: "",
         url_name: "",
-        tags: "",
       });
     } else if (!inputs.url) {
       setError("Url is required");

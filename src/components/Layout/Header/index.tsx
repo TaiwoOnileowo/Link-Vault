@@ -2,7 +2,7 @@ import React from "react";
 import icon from "/icon.png";
 import { useAppContext } from "../../../context";
 import { IoSearch } from "react-icons/io5";
-import { getFromLocalStorage } from "../../../utils/storage";
+
 import Nav from "./Nav";
 import { AppContextType } from "../../../types";
 const Header = () => {

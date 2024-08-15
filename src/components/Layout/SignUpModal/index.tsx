@@ -31,7 +31,7 @@ const SignUpModal = () => {
             Guest mode
           </button>
 
-          <a href="http://localhost:3000/login" target="_blank">
+          <a href="https://linkvaultapp.vercel.app/login" target="_blank">
             <button
               className={styles.button1}
               // onClick={() => setModalDismissed(true)}

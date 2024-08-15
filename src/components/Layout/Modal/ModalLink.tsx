@@ -2,8 +2,8 @@ import React from "react";
 import { useModalLink } from "../../../hooks";
 import FormInput from "../../FormInput";
 import { styles } from "../../../styles";
-import { useAppContext } from "../../../context";
-import { AppContextType } from "../../../types";
+import { useAppContext, useModalContext } from "../../../context";
+import { AppContextType, ModalContextType } from "../../../types";
 
 const ModalLink = () => {
   const {
@@ -13,7 +13,7 @@ const ModalLink = () => {
     error,
     handleSaveToFolder,
   } = useModalLink();
-  const { inputs, modalText, setMenu } = useAppContext() as AppContextType;
+  const { inputs, modalText } = useModalContext() as ModalContextType;
 
   return (
     <form
@@ -29,7 +29,7 @@ const ModalLink = () => {
         extraLabelClass="inline-flex gap-2"
         showSaveTab={!modalText.includes("Edit Link") && true}
         onChange={handleChange}
-        error={error}
+        error={!!error}
       />
       <div className="mt-2">
         <FormInput

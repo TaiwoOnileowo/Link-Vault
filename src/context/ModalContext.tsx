@@ -1,50 +1,40 @@
-import { useState, createContext, useRef, ReactNode, RefObject } from "react";
+import React, { useState, createContext, useRef, ReactNode } from "react";
 import { initialInputs, initialFolderInputs } from "../constants/initialStates";
 
-interface LinkDetails {
-  // Define the structure of linkDetails if it has more properties
-  [key: string]: any;
-}
+import { ModalContextType, Links, Folders } from "../types";
 
-interface ModalContextType {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  modalText: string;
-  setModalText: React.Dispatch<React.SetStateAction<string>>;
-  editIndex: number | null;
-  setEditIndex: React.Dispatch<React.SetStateAction<number | null>>;
-  inputs: any;
-  setInputs: React.Dispatch<React.SetStateAction<any>>;
-  folderInputs: any;
-  setFolderInputs: React.Dispatch<React.SetStateAction<any>>;
-  openModal: (modalText: string, linkDetails: LinkDetails | null, linkIndex: number | null, isFolder: boolean) => void;
-  handleClose: () => void;
-  modalRef: RefObject<any>;
-  folderDetails: any;
-}
-
-export const ModalContext = createContext<ModalContextType | undefined>(undefined);
+export const ModalContext = createContext<ModalContextType | undefined>(
+  undefined
+);
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalText, setModalText] = useState("");
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [inputs, setInputs] = useState(initialInputs);
-  const [folderInputs, setFolderInputs] = useState(initialFolderInputs);
-  const [folderDetails, setFolderDetails] = useState(null);
+  const [inputs, setInputs] = useState<Links | null>(initialInputs);
+  const [folderInputs, setFolderInputs] = useState<Folders | null>(
+    initialFolderInputs
+  );
+  const [folderDetails, setFolderDetails] = useState<Folders | null>(null);
   const modalRef = useRef<any>();
 
-  const openModal = (modalText: string, linkDetails: LinkDetails | null, linkIndex: number | null, isFolder: boolean) => {
+  const openModal = (
+    modalText: string,
+    linkDetails: Links | null,
+    folderDetails: Folders | null,
+    linkIndex: number | null,
+    isFolder: boolean
+  ) => {
     modalRef.current?.open();
     setModalText(modalText);
     setInputs(initialInputs);
     setFolderInputs(initialFolderInputs);
 
-    if (linkDetails) {
+    if (linkDetails || folderDetails) {
       if (isFolder) {
-        setFolderInputs(linkDetails);
+        setFolderInputs(folderDetails);
         setEditIndex(linkIndex);
-        setFolderDetails(linkDetails);
+        setFolderDetails(folderDetails);
       } else {
         setInputs(linkDetails);
         setEditIndex(linkIndex);

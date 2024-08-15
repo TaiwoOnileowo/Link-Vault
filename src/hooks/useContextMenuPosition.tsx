@@ -5,13 +5,7 @@ const useContextMenuPosition = (
   x: number,
   y: number,
   visible: boolean,
-  menuRef: {
-    current: {
-      offsetWidth: number;
-      offsetHeight: number;
-      style: { left: string; top: string };
-    };
-  }
+  menuRef:React.RefObject<HTMLDivElement>
 ) => {
   useEffect(() => {
     if (menuRef.current && visible) {

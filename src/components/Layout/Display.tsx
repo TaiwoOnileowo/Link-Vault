@@ -5,6 +5,14 @@ import { useLinkContext } from "../../context";
 import { useFolderContext } from "../../context";
 import SelectOptions from "../SelectOptions";
 import LinkPreview from "../LinkPreview";
+import React from "react";
+import {
+  AppContextType,
+  FolderContextType,
+  LinkContextProps,
+} from "../../types";
+import { useContextMenu } from "../../hooks";
+import usePreviewLink from "../../hooks/usePreviewLink";
 const Display = ({
   children,
   display,
@@ -14,11 +22,14 @@ const Display = ({
   display: Array<any>;
   isSearchResults?: boolean;
 }) => {
-  const { showCheckboxes } = useLinkContext();
-  const { showFolderCheckboxes } = useFolderContext();
-  const { contextMenu, contextMenuRef, links, previewLink, previewLinkRef } =
-    useAppContext();
-  const { linkIndex } = previewLink;
+  const { showCheckboxes } = useLinkContext() as LinkContextProps;
+  const { showFolderCheckboxes } = useFolderContext() as FolderContextType;
+  const { links } = useAppContext() as AppContextType;
+  const { contextMenu, contextMenuRef } = useContextMenu();
+  const { previewLink, previewLinkRef } = usePreviewLink();
+
+
+  const newLinkIndex = previewLink?.linkIndex ?? 0;
 
   return (
     <>
@@ -29,7 +40,7 @@ const Display = ({
       )}
       {previewLink.visible && (
         <div ref={previewLinkRef}>
-          <LinkPreview url={links[linkIndex].url} />
+          <LinkPreview url={links[newLinkIndex].url} />
         </div>
       )}
       {display.length > 0 ? (

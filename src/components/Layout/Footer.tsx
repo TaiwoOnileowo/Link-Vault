@@ -1,5 +1,6 @@
 
 import icon from "/icon.png";
+import React from "react";
 const Footer = () => {
   return (
     <>

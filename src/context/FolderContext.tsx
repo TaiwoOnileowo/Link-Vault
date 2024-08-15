@@ -1,27 +1,24 @@
-import { useState, createContext } from "react";
-import PropTypes from "prop-types";
+import React, { useState, createContext } from "react";
+import { FolderContextType } from "../types";
 
-// Create the context
-export const FolderContext = createContext();
+export const FolderContext = createContext<FolderContextType | undefined>(
+  undefined
+);
 
-// Context Provider component
 export const FolderProvider = ({ children }) => {
-  FolderProvider.propTypes = {
-    children: PropTypes.node.isRequired,
-  };
-
   const [showFolderCheckboxes, setShowFolderCheckboxes] = useState(false);
-  const [openFolderIndex, setOpenFolderIndex] = useState(null);
+  const [openFolderIndex, setOpenFolderIndex] = useState<number | null>(null);
 
-  const toggleFolder = (index) => {
+  const toggleFolder = (index: number) => {
     setOpenFolderIndex((prevIndex) => {
+      console.log(prevIndex, index);
       if (prevIndex === index) {
         return null;
       }
       return index;
     });
   };
-
+  console.log(openFolderIndex, "daxfrrrrrrrrrrrrrrrrrrrrrrrr");
   return (
     <FolderContext.Provider
       value={{

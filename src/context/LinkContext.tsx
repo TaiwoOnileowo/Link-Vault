@@ -6,7 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 import toast from "react-hot-toast";
-import { useAppContext } from "./index";
+import { useAppContext, useModalContext } from "./index";
 import { useFolderContext } from "./index";
 import { copyToClipboard } from "../utils/clipboardUtils";
 import { toggleSelection, toggleBulkSelection } from "../utils/selectionUtils";
@@ -14,7 +14,16 @@ import { togglePin } from "../utils/pinUtils";
 import { handleBulkCopyItems } from "../utils/copyBulkItems";
 import { handleBulkDeleteItems, handleDeleteItems } from "../utils/deleteUtils";
 
-import { LinkContextProps, Links, Folders, AppContextType } from "../types";
+import {
+  LinkContextProps,
+  Links,
+  Folders,
+  AppContextType,
+  ModalContextType,
+  FolderContextType,
+} from "../types";
+import { goTo } from "react-chrome-extension-router";
+import Folder from "../components/Folder";
 
 export const LinkContext = createContext<LinkContextProps | undefined>(
   undefined
@@ -29,16 +38,17 @@ export const LinkProvider = ({ children }: LinkProviderProps) => {
     menu,
     links,
     setLinks,
-    openModal,
+
     folders,
     setFolders,
-    modalText,
-    handleClose,
-    inputs,
-    setInputs,
+
+    setActive,
     route,
   } = useAppContext() as AppContextType;
-  const { setShowFolderCheckboxes, openFolderIndex } = useFolderContext();
+  const { openModal, modalText, handleClose } =
+    useModalContext() as ModalContextType;
+  const { setShowFolderCheckboxes, openFolderIndex } =
+    useFolderContext() as FolderContextType;
   const unnamedLinks = links.filter((link) => !link.url_name);
   const namedLinks = links.filter((link) => link.url_name);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
@@ -91,7 +101,8 @@ export const LinkProvider = ({ children }: LinkProviderProps) => {
         handleDeleteItems(folders, setFolders, index);
       } else if (isFolderLinks) {
         const updatedFolders = [...folders];
-        updatedFolders[openFolderIndex].links.splice(index, 1);
+        openFolderIndex &&
+          updatedFolders[openFolderIndex].links.splice(index, 1);
         setFolders(updatedFolders);
       } else {
         handleDeleteItems(links, setLinks, index);
@@ -142,11 +153,11 @@ export const LinkProvider = ({ children }: LinkProviderProps) => {
   const handleDeleteLinkInFolder = () => {
     const filterCriteria = (link: Links) => link.selected || false;
     handleBulkDeleteItems(
-      folders[openFolderIndex].links,
+      openFolderIndex ? folders[openFolderIndex].links : null,
       null,
       (newLinks: Links[]) => {
         const newFolders = [...folders];
-        newFolders[openFolderIndex].links = newLinks;
+        if (openFolderIndex) newFolders[openFolderIndex].links = newLinks;
         setFolders(newFolders);
       },
       filterCriteria,
@@ -181,12 +192,12 @@ export const LinkProvider = ({ children }: LinkProviderProps) => {
   const handlePinClick = useCallback(
     (index: number) => {
       if (isFolder) {
-        setFolders((prevFolders: Folders[]) => {
+        setFolders((prevFolders) => {
           const updatedFolders = togglePin(prevFolders, index);
           return updatedFolders;
         });
       } else {
-        setLinks((prevLinks: Links[]) => {
+        setLinks((prevLinks) => {
           const updatedLinks = togglePin(prevLinks, index);
           return updatedLinks;
         });
@@ -194,46 +205,45 @@ export const LinkProvider = ({ children }: LinkProviderProps) => {
     },
     [setLinks, setFolders, isFolder]
   );
-
+  console.log("OpenfolderIndextttttttttttttttt", openFolderIndex);
   // Select Logic
-  const handleSelect = useCallback(
-    (index: number, isModal?: boolean) => {
-      if ((isFolder && !modalText.includes("Folder")) || isModal) {
-        console.log("isFolder");
-        setFolders((prevFolders: Folders[]) => {
-          const newFolders = toggleSelection(prevFolders, index, true, null);
-          return newFolders;
-        });
-      } else if (isFolderLinks && !modalText.includes("Folder")) {
-        console.log("isFolderLinks");
-        setFolders((prevFolders: Folders[]) => {
-          const newFolders = toggleSelection(
-            prevFolders,
-            index,
-            false,
-            openFolderIndex
-          );
-          return newFolders;
+  const handleSelectLinkInFolder = (index: number) => {
+    setFolders((prevFolders) => {
+      const newFolders = toggleSelection(
+        prevFolders,
+        index,
+        false,
+        openFolderIndex
+      );
+      return newFolders;
+    });
+  };
+  const handleSelect = (index: number, isModal?: boolean) => {
+    if ((isFolder && !modalText.includes("Folder")) || isModal) {
+      console.log("isFolder");
+      let newFolders = [...folders];
+      const folder = { ...newFolders[index] };
+      console.log("folderxxxxxxxxxxxxxxxxxxxxxxxx", folder);
+      folder.selected = !folder.selected;
+      console.log("folderfrrdaxxxxxxxxxxxxx", folder);
+      newFolders[index] = folder;
+      setFolders(newFolders);
+    } else {
+      if (isFolder) {
+        console.log("isFolder, setExistingLinks");
+        setExistingLinks((prevLinks) => {
+          const newLinks = toggleSelection(prevLinks, index, true, null);
+          return newLinks;
         });
       } else {
-        if (isFolder) {
-          console.log("isFolder, setExistingLinks");
-          setExistingLinks((prevLinks: Links[]) => {
-            const newLinks = toggleSelection(prevLinks, index, true, null);
-            return newLinks;
-          });
-        } else {
-          console.log("setLinks");
-          setLinks((prevLinks: Links[]) => {
-            const newLinks = toggleSelection(prevLinks, index);
-            return newLinks;
-          });
-        }
+        console.log("setLinks");
+        setLinks((prevLinks) => {
+          const newLinks = toggleSelection(prevLinks, index);
+          return newLinks;
+        });
       }
-    },
-    []
-  );
-
+    }
+  };
   const handleSelectAllLinksInFolder = () => {
     const updatedFolders = toggleBulkSelection(
       folders,
@@ -260,7 +270,7 @@ export const LinkProvider = ({ children }: LinkProviderProps) => {
   };
 
   const handleSelectAllLinks = () => {
-    const updatedLinks: Links[] = toggleBulkSelection(
+    const updatedLinks = toggleBulkSelection(
       menu === "Named" ? namedLinks : unnamedLinks,
       false,
       menu,
@@ -316,24 +326,32 @@ export const LinkProvider = ({ children }: LinkProviderProps) => {
     }
   };
   const handleAddLinksToFolder = () => {
+    console.log("hey");
     const filteredLinks = links.filter((link) => link.selected);
-    const selectedFolder = folders[openFolderIndex];
-
+    const selectedFolder = folders.filter((folder) => folder.selected);
+    console.log("selectedFolder", selectedFolder);
     if (selectedFolder) {
       const updatedFolders = folders.map((folder, index) => {
-        if (index === openFolderIndex) {
+        if (folder.selected) {
           return {
             ...folder,
-            links: [...folder.links, ...filteredLinks],
+            links: [...filteredLinks, ...folder.links].map((link) => {
+              return { ...link, selected: false };
+            }),
+            selected: false,
           };
         }
         return folder;
       });
 
-      setFolders(updatedFolders);
       setLinks((prevLinks) =>
         prevLinks.filter((link) => !filteredLinks.includes(link))
       );
+      setFolders(updatedFolders);
+      handleClose();
+      setShowCheckboxes(false);
+      goTo(Folder);
+      setActive("Folders");
     }
   };
 
@@ -367,6 +385,7 @@ export const LinkProvider = ({ children }: LinkProviderProps) => {
         handleAddLinksToFolder,
         existingLinks,
         setExistingLinks,
+        handleSelectLinkInFolder,
       }}
     >
       {children}

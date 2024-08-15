@@ -1,16 +1,23 @@
 import { useAppContext } from "../../context";
 import { useFolderContext } from "../../context";
-
+import { useModalContext } from "../../context";
+import React from "react";
 import ContextMenu from "../Layout/ContextMenu";
 import SelectOptions from "../SelectOptions";
 import { FaBeerMugEmpty } from "react-icons/fa6";
 import FolderList from "./FolderList";
+import {
+  AppContextType,
+  FolderContextType,
+  ModalContextType,
+} from "../../types";
+import { useContextMenu } from "../../hooks";
 
 const DisplayedFolders = () => {
-  const { folders, contextMenu, contextMenuRef, modalText } = useAppContext();
-  const { showFolderCheckboxes, } = useFolderContext();
- 
-
+  const { folders } = useAppContext() as AppContextType;
+  const { showFolderCheckboxes } = useFolderContext() as FolderContextType;
+  const { modalText } = useModalContext() as ModalContextType;
+  const { contextMenu, contextMenuRef } = useContextMenu();
   return (
     <div className="mt-4 text-white">
       {contextMenu.visible && !showFolderCheckboxes && (

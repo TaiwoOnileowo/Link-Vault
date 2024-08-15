@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from "react";
 
 const useNav = () => {
   const [toggle, setToggle] = useState(false);
-  const navRef = useRef();
+  const navRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (navRef.current && !navRef.current.contains(event.target)) {
+      if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setToggle(false);
       }
     };

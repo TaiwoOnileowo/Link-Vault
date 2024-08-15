@@ -1,33 +1,34 @@
-import { useLinkContext } from "../context";
+import { folderIcons } from "../../public/foldericons";
+import { useLinkContext, useModalContext } from "../context";
 import { useAppContext } from "../context";
+import { AppContextType, LinkContextProps, ModalContextType } from "../types";
 import {} from "../utils/api";
 
 import { useState } from "react";
 const useNameFolder = () => {
   const {
-    folderInputs,
-    modalText,
-    handleClose,
-    setFolderInputs,
     setMenu,
     folders,
     setFolders,
-    editIndex,
+
     setInputError,
-  } = useAppContext();
-  const [error, setError] = useState(null);
-  const { setShowCheckboxes } = useLinkContext();
+  } = useAppContext() as AppContextType;
+  const { folderInputs, modalText, handleClose, setFolderInputs, editIndex } =
+    useModalContext() as ModalContextType;
+  const [error, setError] = useState<string | null>(null);
+  const { setShowCheckboxes } = useLinkContext() as LinkContextProps;
   let updatedFolders = [...folders];
 
   const handleClick = () => {
     if (folderInputs.folder_name && !error) {
       if (modalText.includes("Rename Folder")) {
         setFolders(updatedFolders);
-        
+
         handleClose();
         setFolderInputs({
           folder_name: "",
           links: [],
+          folder_icon: folderIcons[8],
         });
         setShowCheckboxes(false);
         setMenu("Unnamed");
@@ -39,7 +40,9 @@ const useNameFolder = () => {
 
   const renameFolder = (newFolderInputs) => {
     updatedFolders = [...folders];
-    updatedFolders[editIndex].folder_name = newFolderInputs.folder_name;
+    if (editIndex !== null) {
+      updatedFolders[editIndex].folder_name = newFolderInputs.folder_name;
+    }
   };
 
   const handleChange = (

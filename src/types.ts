@@ -13,14 +13,9 @@ export interface Folders {
   pinned?: boolean;
   selected?: boolean;
   originalIndex?: number;
+  folder_icon: string;
 }
 
-export interface FolderInputs {
-  links: Links[];
-  folder_name: string;
-  folder_icon: string;
-  // Add other properties if any
-}
 export interface Session {
   expires: string;
   user: {
@@ -29,56 +24,40 @@ export interface Session {
     email: string;
     image: string;
   };
+  referenceId?: string;
 }
-
+export interface ContextMenuType {
+  visible: boolean;
+  x: number;
+  y: number;
+  linkIndex: number | null;
+}
 export interface AppContextType {
   session: Session | null;
   setSession: React.Dispatch<React.SetStateAction<Session | null>>;
-  hoveredLink: any; // replace `any` with appropriate type
-  setHoveredLink: React.Dispatch<React.SetStateAction<any>>;
-  folderDetails: any; // replace `any` with appropriate type
-  previewLink: any; // replace `any` with appropriate type
-  previewLinkRef: any; // replace `any` with appropriate type
-  handleHover: any; // replace `any` with appropriate type
-  handleHidePreviewLink: any; // replace `any` with appropriate type
+
   inputError: boolean;
   setInputError: React.Dispatch<React.SetStateAction<boolean>>;
-  contextMenu: any; // replace `any` with appropriate type
-  setContextMenu: React.Dispatch<React.SetStateAction<any>>;
-  contextMenuRef: any; // replace `any` with appropriate type
-  handleContextMenu: any; // replace `any` with appropriate type
-  handleHideContextMenu: any; // replace `any` with appropriate type
+
   route: string;
-  folderInputs: FolderInputs;
-  setFolderInputs: React.Dispatch<React.SetStateAction<FolderInputs>>;
-  inputs: any; // replace `any` with appropriate type
-  setInputs: React.Dispatch<React.SetStateAction<any>>;
-  modalText: string;
-  modalRef: any; // replace `any` with appropriate type
+
   links: Links[];
   setLinks: React.Dispatch<React.SetStateAction<Links[]>>;
   menu: string;
   setMenu: React.Dispatch<React.SetStateAction<string>>;
-  handleClose: any; // replace `any` with appropriate type
-  editIndex: number | null;
-  setEditIndex: React.Dispatch<React.SetStateAction<number | null>>;
-  openModal: any; // replace `any` with appropriate type
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
   handleSearchInputChange: (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => void;
   searchInput: string;
-  darkMode: boolean;
-  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+
   setRoute: React.Dispatch<React.SetStateAction<string>>;
-  setToggle: any; // replace `any` with appropriate type
-  toggle: any; // replace `any` with appropriate type
+
   folders: Folders[];
   setFolders: React.Dispatch<React.SetStateAction<Folders[]>>;
-  navRef: any; // replace `any` with appropriate type
+
   active: string;
   setActive: React.Dispatch<React.SetStateAction<string>>;
   showSignUpModal: boolean;
@@ -108,10 +87,45 @@ export interface LinkContextProps {
   namedLinks: Links[];
   unnamedLinks: Links[];
   handleSelectAllFolders: () => void;
+  handleSelectLinkInFolder: (index: number) => void;
   handleDeleteLinkInFolder: () => void;
   handleSelectAllLinksInFolder: () => void;
   handleSelectClick: (isSelectClick: boolean) => void;
   handleAddLinksToFolder: () => void;
   existingLinks: Links[];
-  setExistingLinks: React.Dispatch<SetStateAction<Links[]>>;
+  setExistingLinks: React.Dispatch<React.SetStateAction<Links[]>>;
+}
+
+export interface ModalContextType {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  modalText: string;
+  setModalText: React.Dispatch<React.SetStateAction<string>>;
+  editIndex: number | null;
+  setEditIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  inputs: Links;
+  setInputs: React.Dispatch<React.SetStateAction<Links>>;
+  folderInputs: Folders;
+  setFolderInputs: React.Dispatch<React.SetStateAction<Folders>>;
+  openModal: (
+    modalText: string,
+    linkDetails: Links | null,
+    folderDetails: Folders | null,
+    linkIndex: number | null,
+    isFolder: boolean
+  ) => void;
+  handleClose: () => void;
+  modalRef: React.MutableRefObject<HTMLDivElement>;
+  folderDetails: Folders | null;
+}
+export interface ThemeContextType {
+  darkMode: boolean;
+  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+}
+export interface FolderContextType {
+  showFolderCheckboxes: boolean;
+  setShowFolderCheckboxes: React.Dispatch<React.SetStateAction<boolean>>;
+  openFolderIndex: number | null;
+  toggleFolder: (index: number) => void;
+  setOpenFolderIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }

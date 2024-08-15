@@ -1,17 +1,17 @@
 import React from "react";
-import { useAppContext } from "../../../../context";
+import { useModalContext } from "../../../../context";
 import { styles } from "../../../../styles";
 import LinkAddedList from "./LinkAddedList";
 import useLinksAddedToFolder from "../../../../hooks/useLinksAddedToFolder";
 import ProceedToAddLinks from "./ProceedToAddLinks";
-import { AppContextType } from "../../../../types";
+import { ModalContextType } from "../../../../types";
 const LinksAddedToFolder = () => {
-  const { folderInputs, modalText } = useAppContext() as AppContextType;
+  const { folderInputs, modalText } = useModalContext() as ModalContextType;
 
   const { handleClick } = useLinksAddedToFolder();
   return (
     <div>
-      {folderInputs.links.length ? (
+      {folderInputs && folderInputs.links.length ? (
         <LinkAddedList />
       ) : (
         <ProceedToAddLinks showModal={false} />
@@ -20,7 +20,7 @@ const LinksAddedToFolder = () => {
         <button className={styles.button1} onClick={handleClick}>
           {modalText.includes("Save Links To Folder")
             ? "Done"
-            : folderInputs.links.length
+            : folderInputs && folderInputs.links.length
             ? "Create Folder"
             : "Create Empty Folder"}
         </button>

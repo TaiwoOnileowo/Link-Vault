@@ -3,10 +3,14 @@ import { useAppContext } from "../context";
 import { useLinkContext } from "../context";
 import PropTypes from "prop-types";
 import icon from "/icon.png";
+import React from "react";
 import {
   getFormattedDescription,
   getFormattedTitle,
 } from "../utils/stringFormatters";
+import usePreviewLink from "../hooks/usePreviewLink";
+import { useContextMenu } from "../hooks";
+import { LinkContextProps } from "../types";
 
 async function fetchLinkMetadata(url) {
   try {
@@ -31,11 +35,16 @@ async function fetchLinkMetadata(url) {
     throw error;
   }
 }
-
+interface Metadata {
+  ogTitle: string;
+  ogDescription: string;
+  ogImage: Array<{ url: string }>;
+}
 const LinkPreview = ({ url }) => {
-  const [metadata, setMetadata] = useState(null);
-  const { previewLink, contextMenu } = useAppContext();
-  const { showCheckboxes } = useLinkContext();
+  const [metadata, setMetadata] = useState<Metadata | null>(null);
+  const { contextMenu } = useContextMenu();
+  const { previewLink } = usePreviewLink();
+  const { showCheckboxes } = useLinkContext() as LinkContextProps;
   const previewRef = useRef();
   const { x, y, visible } = previewLink;
 

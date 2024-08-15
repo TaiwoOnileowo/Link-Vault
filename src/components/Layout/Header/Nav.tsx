@@ -2,15 +2,29 @@ import { AiOutlineClose } from "react-icons/ai";
 import { HiMenuAlt3 } from "react-icons/hi";
 import ToggleModes from "./ToggleModes";
 import { LuHome, LuFolders } from "react-icons/lu";
-import { useAppContext } from "../../../context";
+import {
+  useAppContext,
+  useLinkContext,
+  useModalContext,
+  useThemeContext,
+} from "../../../context";
 import { Link } from "react-chrome-extension-router";
 import Home from "../../Home";
 import Folder from "../../Folder";
 import { useFolderContext } from "../../../context";
 import { IoSettingsOutline } from "react-icons/io5";
 import Settings from "../../Settings";
+import React from "react";
+import {
+  AppContextType,
+  FolderContextType,
+  LinkContextProps,
+  ModalContextType,
+  ThemeContextType,
+} from "../../../types";
+import { useNav } from "../../../hooks";
 const Nav = () => {
-  const { setOpenFolderIndex } = useFolderContext();
+  const { setOpenFolderIndex } = useFolderContext() as FolderContextType;
   const nav = [
     { title: "Home", icon: <LuHome />, component: Home, route: "Home" },
     {
@@ -29,22 +43,25 @@ const Nav = () => {
     // { title: "Premium", icon: <LuCrown />, route: "premium" },
   ];
 
+  const { setMenu, active, setActive, setRoute } =
+    useAppContext() as AppContextType;
+  const { darkMode } = useThemeContext() as ThemeContextType;
+  const { navRef, toggle, setToggle } = useNav();
   const {
-    toggle,
-    setToggle,
-    navRef,
-    setMenu,
-    active,
-    setActive,
-    darkMode,
-    setRoute,
-  } = useAppContext();
-
+    handleSelectClick,
+    setShowCheckboxes,
+    setIsFolderLinks,
+    setIsFolder,
+  } = useLinkContext() as LinkContextProps;
   const handleClick = (item) => {
+    handleSelectClick(true);
+    setShowCheckboxes(false);
     setActive(item.title);
     setToggle(false);
     setRoute(item.route);
     setOpenFolderIndex(null);
+    setIsFolderLinks(false);
+    setIsFolder(false);
   };
 
   return (

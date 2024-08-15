@@ -1,24 +1,32 @@
 import DisplayedLinks from "../Home/DisplayedLinks";
-import { useLinkContext } from "../../context";
+import { useLinkContext, useModalContext } from "../../context";
 import { useAppContext } from "../../context";
 import { useFolderContext } from "../../context";
 import SelectOptions from "../SelectOptions";
+import React from "react";
 import ProceedToAddLinks from "./AddNewFolder/LinksAddedToFolder/ProceedToAddLinks";
 import ContextMenu from "../Layout/ContextMenu";
 import LinkPreview from "../LinkPreview";
-const FolderListItemLinks = ({ folder }: { folder: object }) => {
-  const { showCheckboxes } = useLinkContext();
-  const { openFolderIndex, showFolderCheckboxes } = useFolderContext();
-  const {
-    modalText,
-    folders,
-    previewLink,
-    previewLinkRef,
-    contextMenu,
-    contextMenuRef,
-  } = useAppContext();
-  const { linkIndex } = previewLink;
-
+import {
+  AppContextType,
+  FolderContextType,
+  Folders,
+  LinkContextProps,
+  ModalContextType,
+} from "../../types";
+import usePreviewLink from "../../hooks/usePreviewLink";
+import { useContextMenu } from "../../hooks";
+const FolderListItemLinks = ({ folder }: { folder: Folders }) => {
+  const { showCheckboxes } = useLinkContext() as LinkContextProps;
+  const { openFolderIndex, showFolderCheckboxes } =
+    useFolderContext() as FolderContextType;
+  const { folders } = useAppContext() as AppContextType;
+  const { modalText } = useModalContext() as ModalContextType;
+  const { previewLink, previewLinkRef } = usePreviewLink();
+  const linkIndex = previewLink?.linkIndex ?? 0;
+  const { contextMenu, contextMenuRef } = useContextMenu();
+  const display =
+    openFolderIndex !== null ? folders[openFolderIndex].links : [];
   return (
     <>
       {folder.links?.length > 0 ? (
@@ -28,12 +36,12 @@ const FolderListItemLinks = ({ folder }: { folder: object }) => {
         >
           {showCheckboxes && !modalText.includes("Folder") && (
             <div className="mt-1">
-              <SelectOptions display={folders[openFolderIndex].links} />
+              <SelectOptions display={display} />
             </div>
           )}{" "}
           {contextMenu.visible && !showFolderCheckboxes && (
             <div ref={contextMenuRef}>
-              <ContextMenu items={folders[openFolderIndex].links} />
+              <ContextMenu items={display} />
             </div>
           )}
           <>

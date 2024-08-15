@@ -1,13 +1,15 @@
 import { useEffect } from "react";
-import { useAppContext } from "../../../context";
+import { useAppContext, useThemeContext } from "../../../context";
+import React from "react";
+import { ThemeContextType } from "../../../types";
 const ToggleModes = () => {
-  const { setDarkMode, darkMode } = useAppContext();
+  const { setDarkMode, darkMode } = useThemeContext() as ThemeContextType;
   const toggleDarkMode = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.MouseEvent<HTMLLabelElement, MouseEvent>
   ) => {
-    if (e.target.checked) {
+    if ((e.target as HTMLInputElement).checked) {
       setDarkMode(true);
       localStorage.setItem("darkMode", JSON.stringify(true));
     } else {

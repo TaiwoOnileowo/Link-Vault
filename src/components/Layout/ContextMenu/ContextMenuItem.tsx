@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-
+import React from "react";
 const ContextMenuItem = ({ icon, text, onClick, disabled, hidden }) => (
   <li
     className={`flex items-center text-sm cursor-pointer w-full px-6 py-[6px] rounded transition duration-150 ease-in-out ${

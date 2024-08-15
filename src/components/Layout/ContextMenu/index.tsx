@@ -6,17 +6,22 @@ import { GrPin } from "react-icons/gr";
 import { RiUnpinLine } from "react-icons/ri";
 import { MdAddLink } from "react-icons/md";
 import { TfiThemifyFavicon } from "react-icons/tfi";
-import { useLinkContext } from "../../../context";
+import { useLinkContext, useModalContext } from "../../../context";
 import { useAppContext } from "../../../context";
 import { useFolderContext } from "../../../context";
-import { useProceedToAddLinks } from "../../../hooks";
+import { useContextMenu, useProceedToAddLinks } from "../../../hooks";
 import ContextMenuItem from "./ContextMenuItem.tsx";
 import useContextMenuPosition from "../../../hooks/useContextMenuPosition.js";
 import { copyToClipboard } from "../../../utils/clipboardUtils.js";
-import propTypes from "prop-types";
-import { AppContextType, LinkContextProps } from "../../../types.ts";
-const ContextMenu = ({ items }: { items: Array<any> }) => {
-  const menuRef = useRef(null);
+
+import {
+  AppContextType,
+  FolderContextType,
+  LinkContextProps,
+  ModalContextType,
+} from "../../../types.ts";
+const ContextMenu = ({ items }: { items?: Array<any> }) => {
+  const menuRef = useRef<HTMLDivElement>(null);
   const {
     setShowCheckboxes,
     handleDelete,
@@ -26,19 +31,20 @@ const ContextMenu = ({ items }: { items: Array<any> }) => {
     handleCopyFolder,
   } = useLinkContext() as LinkContextProps;
   const { handleClick } = useProceedToAddLinks();
-  const { setShowFolderCheckboxes, setOpenFolderIndex } = useFolderContext();
+  const { setShowFolderCheckboxes, setOpenFolderIndex } =
+    useFolderContext() as FolderContextType;
   const {
-    openModal,
     searchInput,
-    contextMenu,
-    handleHideContextMenu,
+
     setMenu,
     route,
   } = useAppContext() as AppContextType;
+  const { openModal } = useModalContext() as ModalContextType;
+  const { contextMenu, handleHideContextMenu } = useContextMenu();
   const { x, y, visible, linkIndex } = contextMenu;
   const isFolder = route === "Folder" && !isFolderLinks;
   useContextMenuPosition(x, y, visible, menuRef);
-  console.log(isFolder);
+  console.log(isFolderLinks, "daxfredeeeeeeeeeeeeeeeeeeee");
   if (
     !visible ||
     !items ||
@@ -62,17 +68,21 @@ const ContextMenu = ({ items }: { items: Array<any> }) => {
       <ul className="flex flex-col items-center w-full">
         <ContextMenuItem
           onClick={() => {
-            const details = isFolder
+            const folderDetails = isFolder
               ? {
                   folder_name: items[linkIndex].folder_name,
                   links: items[linkIndex].links,
                   folder_icon: items[linkIndex].folder_icon,
                 }
+              : null;
+            const linkDetails = isFolder
+              ? null
               : {
                   url: items[linkIndex].url,
                   url_name: items[linkIndex].url_name,
                   pinned: items[linkIndex].pinned,
                 };
+
             if (isFolder) {
               setOpenFolderIndex(null);
               setMenu("Name");
@@ -80,7 +90,8 @@ const ContextMenu = ({ items }: { items: Array<any> }) => {
 
             openModal(
               isFolder ? "Rename Folder" : "Edit Link",
-              details,
+              linkDetails,
+              folderDetails,
               linkIndex,
               isFolder
             );
@@ -139,12 +150,18 @@ const ContextMenu = ({ items }: { items: Array<any> }) => {
             <hr className="w-full border-gray-100 my-1 opacity-10" />
             <ContextMenuItem
               onClick={() => {
-                const details = {
+                const folderDetails = {
                   folder_name: items[linkIndex].folder_name,
                   links: items[linkIndex].links,
                   folder_icon: items[linkIndex].folder_icon,
                 };
-                openModal("Choose an Icon", details, linkIndex, true);
+                openModal(
+                  "Choose an Icon",
+                  null,
+                  folderDetails,
+                  linkIndex,
+                  true
+                );
                 handleHideContextMenu();
               }}
               icon={<TfiThemifyFavicon />}

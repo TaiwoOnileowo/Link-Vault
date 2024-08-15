@@ -1,7 +1,7 @@
 
 import Menu from "../../Menu";
 import AddNewFolder from "../../Folder/AddNewFolder";
-
+import React from "react";
 const ModalFolder = () => {
   return (
     <div className="mt-6">

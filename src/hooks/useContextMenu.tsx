@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { initialContextMenu } from "../constants/initialStates";
+import { ContextMenuType } from "../types";
 
 const useContextMenu = () => {
-  const [contextMenu, setContextMenu] = useState(initialContextMenu);
+  const [contextMenu, setContextMenu] = useState<ContextMenuType>(initialContextMenu);
   const contextMenuRef = useRef<any>();
 
   useEffect(() => {
@@ -21,7 +22,7 @@ const useContextMenu = () => {
   }, []);
 
   const handleContextMenu = (
-    e: React.MouseEvent<HTMLDivElement>,
+    e:  React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number
   ) => {
     e.preventDefault();

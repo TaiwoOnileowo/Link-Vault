@@ -1,6 +1,6 @@
 import { styles } from "../styles";
 import { useModalLink } from "../hooks";
-
+import React from "react";
 const FormInput = ({
   label,
   type,

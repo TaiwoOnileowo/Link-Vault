@@ -1,9 +1,10 @@
-import propTypes from "prop-types";
+import React from "react";
 import { GoDotFill } from "react-icons/go";
 import { getFormattedLink } from "../../../../utils/stringFormatters";
 import { MdOutlineCancel } from "react-icons/md";
 import useLinksAddedToFolder from "../../../../hooks/useLinksAddedToFolder";
-const LinkAddedItem = ({ link, index }: { link: object; index: number }) => {
+import { Links } from "../../../../types";
+const LinkAddedItem = ({ link, index }: { link: Links; index: number }) => {
   const { deleteLink } = useLinksAddedToFolder();
   return (
     <li

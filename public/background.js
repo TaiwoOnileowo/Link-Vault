@@ -229,7 +229,7 @@ async function updateFolders(linkUrl, folderName) {
 
 async function appendLink(linkUrl, folderName) {
   chrome.storage.local.get(["session"], async (result) => {
-    const sessionid = result.sessionid.user.id;
+    const sessionid = result.session.user.id;
     if (!sessionid) {
       console.error("No session ID");
       return;

@@ -1,10 +1,7 @@
-import { useState, createContext, useEffect, ReactNode } from "react";
+import React, { useState, createContext, useEffect, ReactNode } from "react";
 import { initialDarkMode } from "../constants/initialStates";
+import { ThemeContextType } from "../types";
 
-interface ThemeContextType {
-  darkMode: boolean;
-  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 

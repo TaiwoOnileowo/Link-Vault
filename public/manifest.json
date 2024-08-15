@@ -35,7 +35,9 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
   },
-  "host_permissions": ["http://localhost:3000/*"],
+  "host_permissions": [
+    "http://localhost:3000/*, https://linkvaultapp.vercel.app/*"
+  ],
   "author": "Taiwo Onileowo",
   "homepage_url": "https://linkvaultapp.netlify.app/",
   "minimum_chrome_version": "88"

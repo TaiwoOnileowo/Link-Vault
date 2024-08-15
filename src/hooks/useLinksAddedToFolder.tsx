@@ -46,9 +46,9 @@ const useLinksAddedToFolder = () => {
       delete newLink.selected;
       return newLink;
     });
-    if (updatedLinks.length > 0) {
-      setLinks(deselectedLinks);
-    }
+
+    setLinks(deselectedLinks);
+
     handleClose();
     setFolderInputs({
       folder_name: "",
@@ -70,7 +70,7 @@ const useLinksAddedToFolder = () => {
     }));
 
     setExistingLinks((prevLinks: Array<any>) => {
-      const newLinks:Links[] = [...prevLinks];
+      const newLinks: Links[] = [...prevLinks];
       newLinks.splice(linkToRemove.originalIndex, 0, {
         ...linkToRemove,
         selected: false,

@@ -1,11 +1,5 @@
 import React, { useState, useEffect, createContext } from "react";
 import { goTo, goBack } from "react-chrome-extension-router";
-import useContextMenu from "../hooks/useContextMenu";
-import { useModalContext } from ".";
-import { useThemeContext } from ".";
-import useNav from "../hooks/useNav";
-import usePreviewLink from "../hooks/usePreviewLink";
-
 import SearchResults from "../components/SearchResults.tsx";
 import Folder from "../components/Folder/index.tsx";
 import Home from "../components/Home/index.tsx";
@@ -24,39 +18,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const [searchInput, setSearchInput] = useState<string>("");
   const [menu, setMenu] = useState<string>("Unnamed");
   const [route, setRoute] = useState<string>("Home");
-  const { toggle, setToggle, navRef } = useNav();
-  const [hoveredLink, setHoveredLink] = useState(null);
   const [inputError, setInputError] = useState<boolean>(false);
-  const [session, setSession] = useState<Session| null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [showSignUpModal, setShowSignUpModal] = useState<boolean>(false);
   const [modalDismissed, setModalDismissed] = useState<boolean>(false);
-  const {
-    contextMenu,
-    setContextMenu,
-    contextMenuRef,
-    handleContextMenu,
-    handleHideContextMenu,
-  } = useContextMenu();
-
-  const { previewLink, previewLinkRef, handleHover, handleHidePreviewLink } =
-    usePreviewLink();
-  const {
-    isOpen,
-    setIsOpen,
-    modalText,
-    editIndex,
-    setEditIndex,
-    inputs,
-    setInputs,
-    folderInputs,
-    setFolderInputs,
-    openModal,
-    handleClose,
-    modalRef,
-    folderDetails,
-  } = useModalContext();
-
-  const { darkMode, setDarkMode } = useThemeContext();
 
   useEffect(() => {
     if (searchInput.length > 0) {
@@ -75,31 +40,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const fetchSession = async () => {
+    console.log("Fetching sessionnnnnnnnnnnn");
     try {
-      const response = await fetch("http://localhost:3000/api/session", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Extension-ID": "bbgippochabbclmbgkkbbofljdfnbdop",
-        },
-      });
+      const response = await fetch(
+        "https://linkvaultapp.vercel.app/api/session",
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Extension-ID": "bbgippochabbclmbgkkbbofljdfnbdop",
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
+      console.log(response);
+      console.log(data);
       if (data) {
-        setSession(data);
+        setSession(data.session);
+        console.log("Session data", data.session);
         setShowSignUpModal(false);
-        toast.success(
-          `Welcome back! You are logged in as ${data.user.name.split(" ")[0]}`,
-          {
-            duration: 4000,
-            position: "top-right",
-          }
-        );
-        // updateStorage("session", data);
-        return data.user.id;
+        // updateStorage("session", data.session);
+        return data.session.user.id;
       } else if (!modalDismissed) {
         setSession(null);
         setShowSignUpModal(true);
@@ -113,11 +78,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       return null;
     }
   };
-
+  console.log("Sessionddddddddddddddd", session);
   const fetchLinks = async (sessionid: string) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/links?id=${sessionid}`,
+        `https://linkvaultapp.vercel.app/api/links?id=${sessionid}`,
         {
           method: "GET",
           headers: {
@@ -141,7 +106,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const fetchFolders = async (sessionid: string) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/folders?id=${sessionid}`,
+        `https://linkvaultapp.vercel.app/api/folders?id=${sessionid}`,
         {
           method: "GET",
           headers: {
@@ -194,7 +159,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     initializeApp();
-
+    // console.log("session", session);
+    // toast.success(`Welcome back ${session.user.name.split(" ")[0]}`, {
+    //   duration: 4000,
+    //   position: "top-right",
+    // });
     const messageListener = (message: { action: string }) => {
       if (message.action === "updateLinks") {
         goTo(Home);
@@ -202,6 +171,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         initializeApp();
       }
       if (message.action === "namedLinkAdded") {
+        goTo(Home);
         setMenu("Named");
         initializeApp();
       }
@@ -231,15 +201,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       };
 
       try {
-        const response = await fetch("http://localhost:3000/api/updateLinks", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Extension-ID": "bbgippochabbclmbgkkbbofljdfnbdop",
-          },
-          credentials: "include",
-          body: JSON.stringify(requestBody),
-        });
+        const response = await fetch(
+          "https://linkvaultapp.vercel.app/api/updateLinks",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Extension-ID": "bbgippochabbclmbgkkbbofljdfnbdop",
+            },
+            credentials: "include",
+            body: JSON.stringify(requestBody),
+          }
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -273,7 +246,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
       try {
         const response = await fetch(
-          "http://localhost:3000/api/updateFolders",
+          "https://linkvaultapp.vercel.app/api/updateFolders",
           {
             method: "POST",
             headers: {
@@ -307,7 +280,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const intervalId = setInterval(() => {
       fetchSession();
-    }, 30000); // Fetch session every 30 seconds
+    }, 30000); 
 
     return () => clearInterval(intervalId);
   }, []);
@@ -320,49 +293,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         session,
         setSession,
-        hoveredLink,
-        setHoveredLink,
-        folderDetails,
-        previewLink,
-        previewLinkRef,
-        handleHover,
-        handleHidePreviewLink,
+
         inputError,
         setInputError,
-        contextMenu,
-        setContextMenu,
-        contextMenuRef,
-        handleContextMenu,
-        handleHideContextMenu,
-        route,
-        folderInputs,
-        setFolderInputs,
-        inputs,
-        setInputs,
-        modalText,
-        modalRef,
+
         links,
         setLinks,
         menu,
         setMenu,
-        handleClose,
-        editIndex,
-        openModal,
-        isOpen,
-        setIsOpen,
+
         handleSearchInputChange,
         searchInput,
-        darkMode,
-        setDarkMode,
+        route,
         setRoute,
-        setToggle,
-        toggle,
+
         folders,
         setFolders,
-        navRef,
+
         active,
         setActive,
-        setEditIndex,
+
         showSignUpModal,
         setShowSignUpModal,
         modalDismissed,

@@ -1,12 +1,14 @@
 import { useState, useRef } from "react";
 import { initialPreviewLink } from "../constants/initialStates";
+import { ContextMenuType } from "../types";
 
 const usePreviewLink = () => {
-  const [previewLink, setPreviewLink] = useState(initialPreviewLink);
-  const previewLinkRef = useRef();
+  const [previewLink, setPreviewLink] =
+    useState<ContextMenuType>(initialPreviewLink);
+  const previewLinkRef = useRef<HTMLDivElement |null>(null);
 
   const handleHover = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number
   ) => {
     e.preventDefault();

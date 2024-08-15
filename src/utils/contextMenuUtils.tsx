@@ -1,16 +1,10 @@
 export const getAdjustedPosition = (
   x: number,
   y: number,
-  menuRef: {
-    current: {
-      offsetWidth: number;
-      offsetHeight: number;
-      style: { left: string; top: string };
-    };
-  }
+  menuRef: React.RefObject<HTMLDivElement>
 ) => {
   const { innerWidth: windowWidth, innerHeight: windowHeight } = window;
-  const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menuRef.current;
+  const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menuRef.current || { offsetWidth: 0, offsetHeight: 0 };
 
   let adjustedX = x;
   let adjustedY = y;
