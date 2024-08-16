@@ -1,8 +1,8 @@
-import { list } from 'postcss';
+import { list } from "postcss";
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: "class", 
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -35,17 +35,16 @@ export default {
         "gradient-3": "linear-gradient(45deg, #1A3A8A, #1A3A8A)",
       }),
     },
-    // screens: {
-    //   ip: "200px",
-    //   xs: "250px",
-    //   ss: "380px",
-    //   ts: "600px",
-    //   xsm: "700px",
-    //   sm: "800px",
-    //   msm: "1020px",
-    //   bsm: "1100px",
-    //   md: "1280px",
-    // },
+    keyframes: {
+      move: {
+        "0%": { left: "16.5%", opacity: 1 },
+        "50%": { left: "50%", opacity: 1 },
+        "100%": { left: "80%", opacity: 0 },
+      },
+    },
+    animation: {
+      move: "move 2s linear infinite",
+    },
   },
   plugins: [],
 };

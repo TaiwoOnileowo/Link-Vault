@@ -1,5 +1,6 @@
 import React from "react";
 import LinkList from "./LinkList";
+import { Links } from "../../types";
 
 const DisplayedLinks = ({
   display,
@@ -7,7 +8,7 @@ const DisplayedLinks = ({
   isExistingLinks,
   isFolderLinks,
 }: {
-  display: Array<any>;
+  display: Links[];
   isSearchResults?: boolean;
   isExistingLinks?: boolean;
   isFolderLinks?: boolean;

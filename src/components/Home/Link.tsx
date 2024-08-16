@@ -23,8 +23,8 @@ const Link = ({
     <div
       className={`${
         isExistingLinks ? "text-[12px]" : "text-[15px] w-[430px]"
-      } mt-2 inline-flex items-center gap-1  cursor-pointer text-black ${
-        link.selected ? "opacity-80  shadow-sm" : "text-white"
+      }  inline-flex items-center gap-1  cursor-pointer text-black ${
+        link.selected ? "bg-opacity-20  shadow-sm bg-gray-500 p-1" : "text-white mt-2"
       }`}
       onMouseEnter={(e) => {
         handleHover(e, index);

@@ -34,7 +34,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       />
       <NewLink />
       <ModalContent />
-      {showSignUpModal && !modalDismissed && <SignUpModal />}
+      {/* {showSignUpModal && !modalDismissed && <SignUpModal />} */}
       {children}
       <Footer />
     </div>

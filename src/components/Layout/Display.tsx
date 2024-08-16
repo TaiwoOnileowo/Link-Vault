@@ -28,16 +28,12 @@ const Display = ({
   const { contextMenu, contextMenuRef } = useContextMenu();
   const { previewLink, previewLinkRef } = usePreviewLink();
 
-
+console.log(contextMenu, "contextMenudd")
   const newLinkIndex = previewLink?.linkIndex ?? 0;
 
   return (
     <>
-      {contextMenu.visible && !showCheckboxes && !showFolderCheckboxes && (
-        <div ref={contextMenuRef}>
-          <ContextMenu items={links} />
-        </div>
-      )}
+   
       {previewLink.visible && (
         <div ref={previewLinkRef}>
           <LinkPreview url={links[newLinkIndex].url} />

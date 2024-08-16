@@ -1,8 +1,11 @@
 import React, { useState, createContext, useRef, ReactNode } from "react";
 import { initialInputs, initialFolderInputs } from "../constants/initialStates";
-
-import { ModalContextType, Links, Folders } from "../types";
-
+import { useModal } from "../components/ui/AnimatedModal";
+import { ModalContextType, Links, Folders, AppContextType } from "../types";
+import { useContextMenu } from "../hooks";
+import { ContextMenuType } from "../types";
+import { initialContextMenu } from "../constants/initialStates";
+import { useAppContext } from ".";
 export const ModalContext = createContext<ModalContextType | undefined>(
   undefined
 );
@@ -16,8 +19,12 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     initialFolderInputs
   );
   const [folderDetails, setFolderDetails] = useState<Folders | null>(null);
+  const [contextMenu, setContextMenu] =
+    useState<ContextMenuType>(initialContextMenu);
+  const [clickedIndex, setClickedIndex] = useState<number>(-1);
+  const { links } = useAppContext() as AppContextType;
   const modalRef = useRef<any>();
-
+  const { setOpen } = useModal();
   const openModal = (
     modalText: string,
     linkDetails: Links | null,
@@ -25,7 +32,8 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     linkIndex: number | null,
     isFolder: boolean
   ) => {
-    modalRef.current?.open();
+    // modalRef.current?.open();
+    setOpen(true); //openModal
     setModalText(modalText);
     setInputs(initialInputs);
     setFolderInputs(initialFolderInputs);
@@ -42,9 +50,22 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const openLinkModal = (modalText: string, index: number | null) => {
+    setOpen(true); //openModal
+    setModalText(modalText); //set modal text
+    if (index) {
+      setClickedIndex(index); //set clicked index to the index of the link that prompted the modal
+      setInputs(links[index]); //set inputs to the link at the clicked index
+    }
+  };
+  const openFolderModal = (modalText: string, index: number | null) => {
+    setOpen(true); //openModal
+    setModalText(modalText); //set modal text
+    setFolderInputs(initialFolderInputs);
+  };
   const handleClose = () => {
-    setIsOpen(false);
-    setInputs(initialInputs);
+    setOpen(false); //close modal
+    setInputs(initialInputs); //clear inputs
     setFolderInputs(initialFolderInputs);
     setModalText("");
   };
@@ -52,6 +73,11 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ModalContext.Provider
       value={{
+        openLinkModal,
+        openFolderModal,
+        clickedIndex,
+        contextMenu,
+        setContextMenu,
         isOpen,
         setIsOpen,
         modalText,

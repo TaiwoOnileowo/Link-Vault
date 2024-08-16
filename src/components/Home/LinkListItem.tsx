@@ -1,12 +1,12 @@
 import { useLinkContext } from "../../context";
-import { useAppContext } from "../../context";
+import { useAppContext , useModalContext} from "../../context";
 import React from "react";
 import { GoDotFill } from "react-icons/go";
 import Checkbox from "../Checkbox";
 import Link from "./Link";
-import { AppContextType, LinkContextProps, Links } from "../../types";
+import { AppContextType, LinkContextProps, Links, ModalContextType } from "../../types";
 import { useContextMenu } from "../../hooks";
-
+import ContextMenu from "../Layout/ContextMenu";
 const LinkListItem = ({
   link,
   index,
@@ -22,9 +22,9 @@ const LinkListItem = ({
 }) => {
   const { setIsFolder, isFolder, setIsFolderLinks, showCheckboxes } =
     useLinkContext() as LinkContextProps;
-
-  const { route } = useAppContext() as AppContextType;
-  const { handleContextMenu } = useContextMenu();
+const { contextMenu } = useModalContext() as ModalContextType;
+  const { route, links } = useAppContext() as AppContextType;
+  const { handleContextMenu, contextMenuRef,  } = useContextMenu();
   console.log(isFolder);
   console.log(isFolderLinks, "dax");
   return (
@@ -41,6 +41,11 @@ const LinkListItem = ({
         handleContextMenu(e, index);
       }}
     >
+      {contextMenu.visible && (
+        <div ref={contextMenuRef}>
+          <ContextMenu items={links} contextMenu={contextMenu} />
+        </div>
+      )}
       {showCheckboxes ? (
         <Checkbox link={link} originalIndex={index} />
       ) : (

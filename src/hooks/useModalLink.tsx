@@ -5,7 +5,7 @@ import { useFolderContext } from "../context";
 import toast from "react-hot-toast";
 import { getCurrentTab } from "../utils/chromeUtilis";
 import useSelectOptions from "./useSelectOptions";
-import {} from "../utils/api";
+
 import {
   AppContextType,
   FolderContextType,
@@ -15,14 +15,9 @@ import {
 } from "../types";
 
 const useModalLink = () => {
-  const {
-    setLinks,
-    links,
-    setMenu,
+  const { setLinks, links, setMenu, setFolders, route } =
+    useAppContext() as AppContextType;
 
-    setFolders,
-    route,
-  } = useAppContext() as AppContextType;
   const {
     inputs,
     setInputs,
@@ -31,118 +26,90 @@ const useModalLink = () => {
     setFolderInputs,
     folderInputs,
     handleClose,
+    clickedIndex,
   } = useModalContext() as ModalContextType;
-  const { isFolderLinks, setShowCheckboxes } =
+
+  const { isFolderLinks, setShowCheckboxes, handleSelectClick } =
     useLinkContext() as LinkContextProps;
+
   const { openFolderIndex } = useFolderContext() as FolderContextType;
+
   const [bounce, setBounce] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const { handleShowAddFolder } = useSelectOptions();
   const folderRoute = route === "Folder";
+  const mountedModal = clickedIndex > -1;
+
   const handleSaveTab = () => {
     getCurrentTab().then((tab: Links) => {
       setInputs({ ...inputs, url: tab.url });
     });
   };
 
-  const handleChange = (e) => {
+  const validateUrl = (url: string) => {
+    if (url === "") {
+      return "URL is required";
+    } else if (links.some((link) => link.url === url) && !mountedModal) {
+      return "Link already exists";
+    }
+    return null;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    let newError: string | null = null;
 
     if (name === "url") {
-      if (value === "") {
-        setError("Url is required");
-      } else {
-        setError(null);
-      }
+      newError = validateUrl(value);
+      setError(newError);
     }
 
     setInputs((prevInputs) => ({
       ...prevInputs,
       [name]: value,
     }));
-
-    // Perform error check for URL existence as the user types
-    if (name === "url" && !folderRoute) {
-      const alreadyExists = links.some((link) => link.url === value);
-      if (alreadyExists) {
-        setError("Link already exists");
-      } else {
-        setError(null);
-      }
-    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputs.url && !error) {
-      let updatedLinks = [...links];
-      if (modalText.includes("Edit Link")) {
-        if (isFolderLinks) {
-          setFolders((prevFolders) =>
-            prevFolders.map((folder, i) => {
-              if (i === openFolderIndex) {
-                return {
-                  ...folder,
-                  links: folder.links.map((link, j) => {
-                    if (j === editIndex) {
-                      return { ...inputs };
-                    }
-                    return link;
-                  }),
-                };
-              }
-              return folder;
-            })
-          );
-          toast.success("Edited successfully!");
-        } else {
-          if (editIndex === null) return;
-          updatedLinks[editIndex] = { ...inputs };
-          setLinks(updatedLinks);
 
-          toast.success("Edited successfully!");
-        }
-        setInputs({
-          url: "",
-          url_name: "",
-        });
-        handleClose();
-      } else if (modalText.includes("Folder")) {
-        setFolderInputs({
-          ...folderInputs,
-          links: [inputs, ...folderInputs.links],
-          folder_icon: folderInputs.folder_icon,
-        });
-        toast.success("Added to folder");
-      } else {
-        updatedLinks = [inputs, ...updatedLinks];
-        const sortedUpdatedLinks = updatedLinks.sort(
-          (a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0)
-        );
-        setLinks(sortedUpdatedLinks);
-
-        toast.success("Saved successfully!");
-        inputs.url_name ? setMenu("Named") : setMenu("Unnamed");
-        handleClose();
-      }
-      setShowCheckboxes(false);
-      setInputs({
-        url: "",
-        url_name: "",
-      });
-    } else if (!inputs.url) {
-      setError("Url is required");
+    const newError = validateUrl(inputs.url);
+    if (newError) {
+      setError(newError);
+      return;
     }
+
+    let updatedLinks = [...links];
+
+    if (mountedModal) {
+      updatedLinks[clickedIndex] = { ...inputs };
+      setLinks(updatedLinks);
+      toast.success("Edited successfully!");
+      handleClose();
+    } else {
+      updatedLinks = [inputs, ...updatedLinks];
+      const sortedUpdatedLinks = updatedLinks
+        .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0))
+        .map((link) => ({ ...link, selected: false }));
+      setLinks(sortedUpdatedLinks);
+      toast.success("Saved successfully!");
+      inputs.url_name ? setMenu("Named") : setMenu("Unnamed");
+      handleClose();
+    }
+
+    setShowCheckboxes(false);
+    setInputs({ url: "", url_name: "" });
   };
 
   const handleCancel = () => {
     handleClose();
     setShowCheckboxes(false);
+    setError(null); // Clear the error when canceling
   };
 
   const handleSaveToFolder = () => {
     const updatedInputs = { ...inputs, selected: true };
-
     handleShowAddFolder(updatedInputs);
   };
 
@@ -155,6 +122,7 @@ const useModalLink = () => {
     handleCancel,
     handleSaveToFolder,
     error,
+    mountedModal,
   };
 };
 

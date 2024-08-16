@@ -33,10 +33,11 @@ const SearchResults = () => {
   console.log(filteredLinks);
   console.log(folderRoute);
   console.log(route);
+  // todo: check if the cancel for the search result works
   return (
     <div className="p-2">
       <>
-        <h1 className="text-dimWhite text-xs">
+        <h1 className="dark:text-dimWhite text-sm">
           Found ({filteredLinks.length})
         </h1>
         <Display display={filteredLinks} isSearchResults={true}>

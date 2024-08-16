@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import {  useRef, useEffect } from "react";
 import { initialContextMenu } from "../constants/initialStates";
-import { ContextMenuType } from "../types";
+import { useModalContext } from "../context";
+import { ModalContextType } from "../types";
 
 const useContextMenu = () => {
-  const [contextMenu, setContextMenu] = useState<ContextMenuType>(initialContextMenu);
   const contextMenuRef = useRef<any>();
-
+const { contextMenu, setContextMenu } = useModalContext() as ModalContextType;
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (
@@ -22,10 +22,11 @@ const useContextMenu = () => {
   }, []);
 
   const handleContextMenu = (
-    e:  React.MouseEvent<HTMLDivElement, MouseEvent>,
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number
   ) => {
     e.preventDefault();
+    console.log(e.pageX, e.pageY);
     setContextMenu({
       visible: true,
       x: e.pageX,

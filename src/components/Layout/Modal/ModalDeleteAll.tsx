@@ -2,8 +2,9 @@ import React from "react";
 import { styles } from "../../../styles";
 import { useModalDeleteAll } from "../../../hooks";
 import { useSelectOptions } from "../../../hooks";
-import { useAppContext, useModalContext } from "../../../context";
-import { AppContextType, ModalContextType } from "../../../types";
+import { useModalContext } from "../../../context";
+import { ModalContextType } from "../../../types";
+import { motion } from "framer-motion";
 const ModalDeleteAll = () => {
   const { handleCancel } = useModalDeleteAll();
   const { handleDelete } = useSelectOptions();
@@ -20,9 +21,21 @@ const ModalDeleteAll = () => {
         >
           Yes
         </button>
-        <button type="button" className={styles.button1} onClick={handleCancel}>
+        <motion.button
+          whileHover={{
+            scale: 1.1,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 260,
+            damping: 20,
+          }}
+          type="button"
+          className={styles.button1}
+          onClick={handleCancel}
+        >
           Cancel
-        </button>
+        </motion.button>
       </div>
     </div>
   );

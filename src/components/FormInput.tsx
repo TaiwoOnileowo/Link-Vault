@@ -1,6 +1,7 @@
 import { styles } from "../styles";
 import { useModalLink } from "../hooks";
 import React from "react";
+import { motion } from "framer-motion";
 const FormInput = ({
   label,
   type,
@@ -10,39 +11,40 @@ const FormInput = ({
   extraLabelClass,
   showSaveTab,
   error,
-}:{
-  label: string,
-  type: string,
-  name: string,
-  value: string,
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  extraLabelClass?: string,
-  showSaveTab?: boolean,
-  error?: boolean,
+}: {
+  label: string;
+  type: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  extraLabelClass?: string;
+  showSaveTab?: boolean;
+  error?: string;
 }) => {
+  const { handleSaveTab } = useModalLink();
 
-  const { handleSaveTab, bounce, setBounce } = useModalLink();
-  const handleSaveTabClick = () => {
-    setBounce(true);
-    setTimeout(() => {
-      setBounce(false);
-    }, 300);
-    handleSaveTab();
-  };
+  console.log(error);
   return (
     <div className={styles.formGroup}>
       <label htmlFor={name} className={`${styles.label} ${extraLabelClass}`}>
         {label}
         {showSaveTab && (
-          <button
-            className={`text-xs text-white bg-primary-2 px-2 rounded-md hover:bg-hoverPrimary ${
-              bounce ? "animate-bounce" : null
-            }`}
-            onClick={handleSaveTabClick}
+          <motion.button
+            className={`text-xs text-white bg-primary-2 px-2 rounded-md `}
+            animate={{
+              scale: [0.8, 1.2, 1],
+            }}
+            whileHover={{ scale: 1.1 }}
+            transition={{
+              type: "spring",
+              stiffness: 260,
+              damping: 20,
+            }}
+            onClick={handleSaveTab}
             type="button"
           >
             Click to save tab
-          </button>
+          </motion.button>
         )}
       </label>
 

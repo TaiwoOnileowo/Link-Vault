@@ -30,7 +30,7 @@ export interface ContextMenuType {
   visible: boolean;
   x: number;
   y: number;
-  linkIndex: number | null;
+  linkIndex: number;
 }
 export interface AppContextType {
   session: Session | null;
@@ -117,6 +117,12 @@ export interface ModalContextType {
   handleClose: () => void;
   modalRef: React.MutableRefObject<HTMLDivElement>;
   folderDetails: Folders | null;
+  openLinkModal: (modalText: string, index: number | null) => void;
+  openFolderModal: (modalText: string, index: number | null) => void;
+  clickedIndex: number;
+  setClickedIndex: React.Dispatch<React.SetStateAction<number>>;
+  contextMenu: ContextMenuType;
+  setContextMenu: React.Dispatch<React.SetStateAction<ContextMenuType>>;
 }
 export interface ThemeContextType {
   darkMode: boolean;

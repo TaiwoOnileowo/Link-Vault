@@ -18,7 +18,7 @@ export const initialContextMenu = {
   visible: false,
   x: 0,
   y: 0,
-  linkIndex: null,
+  linkIndex: -1,
 };
 export const initialPreviewLink = {
   visible: false,

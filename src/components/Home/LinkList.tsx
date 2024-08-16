@@ -1,5 +1,5 @@
 import { useAppContext } from "../../context";
-import { AppContextType } from "../../types";
+import { AppContextType, Links } from "../../types";
 import LinkListItem from "./LinkListItem";
 import React from "react";
 const LinkList = ({
@@ -8,7 +8,7 @@ const LinkList = ({
   isSearchResults,
   isFolderLinks,
 }: {
-  display: Array<any>;
+  display: Links[];
   isExistingLinks?: boolean;
   isSearchResults?: boolean;
   isFolderLinks?: boolean;

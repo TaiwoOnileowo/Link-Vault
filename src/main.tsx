@@ -9,21 +9,24 @@ import Layout from "./components/Layout/";
 import { LinkProvider } from "./context/LinkContext.tsx";
 import App from "./App.tsx";
 import { FolderProvider } from "./context/FolderContext.tsx";
+import { GenModal } from "./components/ui/AnimatedModal.tsx";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ThemeProvider>
-      <ModalProvider>
-        <FolderProvider>
-          <AppProvider>
-            <LinkProvider>
-              <Layout>
-                <App />
-              </Layout>
-            </LinkProvider>
-          </AppProvider>
-        </FolderProvider>
-      </ModalProvider>
-    </ThemeProvider>
+    <GenModal>
+      <AppProvider>
+        <ModalProvider>
+          <ThemeProvider>
+            <FolderProvider>
+              <LinkProvider>
+                <Layout>
+                  <App />
+                </Layout>
+              </LinkProvider>
+            </FolderProvider>
+          </ThemeProvider>
+        </ModalProvider>
+      </AppProvider>
+    </GenModal>
   </React.StrictMode>
 );

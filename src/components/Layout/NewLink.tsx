@@ -1,29 +1,26 @@
-import { useState } from "react";
+import { goTo } from "react-chrome-extension-router";
 import { FaPlus } from "react-icons/fa6";
 import { useAppContext, useModalContext } from "../../context";
 import React from "react";
+import { motion } from "framer-motion";
 import { AppContextType, ModalContextType } from "../../types";
+import Home from "../Home";
 const NewLink = () => {
-  const [bounce, setBounce] = useState(false);
-  const { openModal } = useModalContext() as ModalContextType;
-  const { route } = useAppContext() as AppContextType;
-  const isFolder = route === "Folder";
+  const { openLinkModal } = useModalContext() as ModalContextType;
+  const { setRoute } = useAppContext() as AppContextType;
   return (
-    <div
+    <motion.div
       onClick={() => {
-        setBounce(true);
-        setTimeout(() => {
-          setBounce(false);
-        }, 300);
-        openModal("Save New Link", null, null, null, isFolder);
+        openLinkModal("Save New Link", null);
+        goTo(Home);
+        setRoute("Home");
       }}
+      whileTap={{ scale: 0.9 }}
       title="Add New Link"
-      className={`${
-        bounce ? "animate-bounce" : null
-      } bg-primary-2 w-[35px] h-[35px] rounded-l-2xl fixed right-0 bottom-[15%] cursor-pointer hover:bg-[#3a61e2] flex items-center justify-center text-white`}
+      className={` bg-primary-2 w-[35px] h-[35px] rounded-l-2xl fixed right-0 bottom-[15%] cursor-pointer hover:bg-[#3a61e2] flex items-center justify-center text-white`}
     >
       <FaPlus />
-    </div>
+    </motion.div>
   );
 };
 

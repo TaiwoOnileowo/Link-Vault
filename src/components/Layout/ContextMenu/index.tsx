@@ -16,11 +16,18 @@ import { copyToClipboard } from "../../../utils/clipboardUtils.js";
 
 import {
   AppContextType,
+  ContextMenuType,
   FolderContextType,
   LinkContextProps,
   ModalContextType,
 } from "../../../types.ts";
-const ContextMenu = ({ items }: { items?: Array<any> }) => {
+const ContextMenu = ({
+  items,
+  contextMenu,
+}: {
+  items: Array<any>;
+  contextMenu: ContextMenuType;
+}) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const {
     setShowCheckboxes,
@@ -33,27 +40,24 @@ const ContextMenu = ({ items }: { items?: Array<any> }) => {
   const { handleClick } = useProceedToAddLinks();
   const { setShowFolderCheckboxes, setOpenFolderIndex } =
     useFolderContext() as FolderContextType;
-  const {
-    searchInput,
-
-    setMenu,
-    route,
-  } = useAppContext() as AppContextType;
-  const { openModal } = useModalContext() as ModalContextType;
-  const { contextMenu, handleHideContextMenu } = useContextMenu();
+  const { searchInput, setMenu, route } = useAppContext() as AppContextType;
+  const { openLinkModal, openModal } = useModalContext() as ModalContextType;
+  const { handleHideContextMenu } = useContextMenu();
+  console.log(contextMenu, "contextMenu");
+  if (!contextMenu) return null;
   const { x, y, visible, linkIndex } = contextMenu;
   const isFolder = route === "Folder" && !isFolderLinks;
   useContextMenuPosition(x, y, visible, menuRef);
-  console.log(isFolderLinks, "daxfredeeeeeeeeeeeeeeeeeeee");
-  if (
-    !visible ||
-    !items ||
-    linkIndex === null ||
-    linkIndex === undefined ||
-    !items[linkIndex]
-  ) {
-    return null;
-  }
+  console.log(contextMenu, "daxfredeeeeeeeeeeeeeeeeeeee");
+  // if (
+  //   !visible ||
+  //   !items ||
+  //   linkIndex === null ||
+  //   linkIndex === undefined ||
+  //   !items[linkIndex]
+  // ) {
+  //   return null;
+  // }
 
   return (
     <div
@@ -68,34 +72,27 @@ const ContextMenu = ({ items }: { items?: Array<any> }) => {
       <ul className="flex flex-col items-center w-full">
         <ContextMenuItem
           onClick={() => {
-            const folderDetails = isFolder
-              ? {
-                  folder_name: items[linkIndex].folder_name,
-                  links: items[linkIndex].links,
-                  folder_icon: items[linkIndex].folder_icon,
-                }
-              : null;
-            const linkDetails = isFolder
-              ? null
-              : {
-                  url: items[linkIndex].url,
-                  url_name: items[linkIndex].url_name,
-                  pinned: items[linkIndex].pinned,
-                };
+            // const folderDetails = isFolder
+            //   ? {
+            //       folder_name: items[linkIndex].folder_name,
+            //       links: items[linkIndex].links,
+            //       folder_icon: items[linkIndex].folder_icon,
+            //     }
+            //   : null;
+            // const linkDetails = isFolder
+            //   ? null
+            //   : {
+            //       url: items[linkIndex].url,
+            //       url_name: items[linkIndex].url_name,
+            //       pinned: items[linkIndex].pinned,
+            //     };
 
-            if (isFolder) {
-              setOpenFolderIndex(null);
-              setMenu("Name");
-            }
+            // if (isFolder) {
+            //   setOpenFolderIndex(null);
+            //   setMenu("Name");
+            // }
 
-            openModal(
-              isFolder ? "Rename Folder" : "Edit Link",
-              linkDetails,
-              folderDetails,
-              linkIndex,
-              isFolder
-            );
-            handleHideContextMenu();
+            openLinkModal(isFolder ? "Rename Folder" : "Edit Link", linkIndex);
           }}
           icon={<FaRegEdit />}
           text={isFolder ? "Rename" : " Edit"}
@@ -116,15 +113,6 @@ const ContextMenu = ({ items }: { items?: Array<any> }) => {
             text="Add Links"
           />
         )}
-
-        <ContextMenuItem
-          onClick={() => {
-            handleDelete(linkIndex);
-            handleHideContextMenu();
-          }}
-          icon={<RiDeleteBin6Line />}
-          text="Delete"
-        />
         <ContextMenuItem
           onClick={() => {
             handlePinClick(linkIndex);
@@ -132,17 +120,22 @@ const ContextMenu = ({ items }: { items?: Array<any> }) => {
           }}
           icon={items[linkIndex].pinned ? <RiUnpinLine /> : <GrPin />}
           text={items[linkIndex].pinned ? "Unpin" : "Pin"}
-          hidden={isFolderLinks && true}
         />
         <ContextMenuItem
           onClick={() => {
             isFolder
               ? handleCopyFolder(linkIndex)
               : copyToClipboard(items[linkIndex].url);
-            handleHideContextMenu();
           }}
           icon={<FaRegCopy />}
           text={`Copy ${isFolder ? "Folder " : ""}`}
+        />
+        <ContextMenuItem
+          onClick={() => {
+            handleDelete(linkIndex);
+          }}
+          icon={<RiDeleteBin6Line />}
+          text="Delete"
         />
 
         {isFolder && (
@@ -170,7 +163,7 @@ const ContextMenu = ({ items }: { items?: Array<any> }) => {
           </>
         )}
 
-        <hr className="w-full border-gray-100 my-1 opacity-10" />
+        <hr className="w-full border-gray-800 my-1 opacity-20" />
         <ContextMenuItem
           onClick={() => {
             if (isFolder) {
@@ -179,8 +172,6 @@ const ContextMenu = ({ items }: { items?: Array<any> }) => {
             } else {
               setShowCheckboxes(true);
             }
-
-            handleHideContextMenu();
 
             handleSelectClick(true);
           }}
