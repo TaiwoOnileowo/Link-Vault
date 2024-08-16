@@ -5,8 +5,8 @@ const ModalIcon = () => {
   const { index, handleClick, handleClickDone } = useModalIcon();
 
   return (
-    <div className="relative mt-6 px-4">
-      <div className="grid scrollbar gap-y-1 grid-cols-3 gap-2 h-[200px]">
+    <div className="relative mt-4 px-4">
+      <div className="grid scrollbar1  gap-y-1 grid-cols-3 gap-2 rounded-md p-4  bg-gray-500/50 h-[200px]">
         {folderIcons.map((icon, i) => {
           return (
             <div

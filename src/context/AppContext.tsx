@@ -12,8 +12,16 @@ import toast from "react-hot-toast";
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [links, setLinks] = useState<Links[]>([{ url: "https://linkvaultapp.vercel.app/login", url_name: "" }]);
-  const [folders, setFolders] = useState<Folders[]>([]);
+  const [links, setLinks] = useState<Links[]>([
+    { url: "https://linkvaultapp.vercel.app/login", url_name: "" },
+  ]);
+  const [folders, setFolders] = useState<Folders[]>([
+    {
+      folder_name: "Unnamed",
+      links: [{ url: "https://linkvaultapp.vercel.app/login", url_name: "" }],
+      folder_icon: "https://linkvaultapp.vercel.app/favicon.ico",
+    },
+  ]);
   const [active, setActive] = useState<string>("Home");
   const [searchInput, setSearchInput] = useState<string>("");
   const [menu, setMenu] = useState<string>("Unnamed");
@@ -280,7 +288,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const intervalId = setInterval(() => {
       fetchSession();
-    },30000); 
+    }, 30000);
 
     return () => clearInterval(intervalId);
   }, []);

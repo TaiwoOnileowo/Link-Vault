@@ -1,25 +1,18 @@
 import { useState, useEffect } from "react";
-import { useAppContext, useModalContext } from "../context";
+import { useModalContext } from "../context";
 import { useLinkContext } from "../context";
-import {
-  AppContextType,
-  LinkContextProps,
-  Links,
-  ModalContextType,
-} from "../types";
-
+import { LinkContextProps, Links, ModalContextType } from "../types";
+import toast from "react-hot-toast";
+import { initialInputs } from "../constants/initialStates";
+import useModalLink from "./useModalLink";
 const useAddLinksToFolder = () => {
-  const {
-    existingLinks,
-    setExistingLinks,
-    setShowCheckboxes,
-    handleSelectClick,
-  } = useLinkContext() as LinkContextProps;
+  const { existingLinks, setExistingLinks, setShowCheckboxes } =
+    useLinkContext() as LinkContextProps;
   const [showLinks, setShowLinks] = useState(false);
   const [updatedLinks, setUpdatedLinks] = useState<Links[] | []>([]);
-  const { folderInputs, setFolderInputs } =
+  const { folderInputs, setFolderInputs, inputs, setInputs } =
     useModalContext() as ModalContextType;
-
+  const [error, setError] = useState<string | null>(null);
   const linksSelected = existingLinks.filter((link) => link.selected);
 
   useEffect(() => {
@@ -49,13 +42,30 @@ const useAddLinksToFolder = () => {
     setShowCheckboxes(true);
     setShowLinks(true);
   };
-
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (inputs.url === "") {
+      setError("URL is required");
+      return;
+    } else {
+      setError(null);
+      setFolderInputs({
+        ...folderInputs,
+        links: [inputs, ...folderInputs.links],
+        folder_icon: folderInputs.folder_icon,
+      });
+      toast.success("Added to folder");
+      setInputs(initialInputs);
+    }
+  };
   return {
     handleClick,
     linksSelected,
     updatedLinks,
     handleChooseFromExistingLinks,
     showLinks,
+    error,
+    handleSubmit,
   };
 };
 

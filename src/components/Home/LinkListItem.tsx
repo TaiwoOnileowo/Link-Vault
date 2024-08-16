@@ -41,7 +41,7 @@ const { contextMenu } = useModalContext() as ModalContextType;
         handleContextMenu(e, index);
       }}
     >
-      {contextMenu.visible && (
+      {contextMenu.visible && !showCheckboxes && (
         <div ref={contextMenuRef}>
           <ContextMenu items={links} contextMenu={contextMenu} />
         </div>

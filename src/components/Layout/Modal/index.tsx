@@ -55,7 +55,7 @@ const Modal = ({ children }) => {
   return (
     <ModalBody>
       <ModalContent>
-        <h1 className="text-2xl font-bold text-primary-2 dark:text-d-lightGray text-center mb-4">
+        <h1 className="text-2xl font-bold text-primary-2 dark:text-d-lightGray text-center mb-2">
           {modalText}{" "}
         </h1>
         {children}

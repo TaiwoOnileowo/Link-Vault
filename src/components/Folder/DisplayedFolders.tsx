@@ -11,20 +11,15 @@ import {
   FolderContextType,
   ModalContextType,
 } from "../../types";
-import { useContextMenu } from "../../hooks";
 
 const DisplayedFolders = () => {
   const { folders } = useAppContext() as AppContextType;
   const { showFolderCheckboxes } = useFolderContext() as FolderContextType;
   const { modalText } = useModalContext() as ModalContextType;
-  const { contextMenu, contextMenuRef } = useContextMenu();
+
   return (
     <div className="mt-4 text-white">
-      {contextMenu.visible && !showFolderCheckboxes && (
-        <div ref={contextMenuRef}>
-          <ContextMenu items={folders} />
-        </div>
-      )}
+    
       {showFolderCheckboxes && !modalText.includes("Folder") && (
         <div className="mb-4">
           <SelectOptions display={folders} />

@@ -1,35 +1,45 @@
-import { useAppContext } from "../context";
+import { useAppContext, useModalContext } from "../context";
 import toast from "react-hot-toast";
-import { useLinkContext } from "../context";
+import { useLinkContext, useFolderContext } from "../context";
 import { folderIcons } from "../../public/foldericons";
 import useAddLinksToFolder from "./useAddLinksToFolder";
-import { AppContextType, LinkContextProps, Folders, Links } from "../types";
+import {
+  AppContextType,
+  LinkContextProps,
+  Links,
+  ModalContextType,
+  FolderContextType,
+} from "../types";
 const useLinksAddedToFolder = () => {
   const {
     setMenu,
-    setFolderInputs,
+
     setFolders,
     folders,
     setLinks,
-    handleClose,
-    modalText,
-    editIndex,
-    folderInputs,
-    setEditIndex,
   } = useAppContext() as AppContextType;
+  const {
+    handleClose,
+
+    setFolderInputs,
+    clickedIndex,
+    folderInputs,
+  } = useModalContext() as ModalContextType;
 
   const { updatedLinks } = useAddLinksToFolder();
   const { setShowCheckboxes, setExistingLinks } =
     useLinkContext() as LinkContextProps;
-  console.log("Edit Index", editIndex);
+  const { setOpenFolderIndex } = useFolderContext() as FolderContextType;
+  const mountedModal = clickedIndex > -1;
   const handleClick = () => {
     let updatedFolders = [...folders];
 
-    if (editIndex !== null) {
-      updatedFolders[editIndex].folder_name = folderInputs.folder_name;
-      updatedFolders[editIndex].links = [...folderInputs.links];
+    if (mountedModal) {
+      updatedFolders[clickedIndex].folder_name = folderInputs.folder_name;
+      updatedFolders[clickedIndex].links = [...folderInputs.links];
 
       setFolders(updatedFolders);
+      setOpenFolderIndex(clickedIndex);
       toast.success("Links Added successfully!");
     } else {
       folderInputs.folder_icon = folderIcons[8];
@@ -71,7 +81,7 @@ const useLinksAddedToFolder = () => {
 
     setExistingLinks((prevLinks: Array<any>) => {
       const newLinks: Links[] = [...prevLinks];
-      newLinks.splice(linkToRemove.originalIndex, 0, {
+      newLinks.splice(linkToRemove.originalIndex || 0, 0, {
         ...linkToRemove,
         selected: false,
       });

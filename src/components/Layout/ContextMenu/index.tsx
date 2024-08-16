@@ -41,7 +41,8 @@ const ContextMenu = ({
   const { setShowFolderCheckboxes, setOpenFolderIndex } =
     useFolderContext() as FolderContextType;
   const { searchInput, setMenu, route } = useAppContext() as AppContextType;
-  const { openLinkModal, openModal } = useModalContext() as ModalContextType;
+  const { openLinkModal, openModal, openFolderModal } =
+    useModalContext() as ModalContextType;
   const { handleHideContextMenu } = useContextMenu();
   console.log(contextMenu, "contextMenu");
   if (!contextMenu) return null;
@@ -49,15 +50,6 @@ const ContextMenu = ({
   const isFolder = route === "Folder" && !isFolderLinks;
   useContextMenuPosition(x, y, visible, menuRef);
   console.log(contextMenu, "daxfredeeeeeeeeeeeeeeeeeeee");
-  // if (
-  //   !visible ||
-  //   !items ||
-  //   linkIndex === null ||
-  //   linkIndex === undefined ||
-  //   !items[linkIndex]
-  // ) {
-  //   return null;
-  // }
 
   return (
     <div
@@ -70,44 +62,33 @@ const ContextMenu = ({
       onClick={(e) => e.stopPropagation()}
     >
       <ul className="flex flex-col items-center w-full">
-        <ContextMenuItem
-          onClick={() => {
-            // const folderDetails = isFolder
-            //   ? {
-            //       folder_name: items[linkIndex].folder_name,
-            //       links: items[linkIndex].links,
-            //       folder_icon: items[linkIndex].folder_icon,
-            //     }
-            //   : null;
-            // const linkDetails = isFolder
-            //   ? null
-            //   : {
-            //       url: items[linkIndex].url,
-            //       url_name: items[linkIndex].url_name,
-            //       pinned: items[linkIndex].pinned,
-            //     };
+        {isFolder ? (
+          <ContextMenuItem
+            onClick={() => {
+              setOpenFolderIndex(null);
+              setMenu("Name");
 
-            // if (isFolder) {
-            //   setOpenFolderIndex(null);
-            //   setMenu("Name");
-            // }
+              openFolderModal("Rename Folder", linkIndex);
+            }}
+            icon={<FaRegEdit />}
+            text={"Rename"}
+          />
+        ) : (
+          <ContextMenuItem
+            onClick={() => {
+              openLinkModal("Edit Link", linkIndex);
+            }}
+            icon={<FaRegEdit />}
+            text={" Edit"}
+          />
+        )}
 
-            openLinkModal(isFolder ? "Rename Folder" : "Edit Link", linkIndex);
-          }}
-          icon={<FaRegEdit />}
-          text={isFolder ? "Rename" : " Edit"}
-        />
         {isFolder && (
           <ContextMenuItem
             onClick={() => {
-              const details = {
-                folder_name: items[linkIndex].folder_name,
-                links: items[linkIndex].links,
-                folder_icon: items[linkIndex].folder_icon,
-              };
-              console.log("linkIndex", linkIndex);
-              handleClick(true, details, linkIndex);
-              handleHideContextMenu();
+              openFolderModal("Save Links To Folder", linkIndex);
+              setOpenFolderIndex(null);
+              setMenu("Add Links");
             }}
             icon={<MdAddLink />}
             text="Add Links"
@@ -140,22 +121,10 @@ const ContextMenu = ({
 
         {isFolder && (
           <>
-            <hr className="w-full border-gray-100 my-1 opacity-10" />
+            <hr className="w-full border-gray-800 my-1 opacity-10" />
             <ContextMenuItem
               onClick={() => {
-                const folderDetails = {
-                  folder_name: items[linkIndex].folder_name,
-                  links: items[linkIndex].links,
-                  folder_icon: items[linkIndex].folder_icon,
-                };
-                openModal(
-                  "Choose an Icon",
-                  null,
-                  folderDetails,
-                  linkIndex,
-                  true
-                );
-                handleHideContextMenu();
+                openFolderModal("Choose an Icon", linkIndex);
               }}
               icon={<TfiThemifyFavicon />}
               text="Change Icon"

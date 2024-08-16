@@ -22,7 +22,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [contextMenu, setContextMenu] =
     useState<ContextMenuType>(initialContextMenu);
   const [clickedIndex, setClickedIndex] = useState<number>(-1);
-  const { links } = useAppContext() as AppContextType;
+  const { links, folders } = useAppContext() as AppContextType;
   const modalRef = useRef<any>();
   const { setOpen } = useModal();
   const openModal = (
@@ -59,9 +59,15 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
     }
   };
   const openFolderModal = (modalText: string, index: number | null) => {
+    console.log(index, "index");
     setOpen(true); //openModal
     setModalText(modalText); //set modal text
     setFolderInputs(initialFolderInputs);
+    if (index !== null) {
+      console.log(folders[index], "folders[index]");
+      setClickedIndex(index); //set clicked index to the index of the link that prompted the modal
+      setFolderInputs(folders[index]); //set inputs to the folder at the clicked index
+    }
   };
   const handleClose = () => {
     setOpen(false); //close modal

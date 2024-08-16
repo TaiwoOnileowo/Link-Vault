@@ -8,7 +8,6 @@ import FormInputs from "./FormInputs";
 const ModalLink = () => {
   const {
     handleSubmit,
-    handleChange,
     handleCancel,
     error,
     handleSaveToFolder,
@@ -24,15 +23,6 @@ const ModalLink = () => {
     >
       <FormInputs error={error} />
 
-      {/* {modalText.includes("Create New Folder") ||
-      modalText.includes("Save Links To Folder") ? (
-        <div className="flex justify-end gap-2">
-          <button className={styles.button1} type="submit">
-            Add
-          </button>
-        </div>
-      ) : ( */}
-      {/* todo:Fix the add buton in the folder add links */}
       <div className="flex justify-between items-end h-fit gap-4">
         <div className="flex justify-start">
           <button

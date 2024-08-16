@@ -4,6 +4,7 @@ import { useModalContext } from "../../../context";
 import useNameFolder from "../../../hooks/useNameFolder";
 import { ModalContextType } from "../../../types";
 
+import Button from "../../Button";
 const NameFolder = () => {
   const { folderInputs, modalText } = useModalContext() as ModalContextType;
   const { handleChange, handleClick, error } = useNameFolder();
@@ -11,7 +12,7 @@ const NameFolder = () => {
     folderInputs === null ? undefined : !folderInputs.folder_name;
   const isError: boolean | undefined = error ? true : undefined;
   return (
-    <div className="w-full">
+    <form className="w-full" onSubmit={(e) => handleClick(e)}>
       <h1 className={`mb-2 ${styles.label}`}>Folder Name</h1>
       <input
         type="text"
@@ -22,19 +23,20 @@ const NameFolder = () => {
       />
       {error && <p className="text-red-500 text-xs ">{error}</p>}
       <div className="w-full flex justify-end mt-2">
-        <button
+        <Button
           className={
             folderInputs && folderInputs.folder_name && !error
               ? styles.button1
               : styles.button1Disabled
           }
-          onClick={handleClick}
+          type="submit"
           disabled={isDisabled || isError}
-        >
-          {modalText.includes("Rename Folder") ? "Done" : "Next: Add Links +"}
-        </button>
+          title={
+            modalText.includes("Rename Folder") ? "Done" : "Next: Add Links +"
+          }
+        />
       </div>
-    </div>
+    </form>
   );
 };
 

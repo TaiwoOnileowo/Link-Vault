@@ -1,18 +1,20 @@
 import React from "react";
 import { useThemeContext } from "../../context";
-import { useLinkContext } from "../../context";
+import { useLinkContext, useModalContext, useAppContext } from "../../context";
 import Checkbox from "../Checkbox";
 import FolderListItemLinks from "./FolderListItemLinks";
 import { useFolderContext } from "../../context";
 import { TbPinFilled } from "react-icons/tb";
 import {
+  AppContextType,
   FolderContextType,
   Folders,
   LinkContextProps,
+  ModalContextType,
   ThemeContextType,
 } from "../../types";
 import { useContextMenu } from "../../hooks";
-
+import ContextMenu from "../Layout/ContextMenu";
 const FolderListItem = ({
   folder,
   index,
@@ -22,12 +24,14 @@ const FolderListItem = ({
   index: number;
   isModal?: boolean;
 }) => {
+  const { folders } = useAppContext() as AppContextType
   const { darkMode } = useThemeContext() as ThemeContextType;
   const { handleSelect, setIsFolder, setIsFolderLinks } =
     useLinkContext() as LinkContextProps;
   const { showFolderCheckboxes, toggleFolder, openFolderIndex } =
     useFolderContext() as FolderContextType;
-  const { handleContextMenu } = useContextMenu();
+  const { handleContextMenu, contextMenuRef } = useContextMenu();
+  const { contextMenu } = useModalContext() as ModalContextType;
   console.log(showFolderCheckboxes, isModal, "dax");
   return (
     <div key={index} className="select-none flex flex-col">
@@ -47,17 +51,15 @@ const FolderListItem = ({
           }
         }}
       >
+        {contextMenu.visible && !showFolderCheckboxes && (
+          <div ref={contextMenuRef}>
+            <ContextMenu items={folders} contextMenu={contextMenu} />
+          </div>
+        )}
         {(showFolderCheckboxes || isModal) && (
           <Checkbox link={folder} originalIndex={index} isModal={isModal} />
         )}
-        <li
-          className="inline-flex items-center gap-2 font-bold text-base"
-          // onClick={() => {
-          //   if (showFolderCheckboxes || isModal) {
-          //     handleSelect(index, true);
-          //   }
-          // }}
-        >
+        <li className="inline-flex items-center gap-2 font-bold text-base">
           <span
             className={`flex items-center ${
               darkMode ? "dark" : null
